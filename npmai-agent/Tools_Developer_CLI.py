@@ -266,6 +266,234 @@ class GitHubTool:
         "Full GitHub API: repos, issues, PRs, files, releases, Actions, "
         "branches, collaborators, gists, stars, forks"
     )
+    use = (
+            """
+Name of Tool:- GitHubTool,
+
+Purpose of Tool:- 
+The GitHubTool provides a comprehensive interface to interact with the GitHub API. 
+It supports full repository management (create, delete, fork), issue tracking (create, close, list), 
+pull request lifecycle (create, merge, list, review), file operations (push, get, delete, list), 
+releases, GitHub Actions workflows, branch management, collaborators, gists, starring, watching, 
+and user information retrieval. 
+All operations use authenticated access via a GitHub personal access token stored through CredStore. 
+This tool is designed for automation, agentic workflows, and remote GitHub repository management without needing local git clones.
+
+Methods:-
+- _gh: Internal helper to initialize authenticated GitHub client.
+- create_repo: Creates a new repository for the authenticated user.
+- delete_repo: Permanently deletes a repository.
+- fork_repo: Creates a fork of an existing repository.
+- create_issue: Creates a new issue in a repository.
+- close_issue: Closes an existing issue.
+- list_issues: Retrieves a list of issues with optional filtering.
+- create_pr: Creates a new pull request.
+- merge_pr: Merges an existing pull request.
+- list_prs: Lists pull requests in a repository.
+- review_pr: Submits a review on a pull request.
+- push_file: Creates or updates a single file in the repository.
+- delete_file: Deletes a file from the repository.
+- get_file: Retrieves the content of a file from the repository.
+- list_files: Lists files and directories at a given path.
+- create_release: Creates a new GitHub release.
+- get_actions_status: Gets recent workflow run status.
+- trigger_workflow: Triggers a GitHub Actions workflow.
+- list_branches: Lists all branches in a repository.
+- protect_branch: Applies basic protection rules to a branch.
+- add_collaborator: Adds a collaborator to a repository with specified permissions.
+- create_gist: Creates a new gist with one or more files.
+- get_user_info: Retrieves public information about a GitHub user.
+- star_repo: Stars a repository.
+- watch_repo: Watches (subscribes to notifications) a repository.
+
+How to use Tool Methods:-
+
+1. _gh (Internal Authentication Helper):
+   - Purpose: Creates and returns an authenticated PyGithub Github client instance.
+   - Arguments:
+     a) cred_key: str (default: "github") - The key used to load credentials from CredStore.
+   - Note: This method is called internally by all other methods. You generally do not call it directly.
+   - Requirement: A valid GitHub token must be saved using CredStore.save('github', {'token': 'ghp_...'})
+
+2. create_repo:
+   - Purpose: Creates a new GitHub repository for the authenticated user with automatic initialization.
+   - Arguments:
+     a) name: str - Name of the repository to create (required).
+     b) private: bool (default: True) - Whether the repo should be private.
+     c) description: str (default: "") - Short description of the repository.
+     d) cred_key: str (default: "github") - Credential key for authentication.
+   - Returns: ToolResult with success status, message, and repo details (url, full_name).
+   - How to call: GitHubTool.create_repo(name="my-awesome-project", private=True, description="Project description")
+
+3. delete_repo:
+   - Purpose: Permanently deletes a repository (use with caution).
+   - Arguments:
+     a) repo: str - Full name of the repository in "owner/repo" format (required).
+     b) cred_key: str (default: "github").
+   - How to call: GitHubTool.delete_repo(repo="username/my-repo")
+
+4. fork_repo:
+   - Purpose: Creates a fork of any public or accessible repository under the authenticated user.
+   - Arguments:
+     a) repo: str - Repository to fork in "owner/repo" format.
+     b) cred_key: str (default: "github").
+   - How to call: GitHubTool.fork_repo(repo="octocat/Hello-World")
+
+5. create_issue:
+   - Purpose: Opens a new issue in a repository.
+   - Arguments:
+     a) repo: str - Target repository "owner/repo".
+     b) title: str - Issue title (required).
+     c) body: str (default: "") - Detailed issue description.
+     d) labels: list (default: None) - List of label names.
+     e) assignees: list (default: None) - List of usernames to assign.
+     f) cred_key: str (default: "github").
+   - How to call: GitHubTool.create_issue(repo="owner/repo", title="Bug found", body="Details...", labels=["bug"])
+
+6. close_issue:
+   - Purpose: Closes an open issue.
+   - Arguments:
+     a) repo: str - Repository "owner/repo".
+     b) number: int - Issue number.
+     c) cred_key: str (default: "github").
+   - How to call: GitHubTool.close_issue(repo="owner/repo", number=42)
+
+7. list_issues:
+   - Purpose: Lists issues with optional state and label filters.
+   - Arguments:
+     a) repo: str - Repository "owner/repo".
+     b) state: str (default: "open") - "open", "closed", or "all".
+     c) labels: list (default: None) - Filter by labels.
+     d) cred_key: str (default: "github").
+   - Returns: List of issues with number, title, state, and URL.
+   - How to call: GitHubTool.list_issues(repo="owner/repo", state="open")
+
+8. create_pr:
+   - Purpose: Creates a new pull request.
+   - Arguments:
+     a) repo: str - Target repository.
+     b) title: str - PR title.
+     c) body: str - PR description.
+     d) head: str - Source branch (e.g., "feature-branch").
+     e) base: str (default: "main") - Target branch.
+     f) cred_key: str (default: "github").
+   - How to call: GitHubTool.create_pr(repo="owner/repo", title="New feature", body="...", head="feature-x", base="main")
+
+9. merge_pr:
+   - Purpose: Merges a pull request using specified method.
+   - Arguments:
+     a) repo: str
+     b) number: int - PR number.
+     c) method: str (default: "squash") - Can be "merge", "squash", or "rebase".
+     d) cred_key: str (default: "github").
+   - How to call: GitHubTool.merge_pr(repo="owner/repo", number=5, method="squash")
+
+10. list_prs:
+    - Purpose: Lists open or closed pull requests.
+    - Arguments: repo, state (default "open"), cred_key.
+    - How to call: GitHubTool.list_prs(repo="owner/repo", state="open")
+
+11. review_pr:
+    - Purpose: Submits a review comment/approval on a PR.
+    - Arguments:
+      a) repo: str
+      b) number: int
+      c) body: str - Review comment.
+      d) event: str (default: "COMMENT") - Can be "APPROVE", "REQUEST_CHANGES", "COMMENT".
+      e) cred_key.
+    - How to call: GitHubTool.review_pr(repo="owner/repo", number=10, body="Looks good!", event="APPROVE")
+
+12. push_file:
+    - Purpose: Creates a new file or updates an existing file in the repository.
+    - Arguments:
+      a) repo: str
+      b) path: str - File path in repo (e.g., "folder/file.py").
+      c) content: str - Full file content.
+      d) message: str (default: "Update via NPM Agent") - Commit message.
+      e) cred_key.
+    - How to call: GitHubTool.push_file(repo="owner/repo", path="README.md", content="# Title", message="Update readme")
+
+13. delete_file:
+    - Purpose: Deletes a file from the repository.
+    - Arguments: repo, path, message, cred_key.
+    - How to call: GitHubTool.delete_file(repo="owner/repo", path="oldfile.txt", message="Remove obsolete file")
+
+14. get_file:
+    - Purpose: Retrieves the decoded content of a file.
+    - Arguments: repo, path, cred_key.
+    - Returns: File content as string.
+    - How to call: GitHubTool.get_file(repo="owner/repo", path="src/main.py")
+
+15. list_files:
+    - Purpose: Lists contents of a directory in the repository.
+    - Arguments:
+      a) repo: str
+      b) path: str (default: "") - Directory path (empty = root).
+      c) cred_key.
+    - How to call: GitHubTool.list_files(repo="owner/repo", path="src")
+
+16. create_release:
+    - Purpose: Creates a new GitHub release.
+    - Arguments: repo, tag, name, body, cred_key.
+    - How to call: GitHubTool.create_release(repo="owner/repo", tag="v1.0.0", name="Version 1.0", body="Release notes")
+
+17. get_actions_status:
+    - Purpose: Gets the status of the most recent workflow runs.
+    - Arguments: repo, cred_key.
+    - How to call: GitHubTool.get_actions_status(repo="owner/repo")
+
+18. trigger_workflow:
+    - Purpose: Manually triggers a GitHub Actions workflow.
+    - Arguments:
+      a) repo: str
+      b) workflow_id: str - Workflow filename or ID.
+      c) ref: str (default: "main") - Branch or tag to run on.
+      d) cred_key.
+    - How to call: GitHubTool.trigger_workflow(repo="owner/repo", workflow_id="ci.yml", ref="main")
+
+19. list_branches:
+    - Purpose: Lists all branches in the repository.
+    - Arguments: repo, cred_key.
+    - How to call: GitHubTool.list_branches(repo="owner/repo")
+
+20. protect_branch:
+    - Purpose: Enables basic branch protection (requires 1 approving review).
+    - Arguments: repo, branch, cred_key.
+    - How to call: GitHubTool.protect_branch(repo="owner/repo", branch="main")
+
+21. add_collaborator:
+    - Purpose: Invites a user as collaborator with specified permission level.
+    - Arguments:
+      a) repo: str
+      b) user: str - GitHub username.
+      c) permission: str (default: "push") - "pull", "push", "triage", "maintain", "admin".
+      d) cred_key.
+    - How to call: GitHubTool.add_collaborator(repo="owner/repo", user="friend", permission="push")
+
+22. create_gist:
+    - Purpose: Creates a new public or secret gist.
+    - Arguments:
+      a) files: dict - {"filename.ext": "file content", ...}
+      b) description: str (default: "")
+      c) public: bool (default: True)
+      d) cred_key.
+    - How to call: GitHubTool.create_gist(files={"hello.py": "print('Hello')"}, description="My gist", public=True)
+
+23. get_user_info:
+    - Purpose: Gets basic information about any GitHub user.
+    - Arguments: username: str, cred_key.
+    - How to call: GitHubTool.get_user_info(username="octocat")
+
+24. star_repo:
+    - Purpose: Stars a repository for the authenticated user.
+    - Arguments: repo, cred_key.
+    - How to call: GitHubTool.star_repo(repo="owner/repo")
+
+25. watch_repo:
+    - Purpose: Watches a repository to receive notifications.
+    - Arguments: repo, cred_key.
+    - How to call: GitHubTool.watch_repo(repo="owner/repo")
+""")
 
     @staticmethod
     def _gh(cred_key: str = "github"):
@@ -544,8 +772,190 @@ class GitLabTool:
     name = "gitlab"
     description = (
         "Full GitLab API: projects, issues, merge requests, pipelines, "
-        "jobs, files, branches, members"
-    )
+        "jobs, files, branches, members")
+    use = (
+            """
+Name of Tool:- GitLabTool,
+
+Purpose of Tool:- 
+The GitLabTool provides a comprehensive interface to interact with the GitLab API (self-hosted or gitlab.com). 
+It supports complete project management (create, list, get), issue tracking (create, close), merge requests (create, merge), 
+CI/CD pipelines and jobs (list, trigger, retry), file operations (push/create/update), branch management, 
+and project member management. 
+All operations use authenticated access via a GitLab private token (and optional custom URL) stored through CredStore. 
+This tool is ideal for automation, agentic workflows, DevOps pipelines, and remote GitLab project management.
+
+Methods:-
+- _gl: Internal helper to initialize authenticated GitLab client.
+- create_project: Creates a new GitLab project.
+- list_projects: Lists projects owned by the authenticated user.
+- get_project: Retrieves detailed information about a specific project.
+- create_issue: Creates a new issue in a project.
+- close_issue: Closes an existing issue.
+- create_mr: Creates a new merge request.
+- merge_mr: Merges a merge request.
+- list_pipelines: Lists recent pipelines for a project.
+- trigger_pipeline: Triggers a new pipeline run.
+- get_pipeline_jobs: Gets jobs for a specific pipeline.
+- retry_job: Retries a failed or canceled job.
+- push_file: Creates or updates a file in the repository.
+- list_branches: Lists all branches in a project.
+- create_branch: Creates a new branch.
+- list_members: Lists project members.
+- add_member: Adds a new member to a project with specified access level.
+
+How to use Tool Methods:-
+
+1. _gl (Internal Authentication Helper):
+   - Purpose: Creates and returns an authenticated python-gitlab client instance. Handles both gitlab.com and self-hosted instances.
+   - Arguments:
+     a) cred_key: str (default: "gitlab") - The key used to load credentials from CredStore.
+   - Credential format expected in CredStore: {'token': 'glpat-...', 'url': 'https://gitlab.example.com'} (url is optional, defaults to https://gitlab.com).
+   - Note: This method is called internally by all other methods. You generally do not call it directly.
+   - Requirement: A valid private token must be saved using CredStore.save('gitlab', {'token': 'glpat-...', 'url': 'https://...'}).
+
+2. create_project:
+   - Purpose: Creates a new project (repository) under the authenticated user.
+   - Arguments:
+     a) name: str - Name of the project (required).
+     b) visibility: str (default: "private") - Visibility level: "private", "internal", or "public".
+     c) cred_key: str (default: "gitlab").
+   - Returns: ToolResult with success status, message, and project details (id, url).
+   - How to call: GitLabTool.create_project(name="my-awesome-project", visibility="private")
+
+3. list_projects:
+   - Purpose: Lists all projects owned by the authenticated user.
+   - Arguments:
+     a) cred_key: str (default: "gitlab").
+   - Returns: List of projects with id, name, and web_url.
+   - How to call: GitLabTool.list_projects()
+
+4. get_project:
+   - Purpose: Retrieves detailed metadata for a specific project by its numeric ID.
+   - Arguments:
+     a) id: int - Project ID (numeric, not path).
+     b) cred_key: str (default: "gitlab").
+   - Returns: Project details including id, name, description, url, default_branch.
+   - How to call: GitLabTool.get_project(id=123456)
+
+5. create_issue:
+   - Purpose: Opens a new issue in a project.
+   - Arguments:
+     a) project_id: int - Project ID (required).
+     b) title: str - Issue title (required).
+     c) description: str (default: "") - Detailed description of the issue.
+     d) labels: list (default: None) - List of label names.
+     e) cred_key: str (default: "gitlab").
+   - Returns: Issue IID and web_url.
+   - How to call: GitLabTool.create_issue(project_id=123, title="Bug found", description="Details here", labels=["bug", "backend"])
+
+6. close_issue:
+   - Purpose: Closes an open issue using its IID.
+   - Arguments:
+     a) project_id: int
+     b) iid: int - Internal Issue ID (not global ID).
+     c) cred_key: str (default: "gitlab").
+   - How to call: GitLabTool.close_issue(project_id=123, iid=45)
+
+7. create_mr:
+   - Purpose: Creates a new merge request (equivalent to Pull Request).
+   - Arguments:
+     a) project_id: int
+     b) title: str - MR title.
+     c) source: str - Source branch name.
+     d) target: str - Target branch name (usually "main" or "master").
+     e) description: str (default: "") - MR description.
+     f) cred_key: str (default: "gitlab").
+   - Returns: MR IID and web_url.
+   - How to call: GitLabTool.create_mr(project_id=123, title="Add new feature", source="feature-branch", target="main", description="...")
+
+8. merge_mr:
+   - Purpose: Merges an open merge request.
+   - Arguments:
+     a) project_id: int
+     b) iid: int - Merge Request IID.
+     c) cred_key: str (default: "gitlab").
+   - How to call: GitLabTool.merge_mr(project_id=123, iid=67)
+
+9. list_pipelines:
+   - Purpose: Lists recent pipelines (CI/CD runs) for a project (limited to latest 20).
+   - Arguments:
+     a) project_id: int
+     b) cred_key: str (default: "gitlab").
+   - Returns: List of pipelines with id, status, and ref.
+   - How to call: GitLabTool.list_pipelines(project_id=123)
+
+10. trigger_pipeline:
+    - Purpose: Manually triggers a new pipeline on a specific branch or tag.
+    - Arguments:
+      a) project_id: int
+      b) ref: str (default: "main") - Branch, tag, or commit SHA.
+      c) cred_key: str (default: "gitlab").
+    - How to call: GitLabTool.trigger_pipeline(project_id=123, ref="main")
+
+11. get_pipeline_jobs:
+    - Purpose: Retrieves all jobs for a specific pipeline.
+    - Arguments:
+      a) project_id: int
+      b) pipeline_id: int
+      c) cred_key: str (default: "gitlab").
+    - Returns: List of jobs with id, name, status, stage.
+    - How to call: GitLabTool.get_pipeline_jobs(project_id=123, pipeline_id=456)
+
+12. retry_job:
+    - Purpose: Retries a failed or canceled CI/CD job.
+    - Arguments:
+      a) project_id: int
+      b) job_id: int
+      c) cred_key: str (default: "gitlab").
+    - How to call: GitLabTool.retry_job(project_id=123, job_id=789)
+
+13. push_file:
+    - Purpose: Creates a new file or updates an existing file in the repository using base64 encoding.
+    - Arguments:
+      a) project_id: int
+      b) file_path: str - Full path to the file in the repo (e.g., "src/main.py").
+      c) content: str - Plain text content of the file.
+      d) message: str (default: "Update via NPM Agent") - Commit message.
+      e) branch: str (default: "main") - Target branch.
+      f) cred_key: str (default: "gitlab").
+    - How to call: GitLabTool.push_file(project_id=123, file_path="README.md", content="# My Project", message="Update readme", branch="main")
+
+14. list_branches:
+    - Purpose: Lists all branches in the project.
+    - Arguments:
+      a) project_id: int
+      b) cred_key: str (default: "gitlab").
+    - Returns: List of branch names.
+    - How to call: GitLabTool.list_branches(project_id=123)
+
+15. create_branch:
+    - Purpose: Creates a new branch from an existing reference (branch, tag, or commit).
+    - Arguments:
+      a) project_id: int
+      b) name: str - Name of the new branch.
+      c) ref: str (default: "main") - Source reference.
+      d) cred_key: str (default: "gitlab").
+    - How to call: GitLabTool.create_branch(project_id=123, name="feature-new-ui", ref="main")
+
+16. list_members:
+    - Purpose: Lists all members of a project with their access levels.
+    - Arguments:
+      a) project_id: int
+      b) cred_key: str (default: "gitlab").
+    - Returns: List of members with id, username, access_level.
+    - How to call: GitLabTool.list_members(project_id=123)
+
+17. add_member:
+    - Purpose: Adds a user as a member to the project with a specific access level.
+    - Arguments:
+      a) project_id: int
+      b) user_id: int - GitLab user ID (numeric).
+      c) access_level: int (default: 30) - 10=Guest, 20=Reporter, 30=Developer, 40=Maintainer, 50=Owner.
+      d) cred_key: str (default: "gitlab").
+    - How to call: GitLabTool.add_member(project_id=123, user_id=456, access_level=30)
+""")
+   
 
     @staticmethod
     def _gl(cred_key: str = "gitlab"):
@@ -748,6 +1158,295 @@ class DockerTool:
         "Full Docker operations: build, push, pull, run, exec, logs, "
         "networks, volumes, docker-compose, system prune"
     )
+    use = (
+            """
+Name of Tool:- DockerTool
+
+Purpose of Tool:-
+The DockerTool provides a comprehensive programmatic interface to perform full Docker operations.
+It supports image management (build, push, pull, tag, remove, list), container life-cycle management (run, start, stop, remove, exec, logs, list, inspect), network management (create, list, remove), volume management (create, list, remove), multi-container orchestration via docker-compose (up, down, logs, ps), authentication handling, and system cleanups (prune).
+All operations are executed either using the official Docker SDK for Python or via fallback CLI shell executions for complex commands like compose and system pruning.
+
+Methods:-
+
+* _client: Internal helper to initialize the Docker SDK client from the host environment.
+* _run_docker: Internal helper to execute fallback Docker CLI commands using subprocesses.
+* build_image: Builds a Docker image from a local development context or Dockerfile.
+* push_image: Pushes a local image to DockerHub or a specified private container registry.
+* pull_image: Pulls a target image from a remote registry.
+* tag_image: Tags an existing local source image with a new target repository and tag.
+* remove_image: Deletes an image from the local Docker host memory.
+* list_images: Retrieves and returns all available local Docker images with metadata.
+* run_container: Creates, configures, and provisions a new running container instance.
+* stop_container: Gracefully stops a currently running Docker container.
+* start_container: Boots up an existing stopped Docker container.
+* remove_container: Deletes an existing container from the system storage.
+* exec_in_container: Executes an arbitrary shell command live inside a running container context.
+* get_logs: Retrieves stdout/stderr execution log snapshots from a targeted container.
+* list_containers: Queries and aggregates current running or inactive container processes.
+* inspect_container: Fetches full structured, low-level configuration details of a container.
+* create_network: Provisions a new isolated Docker virtual network with custom drivers.
+* list_networks: Summarizes all existing operational networks on the host machine.
+* remove_network: Deletes an unused custom Docker network stack.
+* create_volume: Sets up a persistent directory storage volume managed by Docker daemon.
+* list_volumes: Lists details of all active Docker-managed persistent volumes.
+* remove_volume: Permanently destroys a Docker volume entry.
+* compose_up: Instructs Docker Compose to parse structural files and spin up multi-container applications.
+* compose_down: Powers down and tears down a multi-container network configuration created by Compose.
+* compose_logs: Aggregates historical logs across all or explicit components inside a Docker Compose setup.
+* compose_ps: Displays runtime statuses and details of container clusters managed by Compose.
+* login: Performs a session authentication handshake against DockerHub or private remote registries.
+* system_prune: Reclaims system memory by clearing stopped containers, networks, and unused imagery.
+
+How to use Tool Methods:-
+
+1. _client:
+* Purpose: Internal factory method initializing and returning a docker client configured from environment variables.
+* Arguments: None.
+* Note: Used strictly as an internal backend connector helper.
+* How to call: DockerTool._client()
+
+
+2. _run_docker:
+* Purpose: Internal helper method executing external Docker subcommands via system shells.
+* Arguments:
+a) args: list - Sequential parameters following the base 'docker' command binary structure.
+* Returns: A tuple container containing exit code representation (int) alongside standard out/err streams (str).
+* How to call: DockerTool._run_docker(["version"])
+
+
+3. build_image:
+* Purpose: Generates operational docker images from file context definitions.
+* Arguments:
+a) path: str - Target directory directory containing code context workspace.
+b) tag: str - The identifying label string repository string target.
+c) dockerfile: str (default: "Dockerfile") - Alternative Dockerfile identifier mapping path filename.
+d) build_args: dict (default: None) - Variable mapping definitions to pass build time flags.
+* Returns: ToolResult holding configuration flag status, validation message, and dictionary configuration holding image identity hashes.
+* How to call: DockerTool.build_image(path="./app", tag="myapp:v1", dockerfile="prod.Dockerfile", build_args={"ENV": "production"})
+
+
+4. push_image:
+* Purpose: Publishes local images upwards to external storage centers.
+* Arguments:
+a) image: str - The source target string image mapping.
+b) registry: str (default: "") - Alternative hostname target identifier tracking private hosting endpoints.
+c) cred_key: str (default: "docker") - Internal identity credential flag key mapping reference.
+* Returns: ToolResult highlighting success, target push summary metadata logs, and verification fields.
+* How to call: DockerTool.push_image(image="myapp:v1", registry="myregistry.azurecr.io")
+
+
+5. pull_image:
+* Purpose: Downloads external source images from public/private container stores.
+* Arguments:
+a) image: str - Full path destination pattern to fetch down from registries.
+* Returns: ToolResult indicating operation completion metadata and dictionary containing image registry IDs.
+* How to call: DockerTool.pull_image(image="ubuntu:latest")
+
+
+6. tag_image:
+* Purpose: Rewrites mapping structures or assigns new tag definitions onto existing images.
+* Arguments:
+a) source: str - Initial tracking locator name.
+b) target: str - Expected full string repository and explicit version structure output definition.
+* Returns: ToolResult capturing operations confirmation.
+* How to call: DockerTool.tag_image(source="myapp:v1", target="myuser/myapp:latest")
+
+
+7. remove_image:
+* Purpose: Deletes cached image references from host environments.
+* Arguments:
+a) image: str - Identity string or locator reference name.
+b) force: bool (default: False) - Flag dictating whether to drop layers active on stopped items.
+* Returns: ToolResult with tracking notification confirmation updates.
+* How to call: DockerTool.remove_image(image="myapp:v1", force=True)
+
+
+8. list_images:
+* Purpose: Collects current stored local filesystem imagery layers.
+* Arguments:
+a) filter: str (default: None) - Repository pattern parameter tracking reference strings.
+* Returns: ToolResult displaying total item counts, alongside nested object dictionary arrays detailing id, tag references, and sizes in megabytes.
+* How to call: DockerTool.list_images(filter="nginx")
+
+
+9. run_container:
+* Purpose: Spins up brand new containers running execution profiles from standard image patterns.
+* Arguments:
+a) image: str - Base target template component.
+b) name: str (default: None) - String target to name the target runtime execution layer.
+b) ports: dict (default: None) - Mappings configuring inside/outside port interfaces (e.g., {"80/tcp": 8080}).
+c) volumes: dict (default: None) - Host filesystem or persistent volume mounting directories.
+d) env: dict (default: None) - Environment string configurations inject runtime logic.
+e) detach: bool (default: True) - Determines whether process flows run background tasks.
+f) command: str (default: None) - Override initialization sequence arguments.
+* Returns: ToolResult with success confirmation mapping output variables along short container identifiers.
+* How to call: DockerTool.run_container(image="redis:alpine", name="my-redis", ports={"6379/tcp": 6379})
+
+
+10. stop_container:
+* Purpose: Stops running instances safely using signal cycles.
+* Arguments:
+a) name: str - Target runtime application identifier.
+* Returns: ToolResult showing target system modification metrics.
+* How to call: DockerTool.stop_container(name="my-redis")
+
+
+11. start_container:
+* Purpose: Starts or resumes previously paused/stopped structures.
+* Arguments:
+a) name: str - Target specific workspace label.
+* Returns: ToolResult output tracking details.
+* How to call: DockerTool.start_container(name="my-redis")
+
+
+12. remove_container:
+* Purpose: Deletes container definition maps out of system engine stores.
+* Arguments:
+a) name: str - Target entity reference tracking tag.
+b) force: bool (default: False) - Erases target container processes even while active.
+* Returns: ToolResult verification strings.
+* How to call: DockerTool.remove_container(name="my-redis", force=True)
+
+
+13. exec_in_container:
+* Purpose: Triggers commands live into operational running container terminals.
+* Arguments:
+a) name: str - Running system target container component.
+b) command: str - Executable target commands (e.g., "ls -la").
+* Returns: ToolResult capturing binary text transformations or system runtime responses.
+* How to call: DockerTool.exec_in_container(name="web-app", command="python manage.py migrate")
+
+
+14. get_logs:
+* Purpose: Aggregates system stream data generated by runtime assets.
+* Arguments:
+a) name: str - Core container tracking reference string.
+b) tail: int (default: 100) - Number limit tracking log response lengths.
+c) follow: bool (default: False) - Flag requesting stream locks on execution paths.
+* Returns: ToolResult holding complete textual trace outputs.
+* How to call: DockerTool.get_logs(name="web-app", tail=50)
+
+
+15. list_containers:
+* Purpose: Audits host space to view running or stopped system containers.
+* Arguments:
+a) all: bool (default: False) - Pulls both actively working and dormant items.
+b) filter: str (default: None) - Target name substring filter match configuration flags.
+* Returns: ToolResult aggregating structural object information (id, name, status, image details).
+* How to call: DockerTool.list_containers(all=True, filter="web")
+
+
+16. inspect_container:
+* Purpose: Exposes fully detailed configuration JSON schemas regarding active operational assets.
+* Arguments:
+a) name: str - Unique target name tracking string variable identifiers.
+* Returns: ToolResult embedding raw container schema attribute metadata.
+* How to call: DockerTool.inspect_container(name="web-app")
+
+
+17. create_network:
+* Purpose: Configures customized virtual networks allowing interconnected container mappings.
+* Arguments:
+a) name: str - Designated networking identifier name.
+b) driver: str (default: "bridge") - Underlying virtual driver architecture (e.g., "bridge", "overlay").
+* Returns: ToolResult mapping data confirmations along string network tracking id keys.
+* How to call: DockerTool.create_network(name="app-tier", driver="bridge")
+
+
+18. list_networks:
+* Purpose: Summarizes host system network configurations.
+* Arguments: None.
+* Returns: ToolResult showcasing mapping dictionaries exposing id, name, and driver specifics.
+* How to call: DockerTool.list_networks()
+
+
+19. remove_network:
+* Purpose: Dismantles a network configuration layer from memory spaces.
+* Arguments:
+a) name: str - Specific name representing the network space.
+* Returns: ToolResult stating structural results.
+* How to call: DockerTool.remove_network(name="app-tier")
+
+
+20. create_volume:
+* Purpose: Provisions managed space on storage blocks for data persistence layer interactions.
+* Arguments:
+a) name: str - Target filesystem volume layout system name.
+* Returns: ToolResult declaring operational status along mapping details.
+* How to call: DockerTool.create_volume(name="db-data")
+
+
+21. list_volumes:
+* Purpose: Displays local volume maps initialized through engine components.
+* Arguments: None.
+* Returns: ToolResult embedding arrays detailing object maps containing name and driver structures.
+* How to call: DockerTool.list_volumes()
+
+
+22. remove_volume:
+* Purpose: Completely discards persistent volume objects from file trees.
+* Arguments:
+a) name: str - Targeted volume component signature.
+* Returns: ToolResult showing termination validation strings.
+* How to call: DockerTool.remove_volume(name="db-data")
+
+
+23. compose_up:
+* Purpose: Evaluates single compose files to establish, provision, and group interconnected containers.
+* Arguments:
+a) path: str - Workspace path addressing the `docker-compose.yml` structure directly.
+b) detach: bool (default: True) - Leaves target processes active within baseline system background tasks.
+c) services: list (default: None) - Optional item array filtering explicit targeted services to spin up.
+* Returns: ToolResult recording exit codes tracking CLI system process operations.
+* How to call: DockerTool.compose_up(path="./docker-compose.yml", services=["web", "db"])
+
+
+24. compose_down:
+* Purpose: Safely drops multi-container setups provisioning system cleanups.
+* Arguments:
+a) path: str - Complete configuration directory route pointing to the docker-compose source target.
+b) volumes: bool (default: False) - Declares whether associated data storage structures should be dropped instantly.
+* Returns: ToolResult verifying shell return tracking output definitions.
+* How to call: DockerTool.compose_down(path="./docker-compose.yml", volumes=True)
+
+
+25. compose_logs:
+* Purpose: Gathers consolidated textual logs generated through cluster architectures mapped in Compose.
+* Arguments:
+a) path: str - Storage direction address guiding engine towards tracking configurations.
+b) services: list (default: None) - Target explicit string collection tags filtering targeted tracking outputs.
+c) tail: int (default: 50) - Total baseline record lines returned back per process component.
+* Returns: ToolResult encapsulating aggregated multi-container application console logs.
+* How to call: DockerTool.compose_logs(path="./docker-compose.yml", services=["web"])
+
+
+26. compose_ps:
+* Purpose: Queries cluster composition matrix mappings to trace process loops.
+* Arguments:
+a) path: str - Location mapping to target configuration components.
+* Returns: ToolResult indicating health matrix mapping text reports.
+* How to call: DockerTool.compose_ps(path="./docker-compose.yml")
+
+
+27. login:
+* Purpose: Passes user authentication identities onto active network container registry hosts.
+* Arguments:
+a) registry: str - Destination target string mapping hosting platforms (e.g., registry.hub.docker.com).
+b) username: str - Account login string credential identifier.
+c) password: str - Private token secret phrase validation mapping.
+* Returns: ToolResult mapping tracking authentication responses.
+* How to call: DockerTool.login(registry="myregistry.azurecr.io", username="admin", password="password123")
+
+
+28. system_prune:
+* Purpose: Reclaims system volumes by purging cached objects, stopped layers, or dead system containers.
+* Arguments:
+a) all: bool (default: False) - Flag dictating whether unused images are scrubbed globally.
+b) volumes: bool (default: False) - Controls deletion logic regarding detached data volume spaces.
+* Returns: ToolResult indicating total space recovery metrics and CLI output traces.
+* How to call: DockerTool.system_prune(all=True, volumes=True)
+""")
 
     @staticmethod
     def _client():
@@ -1029,6 +1728,248 @@ class PackageManagerTool:
         "pip, npm, yarn, pnpm, cargo, go modules — install, uninstall, "
         "list, update, audit, build, publish"
     )
+    use = (
+            """
+Name of Tool:- PackageManagerTool
+
+Purpose of Tool:-
+The PackageManagerTool acts as a unified programmatic controller to manage dependency lifecycles across multiple language ecosystems, including Python (pip), JavaScript/TypeScript (npm, yarn), Rust (cargo), and Go (go modules).
+It provides standardized execution routes to handle installations, removals, dependency tree inspections, version lock auditing, test executions, binary packaging, and module distribution pipelines.
+All operations execute downstream system binaries securely using detached subprocess runners featuring customizable processing environments and runtime timeout safety guardrails.
+
+Methods:-
+
+* _run: Internal utility to dispatch command arrays cleanly into shell environments with configurable tracking timeouts.
+* pip_install: Downloads and integrates Python dependencies from PyPI or custom requirements manifests.
+* pip_uninstall: Triggers complete cleanup loops to purge explicitly named Python packages.
+* pip_list: Outputs a structured representation tracking every active Python environment dependency layer.
+* pip_show: Pulls granular metadata, diagnostic properties, and licensing paths related to single target packages.
+* pip_freeze: Generates production-ready dependencies listings outputting requirements string records.
+* npm_install: Provisions single or complex package matrices inside project roots or global system caches.
+* npm_uninstall: Discards Node modules tracking dependencies fields inside project manifests.
+* npm_run: Triggers pre-configured lifecycle automation scripts stored inside `package.json` registries.
+* npm_build: Runs generation build sequences to prepare production assets.
+* npm_publish: Pushes compiled artifacts directly out to external Node package registries.
+* npm_list: Visualizes project nested dependency structures via parsed object definitions.
+* npm_update: Evaluates semantic constraints to step localized package version rules forward.
+* npm_audit: Runs security vulnerability checks across dependencies trees to find risk vectors.
+* yarn_install: Triggers dependency resolutions relying on localized lock file validation profiles.
+* yarn_add: Modifies lock schemas to introduce targeted node modules inside Javascript environments.
+* yarn_remove: Excises target node modules cleanly along tracking reference paths.
+* cargo_build: Validates package source manifests to compile optimized binary layers via Rust compilers.
+* cargo_test: Orchestrates asynchronous testing harnesses to evaluate multi-tiered integration suites.
+* cargo_run: Executes compiled Rust workspace binaries passing extra structural argument controls.
+* go_build: Groups source files to construct native executable packages across specified paths.
+* go_test: Scans module components to evaluate verification code blocks inside Go projects.
+* go_get: Modifies module graphs to pull, cache, and hook remote Go software dependencies.
+
+How to use Tool Methods:-
+
+1. _run:
+* Purpose: Internal factory method managing target shell executions.
+* Arguments:
+a) args: list - Complete target programmatic execution positional breakdown array.
+b) cwd: str (default: None) - Working directory directory target context placement path.
+c) timeout: int (default: 180) - Processing lifespan seconds before triggering a kill loop.
+* Returns: Tuple containing process execution integer status code and raw unified console stream data.
+* How to call: PackageManagerTool._run(["pip", "--version"])
+
+
+2. pip_install:
+* Purpose: Directs Python environment dependency installation tracking.
+* Arguments:
+a) packages: list (default: None) - Array collecting targeted package identifiers.
+b) upgrade: bool (default: False) - Demands dependency version updates to the newest releases.
+c) user: bool (default: False) - Restricts installations to target isolated user directories.
+d) requirements_file: str (default: None) - Relies on file path pointers to run manifest installations.
+* Returns: ToolResult storing deployment success flags and trimmed runtime console string tracking records.
+* How to call: PackageManagerTool.pip_install(requirements_file="requirements.txt", upgrade=True)
+
+
+3. pip_uninstall:
+* Purpose: Eliminates specified packages from local Python runtimes.
+* Arguments:
+a) packages: list - Collection tracking targeted package descriptors.
+* Returns: ToolResult holding runtime state outcomes.
+* How to call: PackageManagerTool.pip_uninstall(packages=["requests", "flask"])
+
+
+4. pip_list:
+* Purpose: Inspects environment definitions to identify installed package profiles.
+* Arguments:
+a) outdated: bool (default: False) - Filters lists to present items with newer versions available on PyPI.
+* Returns: ToolResult enclosing deep structured arrays containing metadata mappings.
+* How to call: PackageManagerTool.pip_list(outdated=True)
+
+
+5. pip_show:
+* Purpose: Obtains diagnostic breakdowns tracking target python tools.
+* Arguments:
+a) package: str - Core targeted identifier label name.
+* Returns: ToolResult enclosing structural metadata details.
+* How to call: PackageManagerTool.pip_show(package="numpy")
+
+
+6. pip_freeze:
+* Purpose: Captures exact version snapshots across active package targets.
+* Arguments:
+a) output_file: str (default: None) - Target path file destination location mapping name.
+* Returns: ToolResult holding structural requirements textual records.
+* How to call: PackageManagerTool.pip_freeze(output_file="./requirements.txt")
+
+
+7. npm_install:
+* Purpose: Resolves JavaScript node modules requirements.
+* Arguments:
+a) path: str (default: ".") - Context path containing targeted configurations.
+b) packages: list (default: None) - Targeted software arrays to include.
+c) dev: bool (default: False) - Appends structures exclusively into `devDependencies` metadata trees.
+d) global_: bool (default: False) - Registers binaries into global machine storage runtimes.
+* Returns: ToolResult presenting structural operational logging output strings.
+* How to call: PackageManagerTool.npm_install(path="./frontend", packages=["axios"], dev=True)
+
+
+8. npm_uninstall:
+* Purpose: Sweeps JavaScript dependencies out of configuration files.
+* Arguments:
+a) path: str (default: ".") - Operating filesystem root directory map.
+b) packages: list (default: None) - Targeted package arrays to drop.
+c) global_: bool (default: False) - Instructs removal tools to clear system-wide binaries.
+* Returns: ToolResult monitoring tracking operations.
+* How to call: PackageManagerTool.npm_uninstall(path="./frontend", packages=["lodash"])
+
+
+9. npm_run:
+* Purpose: Dispatches custom programmatic script sequences from execution manifests.
+* Arguments:
+a) path: str - Target local root location.
+b) script: str - Mapping key targeting automated script setups (e.g., "start", "lint").
+* Returns: ToolResult tracking outcome validations.
+* How to call: PackageManagerTool.npm_run(path="./frontend", script="test")
+
+
+10. npm_build:
+* Purpose: Bundles node architectures to render optimized build layouts.
+* Arguments:
+a) path: str - Root location holding targeted build code contexts.
+* Returns: ToolResult displaying status summaries and execution tracking results.
+* How to call: PackageManagerTool.npm_build(path="./frontend")
+
+
+11. npm_publish:
+* Purpose: Deploys local components up to registry distribution pipelines.
+* Arguments:
+a) path: str - Project root workspace destination route.
+* Returns: ToolResult tracing registry transaction data logs.
+* How to call: PackageManagerTool.npm_publish(path="./my-lib")
+
+
+12. npm_list:
+* Purpose: Maps current dependency arrays into visual trees.
+* Arguments:
+a) path: str (default: ".") - Target validation root.
+b) depth: int (default: 0) - Constraint limit capping visibility tracking levels.
+* Returns: ToolResult formatting deep structured nested mapping configuration metrics.
+* How to call: PackageManagerTool.npm_list(path=".", depth=1)
+
+
+13. npm_update:
+* Purpose: Synchronizes local package trees with upstream updates based on manifest rules.
+* Arguments:
+a) path: str (default: ".") - Execution workspace folder location path.
+b) packages: list (default: None) - Optional array targeting narrow explicit package selections.
+* Returns: ToolResult validation results.
+* How to call: PackageManagerTool.npm_update(path="./server", packages=["express"])
+
+
+14. npm_audit:
+* Purpose: Diagnoses project states to check for security vulnerabilities.
+* Arguments:
+a) path: str (default: ".") - Root location matching target codebases.
+b) fix: bool (default: False) - Auto-remediates eligible package vulnerabilities.
+* Returns: ToolResult conveying structural scanning summaries.
+* How to call: PackageManagerTool.npm_audit(path=".", fix=True)
+
+
+15. yarn_install:
+* Purpose: Evaluates project definitions to settle code spaces utilizing alternative yarn layouts.
+* Arguments:
+a) path: str (default: ".") - Target working environment destination string.
+* Returns: ToolResult updating console logs tracking validation routines.
+* How to call: PackageManagerTool.yarn_install(path="./dashboard")
+
+
+16. yarn_add:
+* Purpose: Introduces new package items into Yarn execution graphs.
+* Arguments:
+a) path: str - Host project path folder directory target.
+b) packages: list - Unique module string items targeting integration routines.
+c) dev: bool (default: False) - Islocates dependency references inside development blocks.
+* Returns: ToolResult tracking execution status outcomes.
+* How to call: PackageManagerTool.yarn_add(path="./dashboard", packages=["typescript"], dev=True)
+
+
+17. yarn_remove:
+* Purpose: Purges specified targets from project boundaries using Yarn routines.
+* Arguments:
+a) path: str - Target workspace directory location.
+b) packages: list - Target tracking list details.
+* Returns: ToolResult detailing complete removal verification tracking info.
+* How to call: PackageManagerTool.yarn_remove(path="./dashboard", packages=["moment"])
+
+
+18. cargo_build:
+* Purpose: Directs Rust compiler toolchains to translate projects into compiled profiles.
+* Arguments:
+a) path: str - Location holding the target `Cargo.toml` manifest specification.
+b) release: bool (default: False) - Activates advanced compiler optimization rules for release binaries.
+* Returns: ToolResult outputting compilation logs.
+* How to call: PackageManagerTool.cargo_build(path="./rust-service", release=True)
+
+
+19. cargo_test:
+* Purpose: Excutes unit and integration checks built into Rust modules.
+* Arguments:
+a) path: str - Source tracking workspace destination path directory.
+* Returns: ToolResult outputting testing logging blocks and diagnostic outcomes.
+* How to call: PackageManagerTool.cargo_test(path="./rust-service")
+
+
+20. cargo_run:
+* Purpose: Compiles and immediately executes Rust binary products in one cycle.
+* Arguments:
+a) path: str - Path containing target Rust specifications.
+b) args_extra: list (default: None) - Command line options injected into the compiled app binary at launch.
+* Returns: ToolResult keeping track of terminal console events.
+* How to call: PackageManagerTool.cargo_run(path="./rust-service", args_extra=["--port", "8080"])
+
+
+21. go_build:
+* Purpose: Consolidates Go modules to produce system executable files.
+* Arguments:
+a) path: str - Target directory directory storing source scripts.
+b) output: str (default: None) - Custom file destination tracking build name settings.
+* Returns: ToolResult verifying standard output parameters.
+* How to call: PackageManagerTool.go_build(path="./go-api", output="server.bin")
+
+
+22. go_test:
+* Purpose: Initiates verification structures mapped into Go files.
+* Arguments:
+a) path: str - Working root path.
+b) verbose: bool (default: False) - Activates log verbose reporting formats showcasing all tested sub-components.
+* Returns: ToolResult encapsulating text tracking test evaluations.
+* How to call: PackageManagerTool.go_test(path="./go-api", verbose=True)
+
+
+23. go_get:
+* Purpose: Downlands and maps remote package references across target Go modules trees.
+* Arguments:
+a) path: str - Project area workspace destination.
+b) package: str - External web resource address mapping dependencies (e.g., "[github.com/gin-gonic/gin](https://github.com/gin-gonic/gin)").
+* Returns: ToolResult stating structural state updates.
+* How to call: PackageManagerTool.go_get(path="./go-api", package="[github.com/google/uuid](https://github.com/google/uuid)")
+""")
 
     @staticmethod
     def _run(args: list, cwd: str = None, timeout: int = 180) -> tuple:
@@ -1268,6 +2209,157 @@ class VSCodeTool:
         "VS Code automation: open files/folders, install/list extensions, "
         "apply settings, format, lint, create/open workspaces"
     )
+    use = (
+            """
+Name of Tool:- VSCodeTool
+
+Purpose of Tool:-
+The VSCodeTool provides an automated interface to manage and interact with Visual Studio Code.
+It supports opening files, directories, and customized multi-root workspaces; installing, uninstalling, and listing marketplace extensions; programmatically reading and applying user preferences within global configuration profiles (`settings.json`); spinning up automated workspace tasks; and interacting with VS Code's integrated terminal framework.
+Additionally, it provides programmatic hooks to execute code document formatting and linting actions (utilizing platform engines like ESLint or Pylint) based on workspace code patterns. All operations run directly via the official VS Code CLI binary (`code`) or direct system file platform operations.
+
+Methods:-
+
+* _code: Internal helper to dispatch system CLI operations down to the VS Code runtime shell.
+* _settings_path: Internal multi-platform utility to locate the target active user environment file system path for `settings.json`.
+* open_file: Instructs VS Code to launch an active editor layout buffer focused on a specific file path.
+* open_folder: Opens an entire project directory window context directly inside the editor instance.
+* install_extension: Downloads and configures market extensions using specified marketplace identifiers.
+* uninstall_extension: Removes explicit extension dependencies cleanly from the system registry cache.
+* list_extensions: Pulls and compiles an array listing of all active ecosystem extensions along with version identifiers.
+* run_task: Triggers pre-configured task definitions saved inside a workspace environment layer.
+* open_terminal: Fires automation events forcing VS Code to spawn a new instance of an integrated terminal.
+* apply_settings: Merges and commits custom structural configurations right into the target system user preferences file.
+* get_settings: Loads and decrypts active operational preferences mappings out of system profiles.
+* format_file: Forces specific active file buffers to process cosmetic code standard layout transformations.
+* lint_workspace: Analyzes current code context trees utilizing active lint tools like ESLint or Pylint.
+* create_workspace: Provisions structural multi-root mapping configurations outputting structured `.code-workspace` targets.
+* open_workspace: Launches unified development windows mapped strictly to structured workspace definitions.
+
+How to use Tool Methods:-
+
+1. _code:
+* Purpose: Internal tool utility wrapping subprocess executions focused on managing the `code` binary wrapper array.
+* Arguments:
+a) args: list - Positional configurations tracking command parameters dispatched downstream.
+* Returns: Tuple holding execution return integer codes and clean consolidated console response buffers.
+* How to call: VSCodeTool._code(["--version"])
+
+
+2. _settings_path:
+* Purpose: Core platform structural parser mapping target file location coordinates tracing configuration environments.
+* Arguments:
+a) scope: str (default: "user") - Target environmental configuration scope filter selector.
+* Returns: A strict Path object pointing straight to the operational target location mapping file.
+* How to call: VSCodeTool._settings_path(scope="user")
+
+
+3. open_file:
+* Purpose: Focuses editor workspaces directly down onto targeted files.
+* Arguments:
+a) path: str - Target filesystem location pointer addressing the specific file.
+* Returns: ToolResult holding platform execution confirmation details.
+* How to call: VSCodeTool.open_file(path="./src/main.py")
+
+
+4. open_folder:
+* Purpose: Directs an editor instance to register and load an entire working code repository tree directory.
+* Arguments:
+a) path: str - Directory folder path pointing to target workspace locations.
+* Returns: ToolResult capturing platform launch execution states.
+* How to call: VSCodeTool.open_folder(path="./projects/my-web-app")
+
+
+5. install_extension:
+* Purpose: Registers marketplace modules onto local editing suites.
+* Arguments:
+a) extension_id: str - Explicit publishing label registry indicator key (e.g., "ms-python.python").
+* Returns: ToolResult tracking server validation, completion messages, and process output logs.
+* How to call: VSCodeTool.install_extension(extension_id="dbaeumer.vscode-eslint")
+
+
+6. uninstall_extension:
+* Purpose: Cleans out extensions from local application profiles.
+* Arguments:
+a) extension_id: str - Target marker tag identifying marketplace code segments.
+* Returns: ToolResult conveying termination confirmation outcomes.
+* How to call: VSCodeTool.uninstall_extension(extension_id="ms-python.python")
+
+
+7. list_extensions:
+* Purpose: Collects diagnostic metadata profiling active platform extensions.
+* Arguments: None.
+* Returns: ToolResult providing a success flag along with an integrated array holding active extensions names and versions.
+* How to call: VSCodeTool.list_extensions()
+
+
+8. run_task:
+* Purpose: Directs local workspace configurations to trigger tasks registered within internal setups.
+* Arguments:
+a) task_name: str - Specific task identifier label reference target string.
+b) workspace: str - Target path folder pointing directly onto active project scopes.
+* Returns: ToolResult capturing structural execution validation confirmations.
+* How to call: VSCodeTool.run_task(task_name="build", workspace="./projects/my-web-app")
+
+
+9. open_terminal:
+* Purpose: Spawns clean operational platform terminal cells inside localized window views.
+* Arguments:
+a) workspace: str - Target destination coordinate mapping workspace paths.
+* Returns: ToolResult recording validation status states.
+* How to call: VSCodeTool.open_terminal(workspace="./projects/my-web-app")
+
+
+10. apply_settings:
+* Purpose: Injects and appends configurations right inside persistent active preference matrices.
+* Arguments:
+a) settings_dict: dict - Explicit parameter blocks detailing settings names and parameters (e.g., {"editor.fontSize": 14}).
+b) scope: str (default: "user") - Environmental profile system boundary marker identifier.
+* Returns: ToolResult stating structural state changes.
+* How to call: VSCodeTool.apply_settings(settings_dict={"editor.tabSize": 2, "workbench.colorTheme": "Abyss"})
+
+
+11. get_settings:
+* Purpose: Extracts stored user configurations out from underlying active environment profiles.
+* Arguments:
+a) scope: str (default: "user") - Targeted system settings profile layer selector.
+* Returns: ToolResult enclosing structural dictionaries reflecting mapped environment parameters.
+* How to call: VSCodeTool.get_settings(scope="user")
+
+
+12. format_file:
+* Purpose: Synchronizes structural code visual layers to match standard workspace layout style choices.
+* Arguments:
+a) path: str - Local file mapping coordinate location target pointing to a specific document.
+* Returns: ToolResult certifying process compliance outcomes.
+* How to call: VSCodeTool.format_file(path="./src/utils.js")
+
+
+13. lint_workspace:
+* Purpose: Scans code structure to flag errors using localized analysis rulesets.
+* Arguments:
+a) path: str - Target codebase root location mapping folder direction.
+* Returns: ToolResult mapping validation results and containing trimmed console stream diagnostic outputs.
+* How to call: VSCodeTool.lint_workspace(path="./src")
+
+
+14. create_workspace:
+* Purpose: Compiles a custom operational multi-root configuration manifest into a workspace file.
+* Arguments:
+a) path: str - Target path tracking destination locations outputting workspace files.
+b) folders: list - Explicit directory root tracking lists referencing mapped project component locations.
+c) settings: dict (default: None) - Context configuration overrides applied to the specific workspace scope.
+* Returns: ToolResult returning initialization parameters and dictionary logs mapping asset locations.
+* How to call: VSCodeTool.create_workspace(path="./dev.code-workspace", folders=["./api", "./frontend"], settings={"liveServer.settings.port": 5500})
+
+
+15. open_workspace:
+* Purpose: Restores operational views focused onto specific workspace layouts using configuration blueprints.
+* Arguments:
+a) path: str - Target destination string tracking specialized project configuration components.
+* Returns: ToolResult checking terminal return processes.
+* How to call: VSCodeTool.open_workspace(path="./dev.code-workspace")
+""")
 
     @staticmethod
     def _code(args: list) -> tuple:
@@ -1431,6 +2523,150 @@ class TerminalTool:
         "Advanced terminal/shell: run commands, scripts, env vars, aliases, "
         "process management, which/is_installed checks"
     )
+    use = (
+           """Name of Tool:- TerminalTool
+
+Purpose of Tool:- 
+The TerminalTool provides an advanced programmatic bridge to interface directly with host operating system shells and lower-level execution subsystems. 
+It supports standard detached command dispatches, real-time interactive stdout/stderr data streaming, and cross-platform script evaluations across Bash or PowerShell profiles. 
+Additionally, the tool houses deep system context auditing mechanics, letting users mutate runtime environment variables, apply cross-session structural aliases, locate system binary binaries (`which`), install dependencies using default native package managers (`winget`, `Homebrew`, `apt`), and explicitly supervise system process workflows (listing, identifying resources, or forcing terminate signals via `psutil`).
+
+Methods:-
+- run: Runs standard system commands inside an underlying shell environment with precise lifespan timeouts.
+- run_interactive: Streams out complex step-by-step console outputs from commands utilizing dedicated platform pipe routines.
+- run_script: Generates dynamic temporary automated script assets to assess multi-line program executions.
+- run_in_new_terminal: Launches explicit isolated external workspace windows to hold persistent process sessions.
+- set_env_var: Registers temporary memory structures or edits cross-session user hardware variables.
+- get_env_var: References current system dictionaries to extract active value indicators.
+- list_env_vars: Enumerates active variable string landscapes using optional pattern matches.
+- source_file: Dynamically parses static property text layouts to seamlessly register environments in the current process memory.
+- which: Runs filesystem mapping evaluations to point to exact executable location origins.
+- is_installed: Validates whether target framework commands exist and are instantly ready to process tasks.
+- install_via_package_manager: Leverages native system managers to configure missing structural binaries.
+- create_alias: Appends convenient short command lookup tags to reduce typing or save repetitive syntax sequences.
+- list_processes: Queries host kernels to track active runtime resource tables.
+- kill_process: Dispatches termination signals to stop specific process loops by name or ID references.
+- get_process_info: Extracts deep metrics tracking memory loads, timing signatures, and location profiles of specific processes.
+
+How to use Tool Methods:-
+
+1. run:
+   - Purpose: Dispatches commands downstream straight to active underlying shell runtimes.
+   - Arguments:
+     a) command: str - Raw string parameter outlining the targeted system execution syntax.
+     b) cwd: str (default: None) - Working directory workspace target location path.
+     c) timeout: int (default: 60) - Threshold window capping allowed execution run times.
+     d) env: dict (default: None) - Contextual environment variables injected alongside default environments.
+     e) shell: bool (default: True) - Evaluates string syntax utilizing the underlying platform command parser.
+     f) capture: bool (default: True) - Determines whether process console outputs are recorded or ignored.
+   - Returns: ToolResult holding success evaluation metrics and capturing standard output streams.
+   - How to call: TerminalTool.run(command="echo $USER", timeout=30, env={"DEBUG": "true"})
+
+2. run_interactive:
+   - Purpose: Captures continuous real-time output line streams from long-running command tasks.
+   - Arguments:
+     a) command: str - Structural command path strings destined for parsing.
+     b) cwd: str (default: None) - Directory destination controlling target execution spaces.
+   - Returns: ToolResult containing aggregated output lines collected prior to process finalization.
+   - How to call: TerminalTool.run_interactive(command="ping -c 4 google.com")
+
+3. run_script:
+   - Purpose: Evaluates multi-line runtime script sequences by wrapping content in automated temp files.
+   - Arguments:
+     a) script_content: str - Raw code strings representing target automated instructions.
+     b) shell: str (default: None) - Target interpreter mapping settings override (e.g., "bash", "powershell").
+     c) cwd: str (default: None) - Filesystem reference directory path guiding script runtime environments.
+   - Returns: ToolResult summarizing outcome statuses and returning compiled log entries.
+   - How to call: TerminalTool.run_script(script_content="echo 'Start Execution'\nls -la\necho 'Done'", shell="bash")
+
+4. run_in_new_terminal:
+   - Purpose: Spawns completely separate user workspace terminal windows to run decoupled background sessions.
+   - Arguments:
+     a) command: str - Target execution statements thrown inside newly opened environment layouts.
+   - Returns: ToolResult verifying external workspace shell request initialization metrics.
+   - How to call: TerminalTool.run_in_new_terminal(command="python -m http.server 8080")
+
+5. set_env_var:
+   - Purpose: Modifies environment state dictionaries in active workspaces or persistent machine profiles.
+   - Arguments:
+     a) key: str - Tracking identifier variable label name.
+     b) value: str - Value payload assigned to the target variable pointer.
+     c) persistent: bool (default: False) - Appends variables permanently inside OS initialization profiles (e.g., `.bashrc`, Registry).
+     d) scope: str (default: "user") - Delimits profile boundaries for environment integration steps.
+   - Returns: ToolResult mapping variable modification state records.
+   - How to call: TerminalTool.set_env_var(key="API_KEY", value="secret_token_abc123", persistent=True)
+
+6. get_env_var:
+   - Purpose: Retreives specific values stored behind designated environment pointer tags.
+   - Arguments:
+     a) key: str - Target variable identifier key label name.
+   - Returns: ToolResult holding string values matching system lookup parameters.
+   - How to call: TerminalTool.get_env_var(key="PATH")
+
+7. list_env_vars:
+   - Purpose: Compiles a dictionary mapping out active variables on the host environment.
+   - Arguments:
+     a) filter: str (default: None) - Substring matching criteria to narrow results down to specific key groups.
+   - Returns: ToolResult encapsulating structured dictionaries mapping environment metrics.
+   - How to call: TerminalTool.list_env_vars(filter="XDG")
+
+8. source_file:
+   - Purpose: Reads static resource documents to inject explicit configuration lists into immediate runtime scopes.
+   - Arguments:
+     a) path: str - Location route to target environment setting file definitions.
+   - Returns: ToolResult capturing loaded parameter entries and validation outcomes.
+   - How to call: TerminalTool.source_file(path="./config/.env")
+
+9. which:
+   - Purpose: Pinpoints exact directory locations hosting specific target tools.
+   - Arguments:
+     a) command: str - Binary lookup tag parameter destined for tracking queries.
+   - Returns: ToolResult providing path strings mapping location findings.
+   - How to call: TerminalTool.which(command="git")
+
+10. is_installed:
+    - Purpose: Verifies tool configuration conditions prior to attempting process executions.
+    - Arguments:
+      a) command: str - Key search criteria referencing the target software package.
+    - Returns: ToolResult embedding boolean statuses reflecting binary availability.
+    - How to call: TerminalTool.is_installed(command="docker")
+
+11. install_via_package_manager:
+    - Purpose: Automatically sets up dependencies using available host management systems.
+    - Arguments:
+      a) package: str - Name identifier matching requested remote package repository definitions.
+    - Returns: ToolResult recording terminal logs outputted during installer transactions.
+    - How to call: TerminalTool.install_via_package_manager(package="htop")
+
+12. create_alias:
+    - Purpose: Configures macro short-keys to quickly invoke longer command phrases.
+    - Arguments:
+      a) name: str - Target short token mapped into environment profiles.
+      b) command: str - Full command string context bound to the short token alias.
+      c) persistent: bool (default: False) - Appends configurations inside shell profiles to keep them active across reboots.
+    - Returns: ToolResult tracking registration states.
+    - How to call: TerminalTool.create_alias(name="ll", command="ls -la --color=auto", persistent=True)
+
+13. list_processes:
+    - Purpose: Captures runtime snapshots detailing system resource usage.
+    - Arguments:
+      a) filter: str (default: None) - Substring keyword checks to filter items matching target names.
+    - Returns: ToolResult framing arrays packed with object stats tracking ID, Name, Status, and RAM usage.
+    - How to call: TerminalTool.list_processes(filter="node")
+
+14. kill_process:
+    - Purpose: Stops system processes to reclaim hardware resources or kill non-responsive assets.
+    - Arguments:
+      a) pid_or_name: str - Numeric ID numbers or matching string name signatures of targeted processes.
+    - Returns: ToolResult listing array integers mapping terminated elements.
+    - How to call: TerminalTool.kill_process(pid_or_name="8392")
+
+15. get_process_info:
+    - Purpose: Inspects specific tasks to extract performance details.
+    - Arguments:
+      a) pid: int - Unique process tracking id number constraint parameter.
+    - Returns: ToolResult enclosing data objects mapping paths, status, execution code histories, and CPU loads.
+    - How to call: TerminalTool.get_process_info(pid=1024)""")
 
     @staticmethod
     def run(command: str, cwd: str = None, timeout: int = 60,
@@ -1676,7 +2912,56 @@ class TerminalTool:
 class MakefileTool:
     name = "makefile"
     description = "Makefile build system: run targets, list targets, create and edit Makefiles"
+    use = (
+            """Name of Tool:- MakefileTool
 
+Purpose of Tool:- 
+The MakefileTool serves as an automated programmatic management system built to interact with the GNU Make build automation infrastructure. 
+It facilitates parsing existing build assets, dynamically structuring or appending compilation graphs (including auto-managing `.PHONY` macro headers), identifying actionable instruction pipelines inside source code blocks via Regular Expressions, and securely executing targeted build steps inside isolated subprocess shells with absolute context tracking, runtime timeout constraints, and merged system environments.
+
+Methods:-
+- run_target: Executes a specific build ruleset using system `make` wrappers against a target workspace directory.
+- list_targets: Parses static Makefile layouts with pattern evaluation to harvest valid execution targets.
+- create_makefile: Constructs entirely new, valid build files utilizing dictionary schemas defining rule sets, scripts, and pre-requisites.
+- add_target: Modifies existing build configurations by appending fresh instructions and updating global macro namespaces.
+
+How to use Tool Methods:-
+
+1. run_target:
+   - Purpose: Directs local shell tasks to run individual recipe chains configured inside an available template configuration file.
+   - Arguments:
+     a) makefile_path: str - Specific path pointing straight to the core configuration asset.
+     b) target: str (default: "all") - Explicit rule label designated for activation.
+     c) args: list (default: None) - Additional modifier configuration flags appended into standard executions.
+     d) env: dict (default: None) - Runtime property maps merged alongside system setups.
+   - Returns: ToolResult holding deployment status evaluations and reporting final output log structures.
+   - How to call: MakefileTool.run_target(makefile_path="./src/Makefile", target="build", args=["--silent"])
+
+2. list_targets:
+   - Purpose: Scans build asset structural layouts to identify functional pipeline triggers.
+   - Arguments:
+     a) makefile_path: str - Local filesystem path where the target rule specification document resides.
+   - Returns: ToolResult providing an execution boolean confirmation alongside a verified collection of target keys.
+   - How to call: MakefileTool.list_targets(makefile_path="./Makefile")
+
+3. create_makefile:
+   - Purpose: Generates raw blueprint documentation formatted with appropriate tab spacing delimiters.
+   - Arguments:
+     a) path: str - Target coordinate where the processed compilation script is created.
+     b) targets_dict: dict - Deep nested map structures tracking definitions (e.g., `{"test": {"deps": ["clean"], "commands": ["pytest"]}}`).
+   - Returns: ToolResult storing validation success flags and outputting generated plaintext text code matrices.
+   - How to call: MakefileTool.create_makefile(path="./Makefile", targets_dict={"clean": {"commands": ["rm -rf build/"]}, "all": {"deps": ["clean"], "commands": ["echo done"]}})
+
+4. add_target:
+   - Purpose: Appends customized step blocks straight onto modern existing workflow frameworks.
+   - Arguments:
+     a) makefile_path: str - Destination tracking coordinates locating files to edit.
+     b) name: str - Identifier token mapped to identify the incoming execution recipe rule block.
+     b) deps: list (default: None) - Array listing requirements items needed prior to activating targeted recipes.
+     c) commands: list (default: None) - Execution tasks to track and process inside targeted configurations.
+   - Returns: ToolResult confirming rule changes and output validation states.
+   - How to call: MakefileTool.add_target(makefile_path="./Makefile", name="deploy", deps=["build"], commands=["docker push image:latest"])""")
+    
     @staticmethod
     def run_target(makefile_path: str, target: str = "all",
                    args: list = None, env: dict = None) -> ToolResult:
@@ -1749,7 +3034,66 @@ class MakefileTool:
 class CMakeTool:
     name = "cmake"
     description = "CMake build system: configure, build, install, clean, ctest"
+    use = (
+            """Name of Tool:- CMakeTool
 
+Purpose of Tool:- 
+The CMakeTool acts as a standardized programmatic controller for the cross-platform CMake meta-build generation ecosystem. 
+It automates project setup loops, multi-threaded workspace builds, cross-compilation configurations, deployment targets, artifact cleanups, and CTest regression check suites. 
+Instead of interacting with localized, platform-specific build systems directly, this tool abstracts system generation behaviors inside managed subprocess environments, allowing uniform automation across Windows, macOS, and Linux runtimes with precise timeout parameters.
+
+Methods:-
+- configure: Scans project source structures to generate build layouts and project variables inside a chosen output workspace folder.
+- build: Translates configured source matrices into native binaries or library targets using downstream system compilers.
+- install: Deploys compiled project artifacts out to system layout prefixes or customized location trees.
+- clean: Purges compiled intermediate files, object graphs, and caching assets inside target workspaces to force clean builds.
+- run_ctest: Orchestrates CTest test suites to parse and evaluate functional code validations across build configurations.
+
+How to use Tool Methods:-
+
+1. configure:
+   - Purpose: Initalizes structural build configurations using chosen toolchains and definitions.
+   - Arguments:
+     a) source_dir: str - File directory location containing the project's root `CMakeLists.txt` file.
+     b) build_dir: str - Target workspace folder destination created to store configuration files and binary footprints.
+     c) generator: str (default: None) - Directs CMake to structure files targeting specific toolchains (e.g., "Ninja", "Unix Makefiles").
+     d) defines: dict (default: None) - Variable mapping parameters passed downstream as compile flags (e.g., `{"CMAKE_BUILD_TYPE": "Release"}`).
+   - Returns: ToolResult holding configuration outcome evaluations and presenting structural error or confirmation log streams.
+   - How to call: CMakeTool.configure(source_dir="./src", build_dir="./build", generator="Ninja", defines={"BUILD_SHARED_LIBS": "ON"})
+
+2. build:
+   - Purpose: Directs local toolchains to process source file translations based on generated configuration plans.
+   - Arguments:
+     a) build_dir: str - Directory target area holding configured active project blueprints.
+     b) target: str (default: None) - Instructs compilers to isolate build focus straight to individual project binaries.
+     c) jobs: int (default: None) - Capping limit defining concurrent thread processes allocated for compiling code.
+   - Returns: ToolResult storing build compliance indicators and returning compiled log entries.
+   - How to call: CMakeTool.build(build_dir="./build", target="my_executable", jobs=4)
+
+3. install:
+   - Purpose: Dispatches compiled binaries, runtime libraries, and system header assets directly to localized installation targets.
+   - Arguments:
+     a) build_dir: str - Root repository workspace directory where assets were built.
+     b) prefix: str (default: None) - Targeted system installation path mapping destination directory context names (e.g., `/usr/local`).
+   - Returns: ToolResult verifying transaction finalization output traces.
+   - How to call: CMakeTool.install(build_dir="./build", prefix="./dist")
+
+4. clean:
+   - Purpose: Sweeps intermediate build outputs, temporary caches, and compiled binary layouts out from targets.
+   - Arguments:
+     a) build_dir: str - Target directory path context housing active operational setups.
+   - Returns: ToolResult mapping data purge process evaluations.
+   - How to call: CMakeTool.clean(build_dir="./build")
+
+5. run_ctest:
+   - Purpose: Drives built-in regression testing tools across configured workspaces.
+   - Arguments:
+     a) build_dir: str - Directory destination hosting completed code components and evaluation targets.
+     b) verbose: bool (default: False) - Demands extensive verbose console readouts tracing sub-component details.
+   - Returns: ToolResult mapping testing performance results and full outcome log arrays.
+   - How to call: CMakeTool.run_ctest(build_dir="./build", verbose=True)
+   """)
+        
     @staticmethod
     def configure(source_dir: str, build_dir: str,
                   generator: str = None, defines: dict = None) -> ToolResult:
@@ -1825,6 +3169,69 @@ class DebuggerTool:
         "Debugging utilities: run with pdb, analyze tracebacks, profile scripts, "
         "memory profiling, find deadlocks, strace"
     )
+    use = (
+            """Name of Tool:- DebuggerTool
+
+Purpose of Tool:- 
+The DebuggerTool serves as an automated analysis and inspection suite built to isolate errors, analyze performance bottlenecks, and monitor process states across localized scripts and running operating system applications. 
+It supports automated execution step-throughs using Python's Debugger (`pdb`), regular expression parsing of error tracebacks, resource execution profiling (`cProfile`, `pstats`), inline memory consumption audits, low-level Linux kernel syscall telemetry (`strace`), and multi-threaded deadlock telemetry analysis via system resource lookup engines (`psutil`).
+
+Methods:-
+- run_python_with_pdb: Dispatches Python targets down through the default interactive debugger to record initial call stacks.
+- analyze_traceback: Parses crash traces with structural regex engines to extract exception details and locate the root-cause file frame.
+- profile_script: Executes execution timing audits to find performance bottlenecks, ranking the top slow functions by cumulative time.
+- memory_profile: Monitors active application memory allocations line-by-line using localized structural profilers.
+- find_deadlocks: Scans thread tables and tracking variables to flag stuck parallel process loops.
+- strace_process: Traps lower-level system-wide kernel function dispatches on Linux environments for active process diagnostics.
+
+How to use Tool Methods:-
+
+1. run_python_with_pdb:
+   - Purpose: Validates execution loops through the `pdb` module to record process output metrics.
+   - Arguments:
+     a) script: str - Target filesystem location pointing to the script file.
+     b) args: list (default: None) - Contextual execution parameter modifiers passed into the running script.
+   - Returns: ToolResult holding execution log buffers and structural outcome details.
+   - How to call: DebuggerTool.run_python_with_pdb(script="./src/app.py", args=["--verbose"])
+
+2. analyze_traceback:
+   - Purpose: Extracts actionable bug insights out of raw, multiline system traceback strings.
+   - Arguments:
+     a) traceback_text: str - The raw multi-line error log payload copied out from a process crash.
+   - Returns: ToolResult presenting a structured dictionary tracking error classifications, full frame arrays, and location coordinates.
+   - How to call: DebuggerTool.analyze_traceback(traceback_text="Traceback (most recent call last):\n  File \"main.py\", line 5, in <module>\n    1/0\nZeroDivisionError: division by zero")
+
+3. profile_script:
+   - Purpose: pinpoints performance bottlenecks inside applications.
+   - Arguments:
+     a) script: str - Target codebase script file location path.
+     b) output: str (default: None) - An optional filesystem location to save the compiled binary stats file (`.prof`).
+   - Returns: ToolResult delivering a clean table breaking down the top 20 functions sorted by cumulative resource runtime.
+   - How to call: DebuggerTool.profile_script(script="./src/compute.py", output="./logs/perf.prof")
+
+4. memory_profile:
+   - Purpose: Monitors script memory allocations to flag memory leaks or high hardware overheads.
+   - Arguments:
+     a) script: str - Target python script file destined for structural memory inspection.
+   - Returns: ToolResult containing line-by-line RAM growth evaluations.
+   - How to call: DebuggerTool.memory_profile(script="./src/data_processor.py")
+
+5. find_deadlocks:
+   - Purpose: Evaluates system thread structures to locate processes frozen waiting for resource locks.
+   - Arguments:
+     a) pid: int - Unique system process tracking identifier reference number.
+   - Returns: ToolResult documenting process connection loads and specifying numbers of stuck thread components.
+   - How to call: DebuggerTool.find_deadlocks(pid=4512)
+
+6. strace_process:
+   - Purpose: Tracks background system calls, file descriptors, and kernel signals handled by an active Linux process.
+   - Arguments:
+     a) pid: int - Target system operational identifier reference.
+     b) output: str (default: None) - Target location destination to write out compiled log arrays.
+     c) duration: int (default: 10) - Timeout monitoring interval window quantified in seconds.
+   - Returns: ToolResult outlining syscall summaries and returning recorded stream operations.
+   - How to call: DebuggerTool.strace_process(pid=1024, duration=5)
+   """)
 
     @staticmethod
     def run_python_with_pdb(script: str, args: list = None) -> ToolResult:
