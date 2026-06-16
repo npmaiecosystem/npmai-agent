@@ -1353,7 +1353,193 @@ How to use Tool Methods:-
 class CloudflareTool:
     name = "cloudflare"
     description = "Full Cloudflare management: DNS, cache, Workers, KV, firewall, analytics"
+    use = (
+        """
+Name of Tool:- CloudflareTool,
 
+Purpose of Tool:- 
+The CloudflareTool provides a comprehensive interface to the Cloudflare API (v4) for managing DNS records, zones, cache purging, Cloudflare Workers, KV storage, firewall rules, and analytics. 
+It supports both API Token and API Key + Email authentication methods via CredStore. 
+This tool enables full automation of DNS management, edge caching control, serverless Workers deployment and routing, key-value storage, security rules, and performance analytics. 
+It is ideal for domain management, CDN optimization, serverless application deployment, security hardening, and agentic cloud operations on the Cloudflare platform.
+
+Methods:-
+- _headers: Internal helper to generate authentication headers.
+- _get: Internal helper for GET requests to Cloudflare API.
+- _post: Internal helper for POST requests.
+- _put: Internal helper for PUT requests.
+- _delete: Internal helper for DELETE requests.
+- list_zones: Lists all zones (domains) in the account.
+- get_zone: Retrieves details for a specific zone by name.
+- create_dns_record: Creates a new DNS record (A, CNAME, TXT, etc.).
+- update_dns_record: Updates an existing DNS record.
+- delete_dns_record: Deletes a DNS record.
+- list_dns_records: Lists DNS records with optional filtering.
+- purge_cache: Purges CDN cache for specific files or entire zone.
+- get_analytics: Retrieves zone analytics and traffic statistics.
+- create_worker: Creates or updates a Cloudflare Worker script.
+- update_worker: Alias for create_worker (updates existing worker).
+- delete_worker: Deletes a Cloudflare Worker.
+- list_workers: Lists all Workers in the account.
+- set_worker_route: Maps a URL pattern/route to a Worker.
+- create_kv_namespace: Creates a new KV (Key-Value) namespace.
+- write_kv: Writes or updates a key-value pair in a KV namespace.
+- read_kv: Reads the value for a specific key.
+- delete_kv: Deletes a key from a KV namespace.
+- list_kv: Lists all keys in a KV namespace.
+- get_firewall_rules: Retrieves existing firewall rules for a zone.
+- create_firewall_rule: Creates a new firewall rule using filter expressions.
+
+How to use Tool Methods:-
+
+1. _headers (Internal Authentication Helper):
+   - Purpose: Constructs the correct authentication headers based on credentials stored in CredStore (supports both API Token and legacy API Key + Email).
+   - Arguments: cred_key: str (default: "cloudflare")
+   - Credential options in CredStore: 
+     - Preferred: {"api_token": "your-global-api-token"}
+     - Alternative: {"email": "user@example.com", "api_key": "your-api-key", "account_id": "..."}
+
+2. _get / _post / _put / _delete (Internal HTTP Helpers):
+   - Purpose: Perform authenticated HTTP requests to Cloudflare API endpoints.
+   - These are internal methods used by all public methods. You generally do not call them directly.
+
+3. list_zones:
+   - Purpose: Lists all domains/zones associated with the authenticated account.
+   - Arguments: cred_key: str (default: "cloudflare")
+   - Returns: List of zones with id, name, and status.
+   - How to call: CloudflareTool.list_zones()
+
+4. get_zone:
+   - Purpose: Retrieves detailed information about a specific zone by domain name.
+   - Arguments:
+     a) zone_name: str - Domain name (e.g., "example.com")
+     b) cred_key: str (default: "cloudflare")
+   - Returns: Zone ID, name, status, and name servers.
+   - How to call: CloudflareTool.get_zone(zone_name="example.com")
+
+5. create_dns_record:
+   - Purpose: Creates a new DNS record in a zone (A, AAAA, CNAME, TXT, MX, etc.).
+   - Arguments:
+     a) zone: str - Domain name.
+     b) type: str - Record type (A, CNAME, TXT, etc.).
+     c) name: str - Record name (e.g., "@", "www", "sub").
+     d) content: str - Record value (IP, target, text, etc.).
+     e) ttl: int (default: 1) - Time to live (1 = automatic).
+     f) proxied: bool (default: True) - Enable Cloudflare proxy (orange cloud).
+     g) cred_key.
+   - How to call: CloudflareTool.create_dns_record(zone="example.com", type="A", name="www", content="192.0.2.1", proxied=True)
+
+6. update_dns_record:
+   - Purpose: Updates an existing DNS record.
+   - Arguments: zone, record_id, type, name, content, proxied, cred_key.
+   - How to call: CloudflareTool.update_dns_record(zone="example.com", record_id="record-id", type="CNAME", name="www", content="target.example.com")
+
+7. delete_dns_record:
+   - Purpose: Deletes a specific DNS record.
+   - Arguments: zone, record_id, cred_key.
+   - How to call: CloudflareTool.delete_dns_record(zone="example.com", record_id="record-id")
+
+8. list_dns_records:
+   - Purpose: Lists all DNS records for a zone with optional type and name filters.
+   - Arguments:
+     a) zone: str
+     b) type: str (default: "") - Filter by record type.
+     c) name: str (default: "") - Filter by record name.
+     d) cred_key.
+   - Returns: List of records with id, type, name, content, proxied status.
+   - How to call: CloudflareTool.list_dns_records(zone="example.com", type="A")
+
+9. purge_cache:
+   - Purpose: Purges Cloudflare CDN cache for specific files or the entire zone.
+   - Arguments:
+     a) zone: str
+     b) files: list (default: None) - List of URLs to purge.
+     c) everything: bool (default: False) - Purge entire cache.
+     d) cred_key.
+   - How to call: CloudflareTool.purge_cache(zone="example.com", everything=True) or with specific files.
+
+10. get_analytics:
+    - Purpose: Retrieves traffic analytics and statistics for a zone.
+    - Arguments:
+      a) zone: str
+      b) since: str (default: "-10080") - Minutes ago or timestamp.
+      c) until: str (default: "0")
+      d) cred_key.
+    - How to call: CloudflareTool.get_analytics(zone="example.com")
+
+11. create_worker:
+    - Purpose: Creates or updates a Cloudflare Worker script (JavaScript).
+    - Arguments:
+      a) name: str - Worker name.
+      b) script: str - Full JavaScript source code.
+      c) cred_key (must contain account_id).
+    - How to call: CloudflareTool.create_worker(name="my-worker", script="addEventListener('fetch', ...);")
+
+12. update_worker:
+    - Purpose: Updates an existing Worker (alias for create_worker).
+    - Same arguments as create_worker.
+
+13. delete_worker:
+    - Purpose: Deletes a Cloudflare Worker.
+    - Arguments: name, cred_key (requires account_id).
+    - How to call: CloudflareTool.delete_worker(name="my-worker")
+
+14. list_workers:
+    - Purpose: Lists all Workers in the account.
+    - Arguments: cred_key (requires account_id).
+    - How to call: CloudflareTool.list_workers()
+
+15. set_worker_route:
+    - Purpose: Routes traffic matching a URL pattern to a specific Worker.
+    - Arguments:
+      a) zone: str
+      b) pattern: str - URL pattern (e.g., "example.com/*").
+      c) worker: str - Worker name.
+      d) cred_key.
+    - How to call: CloudflareTool.set_worker_route(zone="example.com", pattern="api.example.com/*", worker="my-api-worker")
+
+16. create_kv_namespace:
+    - Purpose: Creates a new Key-Value (KV) storage namespace.
+    - Arguments: title: str, cred_key (requires account_id).
+    - Returns: Namespace ID.
+    - How to call: CloudflareTool.create_kv_namespace(title="my-config-store")
+
+17. write_kv:
+    - Purpose: Writes or overwrites a value for a key in a KV namespace.
+    - Arguments: namespace_id, key, value (string), cred_key.
+    - How to call: CloudflareTool.write_kv(namespace_id="ns-id", key="config", value='{"key": "value"}')
+
+18. read_kv:
+    - Purpose: Retrieves the value for a specific key.
+    - Arguments: namespace_id, key, cred_key.
+    - Returns: The stored value as string.
+    - How to call: CloudflareTool.read_kv(namespace_id="ns-id", key="config")
+
+19. delete_kv:
+    - Purpose: Deletes a key from a KV namespace.
+    - Arguments: namespace_id, key, cred_key.
+    - How to call: CloudflareTool.delete_kv(namespace_id="ns-id", key="old-key")
+
+20. list_kv:
+    - Purpose: Lists all keys in a KV namespace (up to 100).
+    - Arguments: namespace_id, cred_key.
+    - How to call: CloudflareTool.list_kv(namespace_id="ns-id")
+
+21. get_firewall_rules:
+    - Purpose: Lists existing firewall rules for a zone.
+    - Arguments: zone, cred_key.
+    - How to call: CloudflareTool.get_firewall_rules(zone="example.com")
+
+22. create_firewall_rule:
+    - Purpose: Creates a new firewall rule using WAF filter expressions.
+    - Arguments:
+      a) zone: str
+      b) expression: str - Filter expression (e.g., "(http.request.uri.path eq \"/admin\")").
+      c) action: str (default: "block") - block, challenge, allow, etc.
+      d) cred_key.
+    - How to call: CloudflareTool.create_firewall_rule(zone="example.com", expression="(ip.src eq 1.2.3.4)", action="block")
+""")
+    
     CF_BASE = "https://api.cloudflare.com/client/v4"
 
     @staticmethod
@@ -1762,7 +1948,151 @@ class CloudflareTool:
 class VercelTool:
     name = "vercel"
     description = "Vercel deployment: deploy projects, manage domains, env vars, rollback"
+    use = (
+        """
+Name of Tool:- VercelTool,
 
+Purpose of Tool:- 
+The VercelTool provides a full-featured interface to the Vercel platform for deploying frontend and serverless applications, managing projects, deployments, domains, environment variables, and rollbacks. 
+It supports both CLI-based deployment (for local project directories with full build context) and direct REST API calls for project management, listing deployments, logs, domain configuration, and environment variables. 
+Authentication is done via a Vercel API token stored in CredStore. 
+This tool is ideal for automated CI/CD pipelines, preview deployments, production releases, domain management, and agentic frontend/serverless deployment workflows.
+
+Methods:-
+- _headers: Internal helper to generate authentication headers.
+- _get: Internal helper for GET requests to Vercel API.
+- _post: Internal helper for POST requests.
+- _delete: Internal helper for DELETE requests.
+- deploy: Deploys a local project using the Vercel CLI.
+- list_deployments: Lists recent deployments.
+- get_deployment: Retrieves details of a specific deployment.
+- delete_deployment: Deletes a specific deployment.
+- list_projects: Lists all projects in the account.
+- create_project: Creates a new project.
+- delete_project: Deletes a project.
+- set_env_var: Sets or updates an environment variable.
+- list_env_vars: Lists environment variables for a project.
+- get_deployment_logs: Retrieves build and runtime logs for a deployment.
+- rollback: Rolls back a project to a previous deployment.
+- add_domain: Adds a custom domain to a project.
+- list_domains: Lists domains associated with a project.
+
+How to use Tool Methods:-
+
+1. _headers (Internal Authentication Helper):
+   - Purpose: Constructs the Bearer token authorization header required by Vercel API.
+   - Arguments: cred_key: str (default: "vercel")
+   - Credential requirement: CredStore must contain {'token': 'your-vercel-api-token'}.
+   - Note: Internal method. Do not call directly.
+
+2. _get / _post / _delete (Internal HTTP Helpers):
+   - Purpose: Perform authenticated HTTP requests to the Vercel REST API.
+   - These are internal methods used by most API-based operations. You generally do not call them directly.
+
+3. deploy:
+   - Purpose: Deploys a local project directory using the official Vercel CLI. This is the most complete method as it handles build, environment, and full Vercel features.
+   - Arguments:
+     a) project_path: str - Local directory path containing the project (must have vercel.json or supported framework files).
+     b) project_name: str (default: "") - Custom project name.
+     c) env: dict (default: None) - Environment variables to inject during deployment.
+     d) prod: bool (default: False) - Deploy directly to production (instead of preview).
+     e) cred_key: str (default: "vercel").
+   - Returns: Deployment URL and full CLI output.
+   - How to call: 
+     VercelTool.deploy(
+         project_path="./my-nextjs-app",
+         project_name="my-awesome-site",
+         env={"API_KEY": "secret123", "NODE_ENV": "production"},
+         prod=True
+     )
+
+4. list_deployments:
+   - Purpose: Lists recent deployments (up to 20) for the account or a specific project.
+   - Arguments:
+     a) project: str (default: "") - Project ID to filter by.
+     b) cred_key: str (default: "vercel").
+   - Returns: List of deployments with uid, url, state, created time, etc.
+   - How to call: VercelTool.list_deployments(project="prj_abc123")
+
+5. get_deployment:
+   - Purpose: Gets detailed information about a specific deployment.
+   - Arguments:
+     a) deployment_id: str - Deployment UID.
+     b) cred_key: str (default: "vercel").
+   - Returns: Deployment metadata including URL, state, timestamps.
+   - How to call: VercelTool.get_deployment(deployment_id="dpl_abc123")
+
+6. delete_deployment:
+   - Purpose: Permanently deletes a deployment.
+   - Arguments: deployment_id, cred_key.
+   - How to call: VercelTool.delete_deployment(deployment_id="dpl_abc123")
+
+7. list_projects:
+   - Purpose: Lists all projects in the Vercel account.
+   - Arguments: cred_key.
+   - Returns: List of projects with id, name, framework, updated time.
+   - How to call: VercelTool.list_projects()
+
+8. create_project:
+   - Purpose: Creates a new Vercel project (optionally linked to a Git repository).
+   - Arguments:
+     a) name: str - Project name.
+     b) git_repo: str (default: "") - GitHub repository in "owner/repo" format.
+     c) framework: str (default: "") - Framework preset (e.g., "nextjs", "vite").
+     d) cred_key.
+   - Returns: Project ID and name.
+   - How to call: VercelTool.create_project(name="my-new-app", git_repo="username/my-repo", framework="nextjs")
+
+9. delete_project:
+   - Purpose: Deletes a project and all its deployments.
+   - Arguments: project_id, cred_key.
+   - How to call: VercelTool.delete_project(project_id="prj_abc123")
+
+10. set_env_var:
+    - Purpose: Creates or updates an environment variable for a project across specified environments.
+    - Arguments:
+      a) project_id: str
+      b) key: str - Variable name.
+      c) value: str - Variable value.
+      d) targets: list (default: ["production", "preview", "development"]).
+      e) cred_key.
+    - How to call: VercelTool.set_env_var(project_id="prj_abc123", key="API_URL", value="https://api.example.com", targets=["production"])
+
+11. list_env_vars:
+    - Purpose: Lists all environment variables configured for a project.
+    - Arguments: project_id, cred_key.
+    - Returns: List of env vars with id, key, and target environments.
+    - How to call: VercelTool.list_env_vars(project_id="prj_abc123")
+
+12. get_deployment_logs:
+    - Purpose: Retrieves build and runtime logs for a specific deployment.
+    - Arguments: deployment_id, cred_key.
+    - Returns: List of log events.
+    - How to call: VercelTool.get_deployment_logs(deployment_id="dpl_abc123")
+
+13. rollback:
+    - Purpose: Rolls back a project to a previous successful deployment.
+    - Arguments:
+      a) project_id: str
+      b) deployment_id: str - Target deployment to roll back to.
+      c) cred_key.
+    - How to call: VercelTool.rollback(project_id="prj_abc123", deployment_id="dpl_old123")
+
+14. add_domain:
+    - Purpose: Adds a custom domain to a Vercel project.
+    - Arguments:
+      a) project_id: str
+      b) domain: str - Full domain name (e.g., "app.example.com").
+      c) cred_key.
+    - How to call: VercelTool.add_domain(project_id="prj_abc123", domain="app.example.com")
+
+15. list_domains:
+    - Purpose: Lists all custom domains associated with a project.
+    - Arguments: project_id, cred_key.
+    - Returns: List of domains with verification status.
+    - How to call: VercelTool.list_domains(project_id="prj_abc123")
+""")
+    
     VERCEL_API = "https://api.vercel.com"
 
     @staticmethod
@@ -1996,7 +2326,142 @@ class VercelTool:
 class NetlifyTool:
     name = "netlify"
     description = "Netlify deployment: sites, deploys, env vars, domains, forms"
+    use = (
+        """Name of Tool:- NetlifyTool
 
+Purpose of Tool:- 
+The NetlifyTool is a deployment and cloud hosting administration utility that enables programmatic control over web applications hosted on Netlify. It provides direct automation wrappers around the official Netlify REST API to manage static web assets, handle CI/CD delivery pipelines, orchestrate atomic rolling updates, and manipulate runtime parameters. The tool supports deploying local code folders directly by calculating file hash maps and syncing dynamic file payloads via octet-stream buffers. Additionally, it streamlines site configurations by letting users modify environment variables, provision custom domain names, manage rollback versions, and download user submission records captured from native Netlify HTML form parsing layers.
+
+Methods:-
+- list_sites: Retrieves a summary list of all web application projects tied to the active account profile.
+- create_site: Instantiates a new workspace slot on Netlify, optionally configuring continuous integration bindings to a remote GitHub branch.
+- delete_site: Permanently destroys a targeted hosting project slot and cleans up its remote web presence.
+- deploy_folder: Scans local sub-directories to map unique file digests, initializing atomic state uploads to release project content updates.
+- list_deploys: Compiles chronological historical data logs tracking site release states, time marks, and explicit entry paths.
+- rollback_deploy: Switches the active production pointer of a web application to point back to a previous build artifact version.
+- lock_deploy: Freezes a specific production state, ensuring subsequent continuous integration code pushes do not overwrite active live environments.
+- set_env_var: Patches runtime application configurations by writing key-value parameter sets directly to site container blocks.
+- list_env_vars: Returns a structured map containing all environmental configuration fields linked to a targeted site.
+- delete_env_var: Removes targeted key-value pairs from site container runtime blocks.
+- add_domain: Provisions custom domain aliases, binding public web address configurations directly onto target hosting structures.
+- list_forms: Tracks parsed native HTML form layers detected inside site pages and reports active response tallies.
+- get_form_submissions: Extracts tabular contact records, timelines, and payloads collected from active contact forms.
+
+How to use Tool Methods:-
+
+1. list_sites:
+   - Purpose: Lists accessible web projects, pulling structural operational data like IDs, current states, and default system URLs.
+   - Arguments:
+     a) cred_key: str (default: "netlify") - Reference index used to select specific token blocks out of credential stores.
+   - Returns: ToolResult packaging arrays of dictionary records mapped from active projects.
+   - How to call: NetlifyTool.list_sites(cred_key="production_token")
+
+2. create_site:
+   - Purpose: provisions a clean staging area or links a new instance block to an automated main GitHub code branch tracking system.
+   - Arguments:
+     a) name: str - Target site descriptor tag defining the alphanumeric root domain name.
+     b) repo_url: str (default: "") - Destination web link pointing to target GitHub source projects.
+     c) cred_key: str (default: "netlify") - Vault lookup pointer for loading operational token keys.
+   - Returns: ToolResult passing the unique project ID string alongside target staging URLs.
+   - How to call: NetlifyTool.create_site(name="portfolio-v4-2026", repo_url="https://github.com/user/portfolio-v4", cred_key="netlify")
+
+3. delete_site:
+   - Purpose: Erases active web instances to prevent unnecessary cloud footprint consumption.
+   - Arguments:
+     a) site_id: str - Unique target alphanumeric hash code mapped to a project.
+     b) cred_key: str (default: "netlify") - Vault lookup key string for verification tokens.
+   - Returns: ToolResult validating deletion completion states.
+   - How to call: NetlifyTool.delete_site(site_id="661ba2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c")
+
+4. deploy_folder:
+   - Purpose: Deploys local folder assets manually by building a digest map of file signatures and shipping missing files to Netlify's content network.
+   - Arguments:
+     a) site_id: str - Target identification code string pointing to a site.
+     b) folder_path: str - Local directory file path tracking static project code structures.
+     c) message: str (default: "Deploy via NPM Agent") - Build title note explaining the source of the release update.
+     d) cred_key: str (default: "netlify") - Reference token label key.
+   - Returns: ToolResult containing deployment index numbers and distinct preview path URLs.
+   - How to call: NetlifyTool.deploy_folder(site_id="portfolio-v4-2026", folder_path="./dist", message="Production hotfix build")
+
+5. list_deploys:
+   - Purpose: Compiles a history of recent build iterations to track operational stability metrics.
+   - Arguments:
+     a) site_id: str - Project tracking hash value.
+     b) cred_key: str (default: "netlify") - Security authentication key selector.
+   - Returns: ToolResult outputting arrays that detail past deployment identifiers, creation dates, and status codes.
+   - How to call: NetlifyTool.list_deploys(site_id="661ba2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c")
+
+6. rollback_deploy:
+   - Purpose: Instantly restores web pages to a known safe historical build version during runtime emergencies.
+   - Arguments:
+     a) site_id: str - Target project lookup reference code.
+     b) deploy_id: str - target historical build signature map pointing to preferred states.
+     c) cred_key: str (default: "netlify") - Security verification key text.
+   - Returns: ToolResult confirming operational pointer updates.
+   - How to call: NetlifyTool.rollback_deploy(site_id="portfolio-v4-2026", deploy_id="661c98e7a1b2c3d4e5f6a7b8")
+
+7. lock_deploy:
+   - Purpose: Implements strict continuous delivery version freezes to conduct production maintenance or prevent automated pipeline updates.
+   - Arguments:
+     a) site_id: str - Project identification hash string.
+     b) deploy_id: str - Build reference marker to freeze in place.
+     c) cred_key: str (default: "netlify") - Vault validation pointer.
+   - Returns: ToolResult recording frozen state flags.
+   - How to call: NetlifyTool.lock_deploy(site_id="portfolio-v4-2026", deploy_id="661c98e7a1b2c3d4e5f6a7b8")
+
+8. set_env_var:
+   - Purpose: injects crucial runtime configuration properties like API keys or backend endpoint strings into site containers.
+   - Arguments:
+     a) site_id: str - target reference code string identifying the site.
+     b) key: str - Uppercase string labeling the target environment parameter.
+     c) value: str - Configuration string stored alongside target keys.
+     d) cred_key: str (default: "netlify") - Access token index label.
+   - Returns: ToolResult ensuring safe parameter inclusion.
+   - How to call: NetlifyTool.set_env_var(site_id="661ba2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c", key="DATABASE_URL", value="mongodb+srv://admin:pass@cluster.io")
+
+9. list_env_vars:
+   - Purpose: Inspects site container environments to verify active runtime values and identify structural discrepancies.
+   - Arguments:
+     a) site_id: str - System identifier tracking the target site.
+     b) cred_key: str (default: "netlify") - Internal security credential map key.
+   - Returns: ToolResult packaging complete dictionaries of runtime parameters.
+   - How to call: NetlifyTool.list_env_vars(site_id="661ba2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c")
+
+10. delete_env_var:
+    - Purpose: Removes stale configuration elements or resets runtime variables back to global project defaults.
+    - Arguments:
+      a) site_id: str - Target site index token.
+      b) key: str - Configuration descriptor name to remove.
+      c) cred_key: str (default: "netlify") - Access validation key string.
+    - Returns: ToolResult verifying removal from site settings.
+    - How to call: NetlifyTool.delete_env_var(site_id="portfolio-v4-2026", key="STAGING_API_KEY")
+
+11. add_domain:
+    - Purpose: Binds external custom domains onto Netlify routing matrices to set up polished, branded production entryways.
+    - Arguments:
+      a) site_id: str - target workspace index value mapping projects.
+      b) domain: str - Fully qualified web address name string.
+      c) cred_key: str (default: "netlify") - Internal system token reference.
+    - Returns: ToolResult confirming custom domain mapping.
+    - How to call: NetlifyTool.add_domain(site_id="661ba2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c", domain="www.mycustomportfolio.com")
+
+12. list_forms:
+    - Purpose: Enumerates forms found during page parsing routines, providing immediate visibility into interaction counts.
+    - Arguments:
+      a) site_id: str - Project lookup identification string.
+      b) cred_key: str (default: "netlify") - Encryption key locator tracking credentials.
+    - Returns: ToolResult summarizing form structures, system tags, and submission metrics.
+    - How to call: NetlifyTool.list_forms(site_id="portfolio-v4-2026")
+
+13. get_form_submissions:
+    - Purpose: Pulls form data records submitted by users directly into clean, actionable dataset arrays.
+    - Arguments:
+      a) form_id: str - Unique form identifier hash token generated by Netlify.
+      b) cred_key: str (default: "netlify") - Vault validation credential pointer.
+    - Returns: ToolResult matching data entries with explicit transaction timestamps.
+    - How to call: NetlifyTool.get_form_submissions(form_id="661da5e4b3c2a1f0e9d8c7b6")
+    """)
+    
     NETLIFY_API = "https://api.netlify.com/api/v1"
 
     @staticmethod
@@ -2238,7 +2703,131 @@ class NetlifyTool:
 class RailwayTool:
     name = "railway"
     description = "Railway.app deployment: projects, services, env vars, logs"
+    use = (
+        """
+Name of Tool:- RailwayTool,
 
+Purpose of Tool:- 
+The RailwayTool provides a comprehensive interface to Railway.app for deploying and managing applications on their platform. 
+It supports project and service management, deployments (via CLI and GraphQL), environment variables, logs, and deployment history. 
+The tool combines direct GraphQL API calls for most management operations with the official Railway CLI for deployment and log streaming. 
+All operations require a Railway API token stored in CredStore. 
+This tool is ideal for automated deployments, DevOps workflows, environment management, and agentic full-stack application hosting on Railway.
+
+Methods:-
+- _headers: Internal helper to generate authentication headers.
+- _gql: Internal helper to execute GraphQL queries and mutations.
+- deploy: Deploys a local project using the Railway CLI.
+- list_projects: Lists all projects in the account.
+- create_project: Creates a new project.
+- list_services: Lists services within a project.
+- deploy_service: Triggers a new deployment for a service.
+- restart_service: Redeploys/restarts a service.
+- set_env_var: Sets or updates an environment variable.
+- list_env_vars: Lists environment variables for a service.
+- get_logs: Retrieves recent logs for a service using the Railway CLI.
+- get_deployments: Lists deployment history for a service.
+
+How to use Tool Methods:-
+
+1. _headers (Internal Authentication Helper):
+   - Purpose: Constructs the Bearer token authorization header required by Railway API.
+   - Arguments: cred_key: str (default: "railway")
+   - Credential requirement: CredStore must contain {'token': 'your-railway-api-token'}.
+   - Note: Internal method. Do not call directly.
+
+2. _gql (Internal GraphQL Helper):
+   - Purpose: Executes GraphQL queries and mutations against Railway's GraphQL API.
+   - Arguments:
+     a) query: str - GraphQL query or mutation string.
+     b) variables: dict (default: None) - Variables for the query.
+     c) cred_key: str (default: "railway").
+   - Note: Internal method used by most API operations.
+
+3. deploy:
+   - Purpose: Deploys (or updates) a local project directory to Railway using the official CLI. This handles build, environment detection, and full deployment lifecycle.
+   - Arguments:
+     a) project_path: str - Local directory path containing the project (with railway.json or auto-detectable framework).
+     b) environment: str (default: "production") - Target environment name.
+     c) cred_key: str (default: "railway").
+   - Returns: Success status and full CLI output.
+   - How to call: 
+     RailwayTool.deploy(
+         project_path="./my-app",
+         environment="production"
+     )
+
+4. list_projects:
+   - Purpose: Lists all projects accessible to the authenticated user.
+   - Arguments: cred_key: str (default: "railway").
+   - Returns: List of projects with id, name, and creation time.
+   - How to call: RailwayTool.list_projects()
+
+5. create_project:
+   - Purpose: Creates a new project on Railway.
+   - Arguments:
+     a) name: str - Name of the new project.
+     b) cred_key: str (default: "railway").
+   - Returns: Project ID and name.
+   - How to call: RailwayTool.create_project(name="my-new-project")
+
+6. list_services:
+   - Purpose: Lists all services inside a specific project.
+   - Arguments:
+     a) project_id: str - Railway project ID.
+     b) cred_key: str (default: "railway").
+   - Returns: List of services with id and name.
+   - How to call: RailwayTool.list_services(project_id="prj_abc123")
+
+7. deploy_service:
+   - Purpose: Triggers a new deployment for an existing service.
+   - Arguments:
+     a) service_id: str - Service ID.
+     b) cred_key: str (default: "railway").
+   - How to call: RailwayTool.deploy_service(service_id="svc_xyz789")
+
+8. restart_service:
+   - Purpose: Redeploys/restarts a running service.
+   - Arguments: service_id, cred_key.
+   - How to call: RailwayTool.restart_service(service_id="svc_xyz789")
+
+9. set_env_var:
+   - Purpose: Creates or updates an environment variable for a service.
+   - Arguments:
+     a) project_id: str
+     b) service_id: str
+     c) key: str - Variable name.
+     d) value: str - Variable value.
+     e) cred_key: str (default: "railway").
+   - How to call: RailwayTool.set_env_var(project_id="prj_abc123", service_id="svc_xyz789", key="DATABASE_URL", value="...")
+
+10. list_env_vars:
+    - Purpose: Retrieves all environment variables for a service.
+    - Arguments:
+      a) project_id: str
+      b) service_id: str
+      c) cred_key: str (default: "railway").
+    - Returns: Dictionary of environment variables.
+    - How to call: RailwayTool.list_env_vars(project_id="prj_abc123", service_id="svc_xyz789")
+
+11. get_logs:
+    - Purpose: Fetches recent logs for a service using the Railway CLI (supports tailing).
+    - Arguments:
+      a) service_id: str
+      b) lines: int (default: 100) - Number of log lines to retrieve.
+      c) cred_key: str (default: "railway").
+    - Returns: Raw log output.
+    - How to call: RailwayTool.get_logs(service_id="svc_xyz789", lines=200)
+
+12. get_deployments:
+    - Purpose: Retrieves deployment history for a service.
+    - Arguments:
+      a) service_id: str
+      b) cred_key: str (default: "railway").
+    - Returns: List of deployments with id, status, creation time, and URL.
+    - How to call: RailwayTool.get_deployments(service_id="svc_xyz789")
+""")
+    
     RAILWAY_API = "https://backboard.railway.app/graphql/v2"
 
     @staticmethod
@@ -2452,7 +3041,176 @@ class RailwayTool:
 class KubernetesTool:
     name = "kubernetes"
     description = "Full kubectl/Kubernetes operations: pods, deployments, services, nodes, helm"
+    use = (
+        """
+Name of Tool:- KubernetesTool,
 
+Purpose of Tool:- 
+The KubernetesTool provides a comprehensive, production-ready interface for interacting with Kubernetes clusters using the kubectl CLI and Helm. 
+It supports applying manifests, managing pods, deployments, services, nodes, namespaces, secrets, ConfigMaps, resource usage monitoring, pod execution, port forwarding, scaling, rollouts, and full Helm chart lifecycle management (install, upgrade, uninstall, list). 
+This tool is designed for cluster administration, application deployment, troubleshooting, scaling, and agentic Kubernetes operations across any cluster where kubectl is configured and accessible.
+
+Methods:-
+- _kubectl: Internal helper to execute kubectl commands.
+- apply: Applies Kubernetes manifests (file or inline YAML).
+- delete_resource: Deletes a Kubernetes resource.
+- get_pods: Lists pods with status and readiness information.
+- describe_pod: Describes a pod in detail.
+- get_pod_logs: Retrieves logs from a pod or specific container.
+- exec_in_pod: Executes a command inside a running pod.
+- get_deployments: Lists deployments with replica status.
+- scale_deployment: Scales a deployment to a desired number of replicas.
+- rollout_restart: Restarts a deployment (triggers rolling update).
+- rollout_status: Checks the rollout status of a deployment.
+- get_services: Lists services with type, ClusterIP, and ports.
+- port_forward: Sets up local port forwarding to a Kubernetes resource.
+- get_nodes: Lists cluster nodes with capacity and readiness.
+- cordon_node: Marks a node as unschedulable.
+- drain_node: Drains a node (evicts pods) for maintenance.
+- apply_secret: Creates or updates a Secret from a dictionary.
+- get_configmap: Retrieves a ConfigMap's data.
+- create_namespace: Creates a new namespace.
+- list_namespaces: Lists all namespaces.
+- get_resource_usage: Shows CPU and memory usage of pods (kubectl top).
+- helm_install: Installs a Helm chart.
+- helm_upgrade: Upgrades or installs a Helm chart.
+- helm_uninstall: Uninstalls a Helm release.
+- helm_list: Lists deployed Helm releases.
+
+How to use Tool Methods:-
+
+1. _kubectl (Internal Helper):
+   - Purpose: Executes kubectl commands with optional namespace and stdin support.
+   - Arguments:
+     a) args: list - List of kubectl command arguments.
+     b) namespace: str (default: None) - Target namespace.
+     c) stdin_data: str (default: None) - Data to pipe to stdin (for apply -f -).
+     d) timeout: int (default: 60) - Command timeout in seconds.
+   - Note: Internal method. You generally do not call it directly.
+
+2. apply:
+   - Purpose: Applies Kubernetes resources from a file or inline YAML string. Supports both file paths and direct manifest content.
+   - Arguments:
+     a) manifest_path_or_yaml: str - Either path to a YAML file or the full YAML content as string.
+     b) namespace: str (default: "default").
+   - How to call: 
+     KubernetesTool.apply(manifest_path_or_yaml="deployment.yaml", namespace="production")
+     or
+     KubernetesTool.apply(manifest_path_or_yaml='''apiVersion: v1\nkind: Pod\n...''')
+
+3. delete_resource:
+   - Purpose: Deletes a specific Kubernetes resource (pod, deployment, service, etc.).
+   - Arguments:
+     a) kind: str - Resource kind (pod, deployment, service, configmap, secret, etc.).
+     b) name: str - Name of the resource.
+     c) namespace: str (default: "default").
+   - How to call: KubernetesTool.delete_resource(kind="deployment", name="my-app", namespace="production")
+
+4. get_pods:
+   - Purpose: Lists pods in a namespace with phase, readiness, and node information.
+   - Arguments:
+     a) namespace: str (default: "default")
+     b) label_selector: str (default: "") - e.g., "app=my-app"
+   - Returns: List of pods with name, status, ready containers count, and node.
+   - How to call: KubernetesTool.get_pods(namespace="default", label_selector="app=nginx")
+
+5. describe_pod:
+   - Purpose: Returns detailed information about a pod (events, conditions, spec, status).
+   - Arguments: name, namespace (default: "default")
+   - How to call: KubernetesTool.describe_pod(name="my-pod-xyz", namespace="default")
+
+6. get_pod_logs:
+   - Purpose: Retrieves container logs from a pod.
+   - Arguments:
+     a) name: str - Pod name
+     b) namespace: str (default: "default")
+     c) container: str (default: "") - Specific container name
+     d) tail: int (default: 100) - Number of recent lines
+     e) follow: bool (default: False) - Follow logs (limited timeout)
+   - How to call: KubernetesTool.get_pod_logs(name="my-pod", tail=200)
+
+7. exec_in_pod:
+   - Purpose: Executes a shell command inside a running pod.
+   - Arguments:
+     a) name: str - Pod name
+     b) namespace: str (default: "default")
+     c) command: list (default: ["sh", "-c", "echo hello"])
+     d) container: str (default: "")
+   - How to call: KubernetesTool.exec_in_pod(name="my-pod", command=["ls", "-la"])
+
+8. get_deployments:
+   - Purpose: Lists deployments with replica counts and availability.
+   - Arguments: namespace (default: "default")
+   - How to call: KubernetesTool.get_deployments(namespace="production")
+
+9. scale_deployment:
+   - Purpose: Scales a deployment to the specified number of replicas.
+   - Arguments:
+     a) name: str - Deployment name
+     b) replicas: int - Desired replica count
+     c) namespace: str (default: "default")
+   - How to call: KubernetesTool.scale_deployment(name="my-app", replicas=5)
+
+10. rollout_restart:
+    - Purpose: Triggers a rolling restart of a deployment.
+    - Arguments: deployment, namespace
+    - How to call: KubernetesTool.rollout_restart(deployment="my-app")
+
+11. rollout_status:
+    - Purpose: Checks the rollout status of a deployment with timeout.
+    - Arguments: deployment, namespace
+    - How to call: KubernetesTool.rollout_status(deployment="my-app")
+
+12. get_services:
+    - Purpose: Lists services with type, ClusterIP, and exposed ports.
+    - Arguments: namespace
+    - How to call: KubernetesTool.get_services(namespace="default")
+
+13. port_forward:
+    - Purpose: Starts a local port-forward to a Kubernetes resource (pod, service, etc.).
+    - Arguments:
+      a) resource: str - e.g., "pod/my-pod" or "service/my-svc"
+      b) local_port: int
+      c) remote_port: int
+      d) namespace: str (default: "default")
+    - Returns: Process PID (background process)
+    - How to call: KubernetesTool.port_forward(resource="service/my-api", local_port=8080, remote_port=3000)
+
+14. get_nodes:
+    - Purpose: Lists cluster nodes with readiness, capacity, and roles.
+    - How to call: KubernetesTool.get_nodes()
+
+15. cordon_node / drain_node:
+    - Purpose: Cordon marks a node unschedulable. Drain evicts pods for maintenance.
+    - How to call: KubernetesTool.drain_node(name="node-1", force=True)
+
+16. apply_secret:
+    - Purpose: Creates or updates a Kubernetes Secret from a Python dictionary.
+    - Arguments:
+      a) name: str
+      b) namespace: str
+      c) data: dict - Key-value pairs (automatically base64 encoded)
+    - How to call: KubernetesTool.apply_secret(name="db-credentials", namespace="default", data={"username": "admin", "password": "secret"})
+
+17. get_configmap:
+    - Purpose: Retrieves data from a ConfigMap.
+    - Arguments: name, namespace
+    - How to call: KubernetesTool.get_configmap(name="my-config", namespace="default")
+
+18. create_namespace / list_namespaces:
+    - Standard namespace management.
+
+19. get_resource_usage:
+    - Purpose: Shows real-time CPU and memory usage of pods (requires metrics-server).
+    - Arguments: namespace
+    - How to call: KubernetesTool.get_resource_usage(namespace="default")
+
+20. helm_install / helm_upgrade / helm_uninstall / helm_list:
+    - Full Helm chart management.
+    - Arguments include release name, chart name/reference, values dict, and namespace.
+    - How to call: KubernetesTool.helm_install(release="my-app", chart="nginx", values={"replicaCount": 3})
+""")
+    
     @staticmethod
     def _kubectl(args: list, namespace: str = None,
                  stdin_data: str = None, timeout: int = 60) -> subprocess.CompletedProcess:
@@ -2850,7 +3608,166 @@ class KubernetesTool:
 class TerraformTool:
     name = "terraform"
     description = "Infrastructure as Code: init, plan, apply, destroy, state management, workspaces"
+    use = (
+        """Name of Tool:- TerraformTool
 
+Purpose of Tool:- 
+The TerraformTool is an Infrastructure as Code (IaC) automation utility that allows for programmatic management of cloud and on-premise infrastructure. Acting as a Python wrapper around the Terraform CLI, this tool facilitates the complete lifecycle of infrastructure deployment. It handles initialization, execution plans, real-time resource provisioning, destruction routines, state file manipulations, and multi-tenant workspace management. It processes outputs directly into JSON, automatically formats and validates declarative HashiCorp Configuration Language (HCL) scripts, resolves resource dependency mappings into graphable layouts, and imports existing manual infrastructure configurations under formal lifecycle control.
+
+Methods:-
+- init: Sets up the local working environment, downloads required resource providers, and connects state backends.
+- plan: Generates predictive structural execution delta logs mapping out pending state modifications.
+- apply: Provisions and updates active network components to lock down target environment schemas.
+- destroy: Tensors clean teardowns across cloud assets linked to monitored script frameworks.
+- validate: Runs localized structural parsing loops to sweep for broken syntax arrays or illegal property associations.
+- fmt: Rewrites layout alignments to conform with official standardized spacing rules.
+- show: Deconstructs explicit binary execution files or target state tracking payloads into readable structural data.
+- output: Grabs active deployment state parameters for programmatic handoffs to external tools.
+- state_list: Queries managed tracking databases to list all managed structural resource blocks.
+- state_show: Displays operational configuration parameters currently stored for a distinct provisioned item.
+- state_rm: Forces tracking items out of local state systems without destroying the physical components.
+- import_resource: Binds pre-existing untracked external components directly onto active internal script targets.
+- graph: Compiles structural dependency links between modules into a DOT notation visual mapping script.
+- workspace_list: Catalogs isolated storage namespaces available for running concurrent variable setups.
+- workspace_new: Spins up a new virtual state segment block to segregate environment scopes.
+- workspace_select: Toggles the active context pointer over to an alternate infrastructure namespace pipeline.
+
+How to use Tool Methods:-
+
+1. init:
+   - Purpose: Prepares an infrastructure directory by configuring remote storage nodes and pulling structural provider runtimes.
+   - Arguments:
+     a) path: str - Target filesystem location containing standard infrastructure code scripts.
+     b) backend_config: dict (default: None) - Context key-value blocks used to customize state backends during setup.
+   - Returns: ToolResult storing complete raw log captures indicating operational initialization states.
+   - How to call: TerraformTool.init(path="./infra/prod", backend_config={"bucket": "tf-state-prod", "key": "network/terraform.tfstate"})
+
+2. plan:
+   - Purpose: Examines target code updates against current reality to map out additions, adjustments, and destructive alterations.
+   - Arguments:
+     a) path: str - System root directory mapping the active target deployment scripts.
+     b) var_file: str (default: "") - Target location pointer resolving a specific `.tfvars` properties path.
+     c) vars: dict (default: None) - Direct dynamic variable dictionaries passed to overwrite script configurations.
+     d) out: str (default: "tfplan") - Local name string assigned to export the compiled execution binary plan file.
+   - Returns: ToolResult passing plan check assertions alongside explicit binary destination tags.
+   - How to call: TerraformTool.plan(path="./infra/prod", vars={"instance_count": 3, "env": "production"}, out="outputs/june_deploy.tfplan")
+
+3. apply:
+   - Purpose: Runs targeted changes against cloud providers to build out infrastructure, using optional binary plans to guarantee consistency.
+   - Arguments:
+     a) path: str - Directory system pointer enclosing target resource blueprints.
+     b) plan_file: str (default: "") - Reference path string targeting pre-compiled plan files.
+     c) var_file: str (default: "") - Property settings path matching targeted infrastructure files.
+     d) vars: dict (default: None) - Supplemental variable definitions dictionary.
+     b) auto_approve: bool (default: False) - Flag that bypasses interactive prompt checks when toggled true.
+   - Returns: ToolResult confirming whether runtime provider provisioning completed cleanly.
+   - How to call: TerraformTool.apply(path="./infra/prod", plan_file="outputs/june_deploy.tfplan", auto_approve=True)
+
+4. destroy:
+   - Purpose: Runs systematic teardown loops that remove active live cloud infrastructure components safely.
+   - Arguments:
+     a) path: str - Targeted project folder path string containing tracking parameters.
+     b) var_file: str (default: "") - Auxiliary property file configuration path.
+     c) vars: dict (default: None) - Key-value parameter arguments dictionary.
+     d) auto_approve: bool (default: False) - Bypasses execution prompts to run unprompted server drops.
+   - Returns: ToolResult validating resource removal operations.
+   - How to call: TerraformTool.destroy(path="./infra/staging", auto_approve=True)
+
+5. validate:
+   - Purpose: Checks infrastructure code structure locally to catch typing errors, invalid configurations, or missing fields before execution.
+   - Arguments:
+     a) path: str - System file directory location housing target configuration parameters.
+   - Returns: ToolResult outlining global schema consistency checks alongside explicit error indices.
+   - How to call: TerraformTool.validate(path="./infra/dev")
+
+6. fmt:
+   - Purpose: Standardizes code structure across all project modules to match proper canonical indentation rules.
+   - Arguments:
+     a) path: str - Local file mapping folder path to clean.
+     b) recursive: bool (default: True) - Traverses nested folder locations when set to true.
+   - Returns: ToolResult listing changed file pathways.
+   - How to call: TerraformTool.fmt(path="./infra", recursive=True)
+
+7. show:
+   - Purpose: Converts binary plan details or live operational tracking components into clean JSON data structures.
+   - Arguments:
+     a) path: str - Workspace directory string.
+     b) plan_file: str (default: "") - Specific execution tracker plan file name string.
+   - Returns: ToolResult packaging nested metadata records explaining configuration profiles.
+   - How to call: TerraformTool.show(path="./infra/prod", plan_file="outputs/june_deploy.tfplan")
+
+8. output:
+   - Purpose: Queries completed state registers to pull active endpoints, keys, or server IP addresses.
+   - Arguments:
+     a) path: str - Active resource directory tracking location.
+     b) name: str (default: "") - Filters the lookup to return a single parameter string when configured.
+   - Returns: ToolResult returning single data strings or complete output field map records.
+   - How to call: TerraformTool.output(path="./infra/prod", name="load_balancer_dns")
+
+9. state_list:
+   - Purpose: Shows all active hardware blocks currently managed by the active project configuration.
+   - Arguments:
+     a) path: str - System reference directory targeting the infrastructure module.
+   - Returns: ToolResult sorting active tracked address labels into linear string lists.
+   - How to call: TerraformTool.state_list(path="./infra/prod")
+
+10. state_show:
+    - Purpose: Inspects state cache entries to return a detailed property snapshot for a specific managed item.
+    - Arguments:
+      a) path: str - Workspace location string tracking projects.
+      b) resource: str - Fully qualified path identifier pointing to the target infrastructure block.
+    - Returns: ToolResult outlining provider status values and cloud resource IDs.
+    - How to call: TerraformTool.state_show(path="./infra/prod", resource="aws_instance.web_server[0]")
+
+11. state_rm:
+    - Purpose: Removes an infrastructure item from tracking without physically deleting the resource from the cloud provider.
+    - Arguments:
+      a) path: str - Target configuration repository folder map.
+      b) resource: str - Reference address tag pointing to the specific component to stop tracking.
+    - Returns: ToolResult reflecting state modifications.
+    - How to call: TerraformTool.state_rm(path="./infra/prod", resource="aws_security_group.legacy_firewall")
+
+12. import_resource:
+    - Purpose: Connects a manually provisioned cloud resource to a matching configuration block in your codebase.
+    - Arguments:
+      a) path: str - Directory system pointer holding configuration scripts.
+      b) address: str - Target resource address mapping string inside active modules.
+      c) id: str - Official identification code provided by the external cloud service host.
+    - Returns: ToolResult charting standard state inclusion actions.
+    - How to call: TerraformTool.import_resource(path="./infra/prod", address="aws_s3_bucket.assets", id="my-legacy-global-assets-bucket")
+
+13. graph:
+    - Purpose: Generates structural code dependency diagrams to analyze orchestration paths and resolve sequencing blocks.
+    - Arguments:
+      a) path: str - Baseline repository map tracking target modules.
+      b) output_file: str (default: "graph.dot") - Local destination path where visual relationship files are written.
+    - Returns: ToolResult passing successful generation verification strings.
+    - How to call: TerraformTool.graph(path="./infra/prod", output_file="visuals/infra_tree.dot")
+
+14. workspace_list:
+    - Purpose: Enumerates separate deployment branches running inside the same baseline code block directory.
+    - Arguments:
+      a) path: str - Target tracking workspace root directory.
+    - Returns: ToolResult revealing all valid tracking labels alongside active focus flags.
+    - How to call: TerraformTool.workspace_list(path="./infra/apps")
+
+15. workspace_new:
+    - Purpose: Builds isolated tracking states within a single project directory to help segregate environments like staging and production.
+    - Arguments:
+      a) path: str - System operational baseline code track directory.
+      b) name: str - Target workspace alphanumeric identification string.
+    - Returns: ToolResult documenting setup status indicators.
+    - How to call: TerraformTool.workspace_new(path="./infra/apps", name="staging-environment")
+
+16. workspace_select:
+    - Purpose: Switches the active tracking context pointer over to an alternate workspace segment.
+    - Arguments:
+      a) path: str - Module baseline folder tracking structure locations.
+      b) name: str - Target environment segment tag string to swap in.
+    - Returns: ToolResult logging workspace activation adjustments.
+    - How to call: TerraformTool.workspace_select(path="./infra/apps", name="staging-environment")
+    """)
+    
     @staticmethod
     def _tf(args: list, cwd: str, timeout: int = 600,
             env_extra: dict = None) -> subprocess.CompletedProcess:
@@ -3087,7 +4004,141 @@ class TerraformTool:
 class MonitoringTool:
     name = "monitoring"
     description = "System & app monitoring: CPU, memory, disk, network, processes, logs, alerts"
+    use = (
+        """
+Name of Tool:- MonitoringTool,
 
+Purpose of Tool:- 
+The MonitoringTool provides comprehensive system and application monitoring capabilities for servers, containers, and applications. 
+It includes real-time metrics for CPU, memory, disk, network I/O, running processes, GPU usage, open ports, service health checks, log monitoring and parsing, file change watching, and alert notifications via Slack, Telegram, or custom webhooks. 
+Built on top of psutil, GPUtil, watchdog, and requests, this tool enables proactive system observation, troubleshooting, resource tracking, and automated alerting — essential for DevOps, SRE, infrastructure monitoring, and agentic observability workflows.
+
+Methods:-
+- get_cpu_usage: Retrieves current CPU usage, core count, and frequency.
+- get_memory_info: Returns detailed virtual memory and swap statistics.
+- get_disk_usage: Reports disk space usage and I/O statistics for a given path.
+- get_network_io: Shows network bytes sent/received, packets, and errors (per interface or total).
+- get_process_list: Lists running processes sorted by CPU, memory, etc.
+- kill_process: Terminates a process by PID.
+- get_gpu_info: Retrieves GPU load, memory, temperature, and driver details.
+- watch_file_changes: Sets up real-time file/directory change monitoring.
+- get_open_ports: Lists listening network ports and associated processes.
+- check_service_health: Performs HTTP health checks on services/endpoints.
+- send_alert: Sends notifications via Slack, Telegram, or webhook.
+- get_system_info: Returns comprehensive system and hardware information.
+- tail_log_file: Tails the end of a log file (with optional follow).
+- parse_log_file: Parses log files with pattern matching, time filtering, and error/warning counting.
+
+How to use Tool Methods:-
+
+1. get_cpu_usage:
+   - Purpose: Gets current CPU utilization percentage, core counts, and CPU frequency.
+   - Arguments:
+     a) interval: float (default: 1.0) - Sampling interval in seconds (0 for non-blocking).
+     b) percpu: bool (default: False) - Return per-core usage instead of average.
+   - Returns: Usage percent, logical/physical CPU count, and current frequency.
+   - How to call: MonitoringTool.get_cpu_usage(interval=0.5, percpu=True)
+
+2. get_memory_info:
+   - Purpose: Returns detailed RAM and swap memory statistics in GB and percentages.
+   - Arguments: None
+   - Returns: Total, available, used memory, percentages, and swap info.
+   - How to call: MonitoringTool.get_memory_info()
+
+3. get_disk_usage:
+   - Purpose: Reports disk space usage and I/O counters for a mount point.
+   - Arguments:
+     a) path: str (default: "/") - Filesystem path to check.
+   - Returns: Total/used/free space in GB, usage percent, and read/write bytes.
+   - How to call: MonitoringTool.get_disk_usage(path="/data")
+
+4. get_network_io:
+   - Purpose: Monitors network traffic statistics.
+   - Arguments:
+     a) interface: str (default: "") - Specific network interface (e.g., "eth0"). Empty = aggregate.
+   - Returns: Bytes sent/received (MB), packets, errors, and drops.
+   - How to call: MonitoringTool.get_network_io(interface="eth0")
+
+5. get_process_list:
+   - Purpose: Lists running processes with resource usage.
+   - Arguments:
+     a) sort_by: str (default: "cpu") - Sort by "cpu", "memory", "pid", or "name".
+     b) limit: int (default: 20) - Number of top processes to return.
+   - Returns: List of processes with PID, name, CPU%, memory%, etc.
+   - How to call: MonitoringTool.get_process_list(sort_by="memory", limit=15)
+
+6. kill_process:
+   - Purpose: Terminates a process gracefully or forcefully.
+   - Arguments:
+     a) pid: int - Process ID.
+     b) signal: int (default: 15) - 15 = SIGTERM (graceful), 9 = SIGKILL (force).
+   - How to call: MonitoringTool.kill_process(pid=12345, signal=9)
+
+7. get_gpu_info:
+   - Purpose: Retrieves information about installed NVIDIA GPUs (requires GPUtil).
+   - Arguments: None
+   - Returns: List of GPUs with load, memory usage, temperature, etc.
+   - How to call: MonitoringTool.get_gpu_info()
+
+8. watch_file_changes:
+   - Purpose: Starts a background observer for file/directory changes (create, modify, delete, etc.).
+   - Arguments:
+     a) path: str - Directory or file to watch.
+     b) callback: callable - Function that receives (event_type, src_path).
+     c) recursive: bool (default: True) - Watch subdirectories.
+   - Returns: Observer object (must be managed/stopped by caller).
+   - How to call: MonitoringTool.watch_file_changes(path="/var/log", callback=my_callback_function)
+
+9. get_open_ports:
+   - Purpose: Lists all listening TCP/UDP ports and associated processes.
+   - Arguments: None
+   - Returns: List of open ports with PID and process name.
+   - How to call: MonitoringTool.get_open_ports()
+
+10. check_service_health:
+    - Purpose: Performs an HTTP health check on a service/URL.
+    - Arguments:
+      a) url: str - Full URL to check.
+      b) timeout: int (default: 10) - Request timeout in seconds.
+      c) expected_status: int (default: 200).
+    - Returns: Health status, response time, and details.
+    - How to call: MonitoringTool.check_service_health(url="https://api.example.com/health", expected_status=200)
+
+11. send_alert:
+    - Purpose: Sends monitoring alerts through configured channels.
+    - Arguments:
+      a) title: str - Alert title.
+      b) message: str - Alert body.
+      c) channel: str (default: "slack") - "slack", "telegram", or "webhook".
+      d) cred_key: str (default: "alerts") - Credential store key.
+    - Credential requirements vary by channel (webhook URL, bot token + chat ID, etc.).
+    - How to call: MonitoringTool.send_alert(title="High CPU", message="CPU usage exceeded 90%", channel="slack")
+
+12. get_system_info:
+    - Purpose: Returns detailed information about the operating system and hardware.
+    - Arguments: None
+    - Returns: Hostname, OS version, uptime, CPU/RAM/disk totals, etc.
+    - How to call: MonitoringTool.get_system_info()
+
+13. tail_log_file:
+    - Purpose: Reads the last N lines of a log file, with optional follow mode and pattern filtering.
+    - Arguments:
+      a) path: str - Path to log file.
+      b) lines: int (default: 100)
+      c) follow: bool (default: False) - Start background tail.
+      d) pattern: str (default: "") - Regex filter.
+    - How to call: MonitoringTool.tail_log_file(path="/var/log/app.log", lines=50, pattern="ERROR")
+
+14. parse_log_file:
+    - Purpose: Parses a log file with optional regex filtering, time range, and error/warning counting.
+    - Arguments:
+      a) path: str - Log file path.
+      b) pattern: str (default: "") - Regex to match lines.
+      c) time_range: tuple (default: None) - (start, end) string timestamps.
+    - Returns: Summary with matched lines, error/warning counts, and sample lines.
+    - How to call: MonitoringTool.parse_log_file(path="/var/log/app.log", pattern="ERROR|Exception")
+""")
+    
     @staticmethod
     def get_cpu_usage(interval: float = 1.0,
                       percpu: bool = False) -> ToolResult:
