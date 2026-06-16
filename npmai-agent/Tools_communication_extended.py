@@ -2231,6 +2231,91 @@ class WebhookTool:##############################################################
         "Webhook server, signature verification, registration, testing, replay, "
         "proxy, and payload inspection."
     )
+    use = (
+        """Name of Tool:- WebhookTool
+
+Purpose of Tool:- 
+The WebhookTool is an event-driven automation utility designed to host, test, verify, and route incoming real-time webhooks. It acts as a lightweight receiver server capable of validating secure cryptographic signatures (HMAC-SHA256), mocking external API event endpoints, and creating proxy forwarders to pipeline events across internal staging structures. By caching transaction data in memory, it supports tracing workflows, troubleshooting payloads via structural key inspection, and replaying historical system triggers to simulate runtime updates on demand.
+
+Methods:-
+- start_webhook_server: Spins up a lightweight background Flask endpoint to receive payloads and process them through automated callback routines.
+- verify_signature: Compares incoming request headers with locally calculated cryptographic hash tags to confirm sender authenticity.
+- register_webhook: Records a tracking configuration map tying individual third-party platform actions to discrete destination URLs.
+- list_registered_webhooks: Compiles a structural data array of all active tracked event receivers.
+- test_webhook: Fires test data directly at a designated API listener endpoint to evaluate response structures.
+- replay_webhook: Extracts the last valid webhook payload stored in memory and fires it back at a registered endpoint for iterative debugging.
+- create_webhook_proxy: Sets up an intermediary routing node that intercept and forwards incoming traffic straight to internal destination routes.
+- inspect_webhook_payload: Deconstructs structured JSON inputs into a pretty-printed layout map detailing its root keys.
+
+How to use Tool Methods:-
+
+1. start_webhook_server:
+   - Purpose: Hosts a dynamic network listener to securely catch live alerts sent by external platforms like GitHub or Stripe.
+   - Arguments:
+     a) port: int (default: 5055) - The network port configuration where the receiver processes active requests.
+     b) secret: str (default: "") - Cryptographic validation string key used to enforce signature confirmation.
+     c) callback: function (default: None) - Reference task triggered as an isolated tracking stream on payload receipt.
+   - Returns: ToolResult capturing background execution status.
+   - How to call: WebhookTool.start_webhook_server(port=8080, secret="my_super_secure_webhook_secret", callback=process_incoming_event)
+
+2. verify_signature:
+   - Purpose: Blocks malicious or spoofed incoming HTTP payloads by validating standard `X-Hub-Signature-256` properties against local secrets.
+   - Arguments:
+     a) payload: bytes - Raw incoming binary request payload bytes.
+     b) signature: str - Hexadecimal tracking string extracted out of request header records.
+     c) secret: str - Core shared key text used to establish sender identity.
+   - Returns: ToolResult passing true/false validation checks.
+   - How to call: WebhookTool.verify_signature(payload=b'{"event":"payment_intent.succeeded"}', signature="sha256=a1b2c3...", secret="my_super_secure_webhook_secret")
+
+3. register_webhook:
+   - Purpose: Tracks custom endpoints by creating a simulated tracking dictionary containing active subscriptions.
+   - Arguments:
+     a) service: str - Name descriptor mapping the source provider application.
+     b) url: str - The network pathway where external data records are expected to route.
+     c) events: list - Event tracking categories to observe.
+     d) secret: str (default: "") - Validation key string mapped onto the configuration block.
+   - Returns: ToolResult documenting creation confirmations alongside a tracking UUID string.
+   - How to call: WebhookTool.register_webhook(service="github", url="https://api.myapp.internal/hooks", events=["push", "pull_request"], secret="git_hook_secret")
+
+4. list_registered_webhooks:
+   - Purpose: Lists active registered webhooks, with optional service filtering.
+   - Arguments:
+     a) service: str (default: "") - Filter string tag targeting specific application spaces.
+   - Returns: ToolResult packaging details of matching receiver profiles.
+   - How to call: WebhookTool.list_registered_webhooks(service="github")
+
+5. test_webhook:
+   - Purpose: Acts as a mock testing engine by sending sample JSON structures directly to targeted server components.
+   - Arguments:
+     a) url: str - Destination HTTP location tracking the endpoint.
+     b) payload: dict - Key-value mockup structure mirroring the simulated event pattern.
+     c) headers: dict (default: None) - Supplemental request options string headers map.
+   - Returns: ToolResult recording remote response codes and text snippet summaries.
+   - How to call: WebhookTool.test_webhook(url="http://localhost:5055/webhook", payload={"action": "opened", "issue": {"number": 42}}, headers={"X-Hub-Signature-256": "sha256=..."})
+
+6. replay_webhook:
+   - Purpose: Simulates a previous event cycle to refine data manipulation layers without repeatedly triggering live cloud events.
+   - Arguments:
+     a) webhook_id: str - Unique alphanumeric reference tag pointing to target registrations.
+   - Returns: ToolResult displaying execution responses generated by target applications.
+   - How to call: WebhookTool.replay_webhook(webhook_id="4a8b2c6d-e0f1-2345-6789-abcd1234ef56")
+
+7. create_webhook_proxy:
+   - Purpose: Forwards incoming traffic to development containers hidden behind a firewall.
+   - Arguments:
+     a) forward_to: str - Primary destination URL routing path string target.
+     b) port: int (default: 5056) - Intercept listener port map reference.
+   - Returns: ToolResult mapping validation strings for proxy frameworks.
+   - How to call: WebhookTool.create_webhook_proxy(forward_to="http://192.168.1.105/app/receiver", port=9000)
+
+8. inspect_webhook_payload:
+   - Purpose: Evaluates unknown web signals by isolating top-level parameters and outputting legible structures.
+   - Arguments:
+     a) payload: dict - Complex JSON data asset mapping incoming events.
+   - Returns: ToolResult tracking structural property tags alongside pretty-printed text structures.
+   - How to call: WebhookTool.inspect_webhook_payload(payload={"meta": {"status": "ok"}, "records": [{"id": 1}], "checksum": "xyz"})
+   """)
+    
 
     _registered: dict = {}
     _received:   list = []
@@ -3148,6 +3233,158 @@ class SMTPAdvancedTool:#########################################################
         "Advanced SMTP/IMAP email operations: HTML sending, templates, inbox monitoring, "
         "search, attachment download, auto-reply, forwarding, and filter rules."
     )
+    use = (
+        """ Name of Tool:- SMTPAdvancedTool
+
+Purpose of Tool:- 
+The SMTPAdvancedTool is an advanced mail dispatch and management routing tool designed to programmatically interface with standard SMTP and IMAP servers. It streamlines outbound email workflows through HTML styling templates and attachment rendering blocks, while offering real-time inbound monitoring pipelines. By acting as a programmatic mailbox controller, it allows applications to easily locate specific emails, download file payloads, configure automatic responder signals, forward streams, flag messaging statuses, and enforce conditional inbox filtration logic.
+
+Methods:-
+- send_html_email: Compiles and sends a structured multipart HTML email complete with carbon copy (CC) tracks and encoded local document attachments.
+- send_template_email: Imports file-based Jinja2 text blueprints and merges variable mapping dictionaries into an HTML format layout before dispatching.
+- monitor_inbox: Spawns an automated background polling connection to monitor folders for unread messages matching specific sender or subject rules.
+- search_emails: Queries mail storage registries to harvest descriptive lists matching target filter strings.
+- download_attachments: Parses specific message clusters to pull and extract attached documents directly into local directory folders.
+- auto_reply: Scans inbox unread logs and dynamically matches individual message origins to return automated template responses.
+- forward_emails: Forwards existing raw mailbox files directly onto distinct target mail addresses with options to clear items post-transfer.
+- mark_as_read: Changes target item visibility flags to flag matching message lists as read.
+- delete_emails: Mass-appends tracking deletion tags onto explicit groups of matching messages and cleans storage allocations.
+- create_filter_rule: Simulates inbox routing systems by immediately running mass actions like folder movement, status flagging, or message purging based on sender properties.
+
+How to use Tool Methods:-
+
+1. send_html_email:
+   - Purpose: Transmits complex styled newsletters, tables, and system documents containing direct file attachments to single or multiple targets.
+   - Arguments:
+     a) to: str - Primary recipient's email address.
+     b) subject: str - Main subject title line text.
+     c) html: str - Raw string content text block holding HTML structural components.
+     d) from_addr: str (default: None) - Outbound sender email login alias override.
+     e) password: str (default: None) - System app password reference key mapping to server authorization workflows.
+     f) smtp_host: str (default: "smtp.gmail.com") - Domain path mapping for target outbound mail systems.
+     g) port: int (default: 587) - The connection port string mapping outbound security configurations.
+     h) attachments: list (default: None) - List of string file paths to encode and attach.
+     i) cc: list (default: None) - Optional tracking collection tracking CC endpoints.
+     j) bcc: list (default: None) - Optional collection tracking invisible BCC destinations.
+     k) cred_key: str (default: "smtp") - Default index identifying core credentials within storage pools.
+   - Returns: ToolResult recording delivery transaction status indicators.
+   - How to call: SMTPAdvancedTool.send_html_email(to="client@biz.com", subject="Invoice Ready", html="<h1>Hello</h1><p>Your statement is ready.</p>", attachments=["/docs/inv_101.pdf"], cc=["manager@biz.com"])
+
+2. send_template_email:
+   - Purpose: Merges custom context variables into reusable HTML templates for automated updates, alerts, or welcome tracks.
+   - Arguments:
+     a) to: str - Primary notification receiver address.
+     b) template_path: str - Target local disk location holding file content patterns.
+     c) variables: dict - Key-value pair replacement bindings required by rendering engines.
+     d) from_addr: str (default: None) - Explicit sender address path string.
+     e) password: str (default: None) - Outbound authorization secret payload.
+     f) subject: str (default: "Message from NPM Agent") - Subject title.
+     g) cred_key: str (default: "smtp") - Vault lookup tracking storage values.
+   - Returns: ToolResult validating template parsing accuracy and subsequent delivery steps.
+   - How to call: SMTPAdvancedTool.send_template_email(to="user@domain.com", template_path="templates/welcome.html", variables={"name": "Alice", "code": "JOIN20"}, subject="Welcome aboard!")
+
+3. monitor_inbox:
+   - Purpose: Runs continuous polling loops over targeted inbox assets to instantly notify applications when specific events trigger.
+   - Arguments:
+     a) email: str (default: None) - IMAP tracking inbox destination account text.
+     b) password: str (default: None) - Verification token credentials mapping access.
+     c) imap_host: str (default: "imap.gmail.com") - Root storage endpoint path.
+     d) callback: function (default: None) - Target runtime task fired when matching unread items register.
+     e) folder: str (default: "INBOX") - Specific directory partition to query.
+     f) interval: int (default: 60) - Pause buffer tracking wait states in seconds.
+     g) filter_from: str (default: "") - Filtering target looking for specific sender addresses.
+     h) filter_subject: str (default: "") - Subject string sub-segment target matches.
+     i) cred_key: str (default: "smtp") - Shared validation profile tracking configuration values.
+   - Returns: ToolResult certifying background thread activation parameters.
+   - How to call: SMTPAdvancedTool.monitor_inbox(interval=30, filter_from="alerts@security.internal", callback=parse_incident_log)
+
+4. search_emails:
+   - Purpose: Performs indexed search parameters across historical message datastores using structured IMAP filter descriptors.
+   - Arguments:
+     a) email: str (default: None) - User workspace login identity.
+     b) password: str (default: None) - Private account security credential.
+     c) imap_host: str (default: "imap.gmail.com") - Domain routing link for IMAP instances.
+     d) criteria: str (default: "ALL") - IMAP syntax expression string used to execute server queries.
+     e) folder: str (default: "INBOX") - Targeted workspace subfolder structure.
+     f) limit: int (default: 20) - Max volume constraints sizing response collections.
+     g) cred_key: str (default: "smtp") - Internal identification storage index.
+   - Returns: ToolResult packing dictionaries tracking IDs, sender info, titles, and timestamp tags.
+   - How to call: SMTPAdvancedTool.search_emails(criteria='(SINCE "01-Jan-2026" SUBJECT "Report")', limit=5)
+
+5. download_attachments:
+   - Purpose: Automated extraction systems isolating files matching explicit tracking rules.
+   - Arguments:
+     a) email: str (default: None) - System inbox identifier string.
+     b) password: str (default: None) - Target authorization password token mapping.
+     c) imap_host: str (default: "imap.gmail.com") - Base cluster retrieval endpoint.
+     d) output_folder: str (default: "attachments") - Disk storage directory tracking target locations.
+     e) filter_from: str (default: "") - Source criteria validation constraint.
+     f) filter_subject: str (default: "") - Structural title pattern filter indicator.
+     g) cred_key: str (default: "smtp") - Storage index mapping.
+   - Returns: ToolResult outputting download volume metrics along destination paths.
+   - How to call: SMTPAdvancedTool.download_attachments(output_folder="/data/receipts", filter_subject="Receipt")
+
+6. auto_reply:
+   - Purpose: Acts as a simplified out-of-office tracker or receipt confirmation loop targeting new unread queries.
+   - Arguments:
+     a) email: str (default: None) - Mail account tracking target.
+     b) password: str (default: None) - Access system password parameters.
+     c) imap_host: str (default: "imap.gmail.com") - Server link metadata tracking records.
+     d) reply_template: str (default: "...") - Simple plain-text response payload mapping text outputs.
+     e) filter_subject: str (default: "") - Constraint mapping targeted mail subjects.
+     f) only_unread: bool (default: True) - Logic flag limiting processing steps strictly to new messages.
+     g) cred_key: str (default: "smtp") - Global configurations vault key.
+   - Returns: ToolResult logging the quantity of processed and sent message logs.
+   - How to call: SMTPAdvancedTool.auto_reply(reply_template="We received your bug report and are reviewing it.", filter_subject="BUG:")
+
+7. forward_emails:
+   - Purpose: Pipelines raw message logs across different organizational mail loops or data sinks seamlessly.
+   - Arguments:
+     a) email: str (default: None) - Source profile tracker.
+     b) password: str (default: None) - Authorization keys mapping file.
+     c) imap_host: str (default: "imap.gmail.com") - Retrieval point profile descriptor.
+     d) forward_to: str - Destination tracking email pathway address.
+     e) filter_subject: str (default: "") - Segment boundaries isolation pattern mapping.
+     f) delete_after: bool (default: False) - Clear system records toggle removing source items after transmission.
+     g) cred_key: str (default: "smtp") - Fallback configuration token parameters map.
+   - Returns: ToolResult validating forward transaction completeness metrics.
+   - How to call: SMTPAdvancedTool.forward_emails(forward_to="archive@company.com", filter_subject="Urgent", delete_after=True)
+
+8. mark_as_read:
+   - Purpose: Flags messy notification queues or system updates to maintain clear visibility states across inboxes.
+   - Arguments:
+     a) email: str (default: None) - Account access mapping string target.
+     b) password: str (default: None) - Access key parameters token record.
+     c) imap_host: str (default: "imap.gmail.com") - Active server registry link mapping.
+     d) criteria: str (default: "UNSEEN") - Search parameters mapping specific target scopes to adjust.
+     e) cred_key: str (default: "smtp") - Security access mapping pointers profile index.
+   - Returns: ToolResult tracking successful flag revision totals.
+   - How to call: SMTPAdvancedTool.mark_as_read(criteria='(FROM "newsletter@spam.com")')
+
+9. delete_emails:
+   - Purpose: Purges bulk notifications, logs, or error streams out of high-volume monitoring accounts.
+   - Arguments:
+     a) email: str (default: None) - Target mailbox tracking index.
+     b) password: str (default: None) - Identity validation strings tracking secret configurations.
+     c) imap_host: str (default: "imap.gmail.com") - Domain processing node pathway string.
+     d) criteria: str (default: "ALL") - Parsing string determining erasure criteria parameters.
+     e) cred_key: str (default: "smtp") - Default verification access lookup key context.
+   - Returns: ToolResult identifying clean processing tallies after storage expunge routines complete.
+   - How to call: SMTPAdvancedTool.delete_emails(criteria='(BEFORE "01-Jan-2025")')
+
+10. create_filter_rule:
+    - Purpose: Performs localized classification routing, folder migrations, or dynamic processing workflows based on incoming message headers.
+    - Arguments:
+      a) email: str (default: None) - Managed user account tracking profile reference.
+      b) password: str (default: None) - Security application key credentials indicator.
+      c) imap_host: str (default: "imap.gmail.com") - System location mapping link address string.
+      d) from_addr: str - Target sender criteria parameter matching specific messaging origins.
+      e) action: str (default: "move") - Processing action selector toggle ("move", "delete", "mark_read").
+      f) folder: str (default: "INBOX") - Target storage destination directory tracking path values (used during "move" executions).
+      g) cred_key: str (default: "smtp") - Primary credential storage key references tracking vault records.
+    - Returns: ToolResult indicating rule validation success metrics alongside item change metrics.
+    - How to call: SMTPAdvancedTool.create_filter_rule(from_addr="billing@cloud.com", action="move", folder="Invoices/Cloud")
+""")
 
     @staticmethod
     def send_html_email(
