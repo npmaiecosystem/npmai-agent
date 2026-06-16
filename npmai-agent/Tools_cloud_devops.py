@@ -48,7 +48,181 @@ from agent_core import ToolResult, CredStore
 class AWSS3Tool:
     name = "aws_s3"
     description = "Complete AWS S3 operations: buckets, objects, presigned URLs, static sites, sync"
+    use = (
+        """
+Name of Tool:- AWSS3Tool,
 
+Purpose of Tool:- 
+The AWSS3Tool provides a complete, production-ready interface to Amazon Web Services (AWS) S3 for bucket and object management. 
+It supports creating and deleting buckets (with versioning and ACL options), uploading and downloading individual files or entire folders, listing objects, copying objects, generating presigned URLs for secure sharing, setting bucket policies, enabling static website hosting, advanced folder synchronization (with change detection via MD5), retrieving object metadata, listing buckets, and calculating bucket size. 
+All operations are performed using the boto3 library with credentials loaded from CredStore. 
+This tool is ideal for cloud storage automation, static asset deployment, backups, data pipelines, static website hosting, and agentic cloud infrastructure management.
+
+Methods:-
+- _client: Internal helper to initialize authenticated S3 boto3 client.
+- create_bucket: Creates a new S3 bucket with optional versioning and ACL.
+- delete_bucket: Deletes a bucket (optionally with force to empty it first).
+- upload_file: Uploads a single local file to S3.
+- upload_folder: Recursively uploads an entire local folder to S3.
+- download_file: Downloads a single file from S3 to local path.
+- download_folder: Recursively downloads all objects under a prefix to local folder.
+- list_objects: Lists objects in a bucket with optional prefix and delimiter.
+- delete_object: Deletes a single object from a bucket.
+- copy_object: Copies an object between buckets or within the same bucket.
+- get_presigned_url: Generates a time-limited presigned URL for downloading an object.
+- set_bucket_policy: Applies a JSON bucket policy for access control.
+- enable_static_website: Enables static website hosting on a bucket.
+- sync_folder: Bidirectional-aware sync from local folder to S3 (with change detection and optional delete).
+- get_object_metadata: Retrieves detailed metadata for a specific object.
+- list_buckets: Lists all buckets owned by the authenticated user.
+- get_bucket_size: Calculates total size and object count of a bucket.
+
+How to use Tool Methods:-
+
+1. _client (Internal Authentication Helper):
+   - Purpose: Creates and returns a boto3 S3 client using credentials from CredStore.
+   - Arguments:
+     a) cred_key: str (default: "aws") - Key to load AWS credentials from CredStore.
+   - Credential format expected: {'access_key_id': '...', 'secret_access_key': '...', 'region': 'us-east-1'}.
+   - Note: Internal method. Do not call directly.
+
+2. create_bucket:
+   - Purpose: Creates a new S3 bucket with optional configuration.
+   - Arguments:
+     a) name: str - Bucket name (globally unique).
+     b) region: str (default: "us-east-1") - AWS region.
+     c) versioning: bool (default: False) - Enable object versioning.
+     d) acl: str (default: "private") - Bucket ACL ("private", "public-read", etc.).
+     e) cred_key: str (default: "aws").
+   - How to call: AWSS3Tool.create_bucket(name="my-unique-bucket", region="ap-south-1", versioning=True)
+
+3. delete_bucket:
+   - Purpose: Deletes an S3 bucket. Use force=True to empty it first (handles versions and delete markers).
+   - Arguments:
+     a) name: str - Bucket name.
+     b) force: bool (default: False) - Empty bucket before deletion.
+     c) cred_key: str (default: "aws").
+   - How to call: AWSS3Tool.delete_bucket(name="my-bucket", force=True)
+
+4. upload_file:
+   - Purpose: Uploads a single file with optional ACL and metadata.
+   - Arguments:
+     a) bucket: str - Target bucket name.
+     b) local_path: str - Path to local file.
+     c) s3_key: str (default: "") - Target key in S3 (defaults to filename).
+     d) acl: str (default: "private").
+     e) metadata: dict (default: None) - Custom metadata key-value pairs.
+     f) cred_key: str (default: "aws").
+   - How to call: AWSS3Tool.upload_file(bucket="my-bucket", local_path="report.pdf", s3_key="reports/report.pdf", metadata={"category": "finance"})
+
+5. upload_folder:
+   - Purpose: Recursively uploads all files from a local folder, preserving structure.
+   - Arguments:
+     a) bucket: str
+     b) local_folder: str - Local directory path.
+     c) prefix: str (default: "") - S3 prefix/folder path.
+     d) cred_key: str (default: "aws").
+   - How to call: AWSS3Tool.upload_folder(bucket="my-bucket", local_folder="./static", prefix="assets")
+
+6. download_file:
+   - Purpose: Downloads a single object from S3.
+   - Arguments:
+     a) bucket: str
+     b) s3_key: str - Object key in S3.
+     c) local_path: str - Destination path (creates directories if needed).
+     d) cred_key: str (default: "aws").
+   - How to call: AWSS3Tool.download_file(bucket="my-bucket", s3_key="data/file.zip", local_path="./downloads/file.zip")
+
+7. download_folder:
+   - Purpose: Recursively downloads all objects under a prefix.
+   - Arguments:
+     a) bucket: str
+     b) prefix: str - S3 prefix to download.
+     c) local_path: str - Local destination folder.
+     d) cred_key: str (default: "aws").
+   - How to call: AWSS3Tool.download_folder(bucket="my-bucket", prefix="backups/", local_path="./restored")
+
+8. list_objects:
+   - Purpose: Lists objects in a bucket with pagination support.
+   - Arguments:
+     a) bucket: str
+     b) prefix: str (default: "") - Filter by prefix.
+     c) delimiter: str (default: "") - For folder-like grouping.
+     d) max_keys: int (default: 1000).
+     e) cred_key: str (default: "aws").
+   - Returns: List of objects with key, size, and last_modified.
+   - How to call: AWSS3Tool.list_objects(bucket="my-bucket", prefix="images/", max_keys=500)
+
+9. delete_object:
+   - Purpose: Deletes a single object.
+   - Arguments: bucket, key, cred_key.
+   - How to call: AWSS3Tool.delete_object(bucket="my-bucket", key="oldfile.txt")
+
+10. copy_object:
+    - Purpose: Copies an object between buckets or renames within the same bucket.
+    - Arguments:
+      a) source_bucket: str
+      b) source_key: str
+      c) dest_bucket: str
+      d) dest_key: str
+      e) cred_key: str (default: "aws").
+    - How to call: AWSS3Tool.copy_object(source_bucket="old-bucket", source_key="file.jpg", dest_bucket="new-bucket", dest_key="images/file.jpg")
+
+11. get_presigned_url:
+    - Purpose: Generates a temporary public URL for downloading a private object.
+    - Arguments:
+      a) bucket: str
+      b) key: str
+      c) expiry_seconds: int (default: 3600) - URL validity in seconds.
+      d) cred_key: str (default: "aws").
+    - How to call: AWSS3Tool.get_presigned_url(bucket="my-bucket", key="report.pdf", expiry_seconds=86400)
+
+12. set_bucket_policy:
+    - Purpose: Applies a custom JSON bucket policy for fine-grained access control.
+    - Arguments:
+      a) bucket: str
+      b) policy_json: str or dict - Bucket policy JSON.
+      c) cred_key: str (default: "aws").
+    - How to call: AWSS3Tool.set_bucket_policy(bucket="my-bucket", policy_json=policy_dict)
+
+13. enable_static_website:
+    - Purpose: Configures a bucket for static website hosting.
+    - Arguments:
+      a) bucket: str
+      b) index: str (default: "index.html") - Index document.
+      c) error: str (default: "error.html") - Error document.
+      d) cred_key: str (default: "aws").
+    - Returns: Website URL.
+    - How to call: AWSS3Tool.enable_static_website(bucket="my-static-site", index="index.html")
+
+14. sync_folder:
+    - Purpose: Intelligent synchronization of local folder to S3. Skips unchanged files using MD5 comparison and optionally deletes remote files not present locally.
+    - Arguments:
+      a) local: str - Local folder path.
+      b) bucket: str
+      c) prefix: str (default: "") - Target S3 prefix.
+      d) delete: bool (default: False) - Delete remote files not in local.
+      e) cred_key: str (default: "aws").
+    - Returns: Summary of uploaded, skipped, and deleted counts.
+    - How to call: AWSS3Tool.sync_folder(local="./website", bucket="my-static-site", prefix="", delete=True)
+
+15. get_object_metadata:
+    - Purpose: Gets detailed metadata (size, content type, ETag, last modified, custom metadata) for an object.
+    - Arguments: bucket, key, cred_key.
+    - How to call: AWSS3Tool.get_object_metadata(bucket="my-bucket", key="file.pdf")
+
+16. list_buckets:
+    - Purpose: Lists all S3 buckets owned by the account.
+    - Arguments: cred_key.
+    - How to call: AWSS3Tool.list_buckets()
+
+17. get_bucket_size:
+    - Purpose: Computes total storage size and object count for a bucket.
+    - Arguments: bucket, cred_key.
+    - Returns: Object count and size in bytes/MB.
+    - How to call: AWSS3Tool.get_bucket_size(bucket="my-bucket")
+""")
+    
     @staticmethod
     def _client(cred_key: str = "aws"):
         import boto3
@@ -357,7 +531,155 @@ class AWSS3Tool:
 class AWSLambdaTool:
     name = "aws_lambda"
     description = "AWS Lambda function management: create, deploy, invoke, logs, triggers"
+    use = (
+        """
+Name of Tool:- AWSLambdaTool,
 
+Purpose of Tool:- 
+The AWSLambdaTool provides a complete interface for managing AWS Lambda functions. 
+It supports the full lifecycle of serverless functions: creation with code deployment, code and configuration updates, invocation (synchronous and asynchronous), deletion, listing, detailed inspection, layer management, event source triggers (S3 and API Gateway), log retrieval, and version listing. 
+All operations use the boto3 Lambda client with AWS credentials loaded from CredStore. 
+This tool is designed for serverless application deployment, automation, CI/CD integration, event-driven architectures, and agentic cloud function management on AWS.
+
+Methods:-
+- _client: Internal helper to initialize authenticated Lambda boto3 client.
+- create_function: Creates a new Lambda function from a deployment package.
+- update_function_code: Updates the code of an existing Lambda function.
+- update_function_config: Updates configuration settings like environment variables, timeout, and memory.
+- invoke_function: Invokes a Lambda function (sync or async) with optional payload.
+- delete_function: Deletes a Lambda function.
+- list_functions: Lists all Lambda functions with optional name prefix filtering.
+- get_function: Retrieves detailed configuration and status of a specific function.
+- add_layer: Attaches a Lambda layer to a function.
+- create_trigger_s3: Sets up an S3 event trigger for a Lambda function.
+- create_trigger_api_gateway: Creates an HTTP API Gateway endpoint that triggers the Lambda.
+- get_logs: Retrieves recent CloudWatch logs for a Lambda function.
+- list_versions: Lists published versions of a Lambda function.
+
+How to use Tool Methods:-
+
+1. _client (Internal Authentication Helper):
+   - Purpose: Creates and returns a boto3 Lambda client using credentials from CredStore.
+   - Arguments:
+     a) cred_key: str (default: "aws") - Key to load AWS credentials from CredStore.
+   - Credential format expected: {'access_key_id': '...', 'secret_access_key': '...', 'region': 'us-east-1'}.
+   - Note: This is an internal method used by all other methods. You generally do not call it directly.
+
+2. create_function:
+   - Purpose: Creates a new Lambda function by uploading a deployment ZIP package and configuring runtime settings.
+   - Arguments:
+     a) name: str - Name of the Lambda function (required).
+     b) runtime: str - Runtime environment (e.g., "python3.12", "nodejs20.x").
+     c) handler: str - Handler identifier (e.g., "lambda_function.lambda_handler").
+     d) zip_path: str - Local path to the deployment ZIP file containing code.
+     e) role_arn: str - IAM Role ARN with necessary permissions for the Lambda.
+     f) env: dict (default: None) - Environment variables for the function.
+     g) timeout: int (default: 30) - Maximum execution time in seconds.
+     h) memory: int (default: 128) - Memory allocation in MB.
+     i) cred_key: str (default: "aws").
+   - Returns: Function ARN and initial state.
+   - How to call: 
+     AWSLambdaTool.create_function(
+         name="my-function",
+         runtime="python3.12",
+         handler="app.lambda_handler",
+         zip_path="deployment.zip",
+         role_arn="arn:aws:iam::123456789012:role/lambda-role",
+         env={"ENV": "production"},
+         timeout=60,
+         memory=512
+     )
+
+3. update_function_code:
+   - Purpose: Deploys new code to an existing Lambda function by uploading a fresh ZIP package.
+   - Arguments:
+     a) name: str - Function name.
+     b) zip_path: str - Path to the new deployment ZIP.
+     c) cred_key: str (default: "aws").
+   - Returns: New version ID.
+   - How to call: AWSLambdaTool.update_function_code(name="my-function", zip_path="new_code.zip")
+
+4. update_function_config:
+   - Purpose: Modifies runtime configuration without changing the code.
+   - Arguments:
+     a) name: str
+     b) env: dict (default: None) - New environment variables.
+     c) timeout: int (default: None)
+     d) memory: int (default: None)
+     e) cred_key: str (default: "aws").
+   - How to call: AWSLambdaTool.update_function_config(name="my-function", env={"DEBUG": "true"}, timeout=120)
+
+5. invoke_function:
+   - Purpose: Executes a Lambda function and optionally waits for the response.
+   - Arguments:
+     a) name: str - Function name.
+     b) payload: dict (default: None) - JSON-serializable input data.
+     c) async_invoke: bool (default: False) - If True, fires and forgets (Event invocation).
+     d) cred_key: str (default: "aws").
+   - Returns: Execution result (for sync) or status (for async).
+   - How to call: AWSLambdaTool.invoke_function(name="my-function", payload={"key": "value"})
+
+6. delete_function:
+   - Purpose: Permanently deletes a Lambda function and all its versions.
+   - Arguments: name, cred_key.
+   - How to call: AWSLambdaTool.delete_function(name="my-function")
+
+7. list_functions:
+   - Purpose: Lists all Lambda functions in the account with basic configuration info.
+   - Arguments:
+     a) prefix: str (default: "") - Filter functions by name prefix.
+     b) cred_key: str (default: "aws").
+   - Returns: List of functions with name, runtime, memory, timeout, etc.
+   - How to call: AWSLambdaTool.list_functions(prefix="prod-")
+
+8. get_function:
+   - Purpose: Retrieves comprehensive information about a specific Lambda function.
+   - Arguments: name, cred_key.
+   - Returns: ARN, runtime, handler, memory, timeout, state, environment variables, etc.
+   - How to call: AWSLambdaTool.get_function(name="my-function")
+
+9. add_layer:
+   - Purpose: Attaches an existing Lambda layer (for shared libraries, dependencies, etc.) to a function.
+   - Arguments:
+     a) name: str - Function name.
+     b) layer_arn: str - Full ARN of the layer to attach.
+     c) cred_key: str (default: "aws").
+   - How to call: AWSLambdaTool.add_layer(name="my-function", layer_arn="arn:aws:lambda:us-east-1:123456789012:layer:my-layer:1")
+
+10. create_trigger_s3:
+    - Purpose: Configures an S3 bucket event notification to automatically invoke the Lambda on specified events (e.g., object upload).
+    - Arguments:
+      a) function: str - Lambda function name.
+      b) bucket: str - S3 bucket name.
+      c) events: list (default: None) - List of S3 events (e.g., ["s3:ObjectCreated:*"]).
+      d) cred_key: str (default: "aws").
+    - How to call: AWSLambdaTool.create_trigger_s3(function="my-function", bucket="my-data-bucket", events=["s3:ObjectCreated:Put"])
+
+11. create_trigger_api_gateway:
+    - Purpose: Creates a simple HTTP API Gateway that exposes the Lambda function as a public (or protected) REST endpoint.
+    - Arguments:
+      a) function: str - Lambda function name.
+      b) cred_key: str (default: "aws").
+    - Returns: API ID and endpoint URL.
+    - How to call: AWSLambdaTool.create_trigger_api_gateway(function="my-function")
+
+12. get_logs:
+    - Purpose: Fetches the most recent CloudWatch log events for a Lambda function.
+    - Arguments:
+      a) function: str
+      b) start_time: int (default: None) - Unix timestamp in milliseconds.
+      c) end_time: int (default: None)
+      d) cred_key: str (default: "aws").
+    - Returns: List of log events with timestamp and message.
+    - How to call: AWSLambdaTool.get_logs(function="my-function")
+
+13. list_versions:
+    - Purpose: Lists all published versions of a Lambda function.
+    - Arguments: name, cred_key.
+    - Returns: List of versions with version number, description, and modification time.
+    - How to call: AWSLambdaTool.list_versions(name="my-function")
+""")
+    
     @staticmethod
     def _client(cred_key: str = "aws"):
         import boto3
@@ -664,7 +986,150 @@ class AWSLambdaTool:
 class AWSECSTool:
     name = "aws_ecs"
     description = "ECS/Fargate container orchestration: clusters, tasks, services, logs"
+    use = (
+        """
+Name of Tool:- AWSECSTool,
 
+Purpose of Tool:- 
+The AWSECSTool provides a comprehensive interface to Amazon Elastic Container Service (ECS) with Fargate support for container orchestration on AWS. 
+It enables full management of ECS clusters, task definitions, individual tasks, long-running services, service updates, task lifecycle control (run/stop/describe), and retrieval of container logs from CloudWatch. 
+All operations use the boto3 ECS client (and CloudWatch Logs client where needed) with AWS credentials loaded from CredStore. 
+This tool is designed for deploying, scaling, and managing containerized applications, microservices, batch jobs, and serverless container workloads in production environments.
+
+Methods:-
+- _client: Internal helper to initialize authenticated ECS boto3 client.
+- create_cluster: Creates a new ECS cluster.
+- delete_cluster: Deletes an existing ECS cluster.
+- register_task_definition: Registers a new task definition for Fargate.
+- run_task: Runs one or more standalone tasks on Fargate.
+- stop_task: Stops a running task.
+- list_tasks: Lists tasks in a cluster, optionally filtered by service and status.
+- create_service: Creates a long-running ECS service.
+- update_service: Updates an existing service (task definition or desired count).
+- delete_service: Deletes an ECS service.
+- describe_tasks: Retrieves detailed information about specific tasks.
+- get_task_logs: Fetches CloudWatch logs for a specific task and container.
+
+How to use Tool Methods:-
+
+1. _client (Internal Authentication Helper):
+   - Purpose: Creates and returns a boto3 ECS client using credentials from CredStore.
+   - Arguments:
+     a) cred_key: str (default: "aws") - Key to load AWS credentials from CredStore.
+   - Credential format expected: {'access_key_id': '...', 'secret_access_key': '...', 'region': 'us-east-1'}.
+   - Note: Internal method used by all other methods. You generally do not call it directly.
+
+2. create_cluster:
+   - Purpose: Creates a new ECS cluster, optionally with specific capacity providers.
+   - Arguments:
+     a) name: str - Name of the cluster (required).
+     b) capacity_providers: list (default: None) - List of capacity providers (e.g., ["FARGATE", "FARGATE_SPOT"]).
+     c) cred_key: str (default: "aws").
+   - Returns: Cluster ARN and status.
+   - How to call: AWSECSTool.create_cluster(name="production-cluster", capacity_providers=["FARGATE"])
+
+3. delete_cluster:
+   - Purpose: Deletes an ECS cluster (cluster must be empty of services and tasks).
+   - Arguments:
+     a) name: str - Cluster name.
+     b) cred_key: str (default: "aws").
+   - How to call: AWSECSTool.delete_cluster(name="production-cluster")
+
+4. register_task_definition:
+   - Purpose: Registers a new task definition compatible with Fargate, defining container configurations.
+   - Arguments:
+     a) family: str - Task definition family name.
+     b) containers: list - List of container definitions (each containing image, name, portMappings, environment, etc.).
+     c) cpu: str (default: "256") - CPU units (e.g., "256", "512", "1024").
+     d) memory: str (default: "512") - Memory in MB (e.g., "512", "1024", "2048").
+     e) network_mode: str (default: "awsvpc").
+     f) cred_key: str (default: "aws").
+   - Returns: Task definition ARN and revision number.
+   - How to call: AWSECSTool.register_task_definition(family="my-app", containers=[{"name": "web", "image": "nginx:latest", ...}], cpu="512", memory="1024")
+
+5. run_task:
+   - Purpose: Launches one or more standalone tasks (suitable for batch jobs or one-off executions) on Fargate.
+   - Arguments:
+     a) cluster: str - Target ECS cluster name.
+     b) task_def: str - Task definition ARN or family:revision.
+     c) subnets: list (default: None) - List of VPC subnet IDs.
+     d) security_groups: list (default: None) - List of security group IDs.
+     e) overrides: dict (default: None) - Task overrides (environment variables, command, etc.).
+     f) count: int (default: 1) - Number of tasks to run.
+     g) cred_key: str (default: "aws").
+   - Returns: Started tasks and any failures.
+   - How to call: AWSECSTool.run_task(cluster="production-cluster", task_def="my-app:1", subnets=["subnet-123"], count=2)
+
+6. stop_task:
+   - Purpose: Stops a running task with an optional reason.
+   - Arguments:
+     a) cluster: str
+     b) task_id: str - Task ARN or short ID.
+     c) reason: str (default: "Stopped by NPM Agent").
+     d) cred_key: str (default: "aws").
+   - How to call: AWSECSTool.stop_task(cluster="production-cluster", task_id="task-arn", reason="Maintenance")
+
+7. list_tasks:
+   - Purpose: Lists tasks in a cluster, optionally filtered by service and desired status.
+   - Arguments:
+     a) cluster: str
+     b) service: str (default: "") - Filter by service name.
+     c) status: str (default: "RUNNING") - "RUNNING", "PENDING", "STOPPED", etc.
+     d) cred_key: str (default: "aws").
+   - Returns: List of task ARNs.
+   - How to call: AWSECSTool.list_tasks(cluster="production-cluster", service="web-service", status="RUNNING")
+
+8. create_service:
+   - Purpose: Creates a managed, long-running ECS service that maintains the desired number of tasks.
+   - Arguments:
+     a) cluster: str
+     b) name: str - Service name.
+     c) task_def: str - Task definition to use.
+     d) desired_count: int (default: 1) - Number of tasks to maintain.
+     e) lb_config: dict (default: None) - Load balancer configuration for target group registration.
+     f) cred_key: str (default: "aws").
+   - Returns: Service ARN and status.
+   - How to call: AWSECSTool.create_service(cluster="production-cluster", name="web-service", task_def="my-app:1", desired_count=3)
+
+9. update_service:
+   - Purpose: Updates an existing service's task definition or desired task count.
+   - Arguments:
+     a) cluster: str
+     b) name: str - Service name.
+     c) task_def: str (default: None) - New task definition.
+     d) desired_count: int (default: None) - New desired count.
+     e) cred_key: str (default: "aws").
+   - How to call: AWSECSTool.update_service(cluster="production-cluster", name="web-service", desired_count=5)
+
+10. delete_service:
+    - Purpose: Deletes an ECS service (optionally scales it down to zero first).
+    - Arguments:
+      a) cluster: str
+      b) name: str
+      c) force: bool (default: False) - Scale to zero before deletion.
+      d) cred_key: str (default: "aws").
+    - How to call: AWSECSTool.delete_service(cluster="production-cluster", name="web-service", force=True)
+
+11. describe_tasks:
+    - Purpose: Gets detailed status and container information for one or more tasks.
+    - Arguments:
+      a) cluster: str
+      b) tasks: list - List of task ARNs or IDs.
+      c) cred_key: str (default: "aws").
+    - Returns: Rich task details including container statuses and exit codes.
+    - How to call: AWSECSTool.describe_tasks(cluster="production-cluster", tasks=["task-arn-1", "task-arn-2"])
+
+12. get_task_logs:
+    - Purpose: Retrieves recent CloudWatch Logs for a specific task and container using standard ECS log stream naming.
+    - Arguments:
+      a) cluster: str
+      b) task_id: str - Full task ARN or short ID.
+      c) container: str - Container name as defined in task definition.
+      d) cred_key: str (default: "aws").
+    - Returns: List of log events with timestamp and message.
+    - How to call: AWSECSTool.get_task_logs(cluster="production-cluster", task_id="task-arn", container="web")
+""")
+    
     @staticmethod
     def _client(cred_key: str = "aws"):
         import boto3
