@@ -105,7 +105,171 @@ class DataAnalysisTool:
         "merge, pivot, time-series, correlation, clustering, ML feature importance, "
         "and natural-language queries via Ollama."
     )
+    use = (
+        """Name of Tool:- DataAnalysisTool
 
+Purpose of Tool:-
+The DataAnalysisTool is an advanced data intelligence and feature engineering wrapper built on top of high-performance ecosystems like pandas, scikit-learn, and Plotly. It serves as an automated pipeline engine designed to load multi-format tabular datasets (such as CSV, Parquet, Excel, and JSON), clean anomalies via robust median/mode imputation, and profile data structures dynamically. Beyond structural formatting, the tool provides native statistical and analytical modules—including K-Means clustering configurations, unsupervised outlier extraction algorithms, feature significance modeling via Random Forests, rolling time-series analyses, and interactive correlation engines. Additionally, it integrates a localized natural language parsing gateway that passes dataset schemas to an LLM context layer to execute zero-shot data extraction queries programmatically.
+
+Methods:-
+- load: Parses raw external data objects into standardized in-memory structures while extracting baseline dimensional logs.
+- save: Dispatches operational dataset mutations back to disk storage configurations using specified tabular serialization protocols.
+- profile: Automates exploratory data reporting pipelines, compiling structural indices, duplicate evaluations, and descriptive statistics into portable HTML files.
+- clean: Programmatically strips record duplicates, automatically resolves messy column data types, and replaces null nodes with statistical markers.
+- transform: Runs sequenced structural modifications (such as string filters, row sorting, text modifications, and computed evaluations) across active tables.
+- filter_data: Isolates target cohorts from source arrays using specialized tabular filtering queries.
+- merge_files: Combines split database fragments into centralized matrices over specified alignment keys.
+- pivot: Reshapes transactional tables into strategic multi-dimensional summaries aggregated by key metrics.
+- time_series_analysis: Extracts sequential trends by running rolling metrics over temporal features and rendering the output into interactive line components.
+- correlation_matrix: Computes spatial dependency strengths across linear data properties using specified similarity tests.
+- outlier_detection: Uncovers statistical data anomalies using IQR bounds or standard variations.
+- feature_importance: Measures target variable correlation weights using machine learning tree splits to isolate top predictive properties.
+- cluster_data: Separates highly dimensioned coordinate records into discrete relational cohorts using unsupervised spatial modeling.
+- natural_language_query: Translates human language requests into executed syntax expressions to query structural data.
+- auto_visualize: Scans target structures to generate distributed charts and frequency graphs automatically.
+
+How to use Tool Methods:-
+
+1. load:
+   - Purpose: Translates local files into an operative data context.
+   - Arguments:
+     a) path: str - Target dataset storage path.
+     b) sheet: str (default: "Sheet1") - Specific worksheet index identifier for spreadsheet files.
+     c) sep: str (default: ",") - Delimiter character tracking separated value entries.
+     d) encoding: str (default: "utf-8") - Standard file bit format descriptor.
+     e) dtype: Optional[Dict[str, str]] (default: None) - Key-value map enforcing hard column data types.
+   - Returns: ToolResult tracking parsed dimension attributes.
+   - How to call: DataAnalysisTool.load(path="data/metrics.csv", sep=",", dtype={"user_id": "str"})
+
+2. save:
+   - Purpose: Commits active dataset changes permanently back to file systems.
+   - Arguments:
+     a) df: DataFrame - The internal source data matrix to output.
+     b) path: str - Destination tracking path string.
+     c) format: str (default: "csv") - Target layout storage type ("csv", "xlsx", "parquet", "json").
+     d) index: bool (default: False) - Flag determining whether to include index rows.
+   - Returns: ToolResult highlighting record serialization summaries.
+   - How to call: DataAnalysisTool.save(df=clean_df, path="exports/final_report.parquet", format="parquet")
+
+3. profile:
+   - Purpose: Constructs automated auditing dossiers of specific dataset traits.
+   - Arguments:
+     a) df_or_path: DataFrame or str - Native data frame object or file system address.
+     b) output_html: str (default: "profile_report.html") - File target endpoint identifier.
+   - Returns: ToolResult embedding structured parameter matrix tallies.
+   - How to call: DataAnalysisTool.profile(df_or_path="raw_data.json", output_html="reports/audit.html")
+
+4. clean:
+   - Purpose: Normalizes structural tabular sets by filling null fields and cleaning row items.
+   - Arguments:
+     a) df_or_path: DataFrame or str - Source object or path reference tracker.
+     b) drop_duplicates: bool (default: True) - Flag stating whether matching rows should be removed.
+     c) fill_nulls: Optional[Dict[str, Any]] (default: None) - Dedicated custom value dictionary mapping for target column null blocks.
+     d) fix_dtypes: bool (default: True) - Activates automated object-to-datetime or numeric processing checks.
+   - Returns: ToolResult logging mutation actions and remaining null values.
+   - How to call: DataAnalysisTool.clean(df_or_path=raw_df, fill_nulls={"status": "unknown"})
+
+5. transform:
+   - Purpose: Executes sequential column, structural, or value transformations via a serialized operations array.
+   - Arguments:
+     a) df_or_path: DataFrame or str - Processing target tracking baseline.
+     b) operations: List[Dict[str, Any]] - An array of command dictionaries containing actions like `rename`, `drop`, `add_column`, `sort`, `sample`, `filter`, or `astype`.
+   - Returns: ToolResult containing the updated data array.
+   - How to call: DataAnalysisTool.transform(df_or_path="users.csv", operations=[{"type": "drop", "columns": ["ssn"]}, {"type": "rename", "columns": {"id": "user_id"}}])
+
+6. filter_data:
+   - Purpose: Isolates a specific cohort of rows using custom validation rules.
+   - Arguments:
+     a) df_or_path: DataFrame or str - Operational dataset variable or address.
+     b) conditions: List[str] - Query string expressions describing target evaluation checks.
+   - Returns: ToolResult holding the subset records.
+   - How to call: DataAnalysisTool.filter_data(df_or_path=my_df, conditions=["age >= 18", "country == 'IN'"])
+
+7. merge_files:
+   - Purpose: Joins separate files along identical tracking columns.
+   - Arguments:
+     a) paths: List[str] - Collection of file resource storage locations.
+     b) on: Union[str, List[str]] - Shared key property or list of properties to join on.
+     c) how: str (default: "inner") - Structural alignment rule mapping ("inner", "outer", "left", "right").
+     d) output: str (default: "") - Optional destination tracking path.
+   - Returns: ToolResult summarizing unified output parameters.
+   - How to call: DataAnalysisTool.merge_files(paths=["orders.csv", "customers.csv"], on="customer_id", how="left")
+
+8. pivot:
+   - Purpose: Condenses large rows of logs into structured cross-tabulated dashboards.
+   - Arguments:
+     a) df_or_path: DataFrame or str - Target transactional record array.
+     b) index: str - Property used as the row grouping keys.
+     c) columns: str - Property used as the header column categories.
+     b) values: str - Target numeric column to calculate across cells.
+     e) aggfunc: str (default: "mean") - Evaluation calculator rule type ("sum", "mean", "count", "max", "min").
+     f) output: str (default: "") - Optional export file address string.
+   - Returns: ToolResult holding the summarized structure tracking dimensions.
+   - How to call: DataAnalysisTool.pivot(df_or_path=sales_df, index="region", columns="product", values="revenue", aggfunc="sum")
+
+9. time_series_analysis:
+   - Purpose: Plots sequential variations and trend averages over temporal logs.
+   - Arguments:
+     a) df_or_path: DataFrame or str - Target time-stamped tracker logs.
+     b) date_col: str - Column representing dates or times.
+     c) value_col: str - Continuous measurement line value.
+     d) output: str (default: "time_series.html") - Destination file tracking path.
+   - Returns: ToolResult listing critical minimum, maximum, and deviation details.
+   - How to call: DataAnalysisTool.time_series_analysis(df_or_path=stock_df, date_col="timestamp", value_col="price")
+
+10. correlation_matrix:
+    - Purpose: Visualizes linear association maps across numerical parameters.
+    - Arguments:
+      a) df_or_path: DataFrame or str - Source table matrix.
+      b) method: str (default: "pearson") - Correlation algorithm metric ("pearson", "spearman", "kendall").
+      b) output: str (default: "correlation.html") - Visualization export path tracking address.
+    - Returns: ToolResult exposing computed correlation metrics.
+    - How to call: DataAnalysisTool.correlation_matrix(df_or_path=survey_df, method="spearman")
+
+11. outlier_detection:
+    - Purpose: Highlights data anomalies using mathematical distribution checks.
+    - Arguments:
+      a) df_or_path: DataFrame or str - Targeted dataset structure.
+      b) method: str (default: "iqr") - Variance identifier algorithm selection ("iqr", "zscore").
+      c) threshold: float (default: 1.5) - Factor setting the outlier boundary sensitivity.
+    - Returns: ToolResult mapping absolute anomaly counts found across columns.
+    - How to call: DataAnalysisTool.outlier_detection(df_or_path=sensor_df, method="zscore", threshold=3.0)
+
+12. feature_importance:
+    - Purpose: Pinpoints which variable columns exert the strongest predictive force on a target outcome.
+    - Arguments:
+      a) df_or_path: DataFrame or str - Source dataset reference.
+      b) target_col: str - The specific dependent variable column to classify or predict.
+      c) output: str (default: "feature_importance.html") - Plotly export layout file target destination.
+    - Returns: ToolResult listing sorted importance ratios per variable column.
+    - How to call: DataAnalysisTool.feature_importance(df_or_path=churn_df, target_col="has_churned")
+
+13. cluster_data:
+    - Purpose: Segregates unstructured records into distinct multidimensional spatial groupings.
+    - Arguments:
+      a) df_or_path: DataFrame or str - Input dataset structure.
+      b) n_clusters: int (default: 3) - Fixed count of target group clusters to model.
+      c) output: str (default: "clusters.html") - PCA visual plot file target destination.
+    - Returns: ToolResult containing population assignment values per cluster category.
+    - How to call: DataAnalysisTool.cluster_data(df_or_path=user_features, n_clusters=5, output="charts/segments.html")
+
+14. natural_language_query:
+    - Purpose: Evaluates plain-language search questions into dynamic pandas command statements.
+    - Arguments:
+      a) df_or_path: DataFrame or str - Active workspace table structure.
+      b) query: str - Plain-text data exploration request.
+      c) model: str (default: "llama3.2:3b") - LLM engine selector tag.
+    - Returns: ToolResult tracking parsed data metrics alongside the executed python expression.
+    - How to call: DataAnalysisTool.natural_language_query(df_or_path="store.parquet", query="Find top 5 customers with highest spend")
+
+15. auto_visualize:
+    - Purpose: Automatically scans structural columns to generate distribution charts and frequency bar plots.
+    - Arguments:
+      a) df_or_path: DataFrame or str - Tabular data tracking repository.
+      b) output_folder: str (default: "auto_charts") - Storage directory path tracking outcoming HTML assets.
+    - Returns: ToolResult returning an array of generated image chart location strings.
+    - How to call: DataAnalysisTool.auto_visualize(df_or_path=leads_df, output_folder="dashboards/lead_analysis")
+""")
     # ── helpers ──────────────────────────────────────────────────────────────
 
     @staticmethod
@@ -549,7 +713,113 @@ class VisualizationTool:
         "Charts and interactive dashboards: bar, line, scatter, pie, heatmap, "
         "histogram, box, violin, geo map, sankey, treemap, sunburst, waterfall, candlestick."
     )
+    use = (
+        """
+Name of Tool:- VisualizationTool,
 
+Purpose of Tool:- 
+The VisualizationTool provides a powerful, unified interface for generating a wide variety of interactive and static charts and dashboards using Plotly. 
+It supports bar charts, line charts, scatter plots, pie charts, heatmaps, histograms, box plots, violin plots, geographic maps, Sankey diagrams, treemaps, sunburst charts, waterfall charts, candlestick charts, and multi-chart dashboards. 
+Data can be provided as pandas DataFrames, lists, dictionaries, CSV, or Excel files. 
+All charts can be exported as interactive HTML or static images (PNG, JPG, PDF). 
+This tool is essential for data exploration, business intelligence reporting, interactive dashboards, and agentic data storytelling.
+
+Methods:-
+- _to_df: Internal helper to convert various data sources to pandas DataFrame.
+- _save: Internal helper to save Plotly figures as HTML or image files.
+- bar_chart: Creates bar (column) charts with optional stacking and animation.
+- line_chart: Creates line charts with multiple series, filling, and markers.
+- scatter_plot: Creates scatter plots with size, color, trendlines, and animation.
+- pie_chart: Creates pie or donut charts with optional exploding slices.
+- heatmap: Creates annotated heatmaps from pivot data.
+- histogram: Creates histograms with optional KDE and grouping.
+- box_plot: Creates box-and-whisker plots.
+- violin_plot: Creates violin plots with box and points.
+- geographic_map: Creates interactive scatter maps using Mapbox.
+- create_dashboard: Combines multiple charts into a single HTML dashboard.
+- sankey_diagram: Creates Sankey flow diagrams.
+- treemap: Creates hierarchical treemap visualizations.
+- sunburst: Creates sunburst (radial hierarchical) charts.
+- waterfall_chart: Creates waterfall charts for cumulative changes.
+- candlestick_chart: Creates financial candlestick charts.
+
+How to use Tool Methods:-
+
+1. bar_chart:
+   - Purpose: Generates vertical or horizontal bar charts with optional color grouping and animation.
+   - Arguments:
+     a) data - DataFrame, list of dicts, CSV path, etc.
+     b) x: str - Column for x-axis.
+     c) y: str - Column for y-axis values.
+     d) title: str (default: "Bar Chart")
+     e) output: str (default: "bar_chart.html") - Supports .html, .png, .jpg, .pdf
+     f) color: str (optional) - Column for color grouping.
+     g) orientation: str (default: "v") - "v" or "h".
+     h) stacked: bool (default: False)
+     i) animated: bool (default: False)
+   - How to call: VisualizationTool.bar_chart(data=df, x="category", y="sales", color="region", output="sales.html")
+
+2. line_chart:
+   - Purpose: Creates multi-line time series or trend charts.
+   - Arguments:
+     a) data
+     b) x: str
+     c) y_cols: str or List[str] - One or multiple y columns.
+     d) title, output
+     e) fill: bool (default: False) - Area fill under lines.
+     f) markers: bool (default: False)
+     g) log_scale: bool (default: False)
+   - How to call: VisualizationTool.line_chart(data=df, x="date", y_cols=["sales", "profit"], fill=True)
+
+3. scatter_plot:
+   - Purpose: Creates scatter plots with optional size, color, trendline, and animation.
+   - Arguments:
+     a) data
+     b) x, y
+     c) size: str (optional) - Column for bubble size.
+     d) color: str (optional)
+     e) trendline: bool (default: False) - Adds OLS regression line.
+     f) animated: bool (default: False)
+     g) title, output
+   - How to call: VisualizationTool.scatter_plot(data=df, x="age", y="income", color="gender", trendline=True)
+
+4. pie_chart:
+   - Purpose: Creates pie or donut charts.
+   - Arguments:
+     a) data
+     b) values: str - Value column.
+     c) names: str - Label column.
+     d) hole: float (default: 0.0) - Donut hole ratio.
+     e) explode: List[str] (optional) - Slice names to pull out.
+     f) title, output
+   - How to call: VisualizationTool.pie_chart(data=df, values="sales", names="product")
+
+5. heatmap:
+   - Purpose: Creates color-coded heatmap from pivot data.
+   - Arguments:
+     a) data
+     b) x, y, z - Columns for pivot.
+     c) colorscale: str (default: "Viridis")
+     d) annotate: bool (default: True)
+     e) title, output
+   - How to call: VisualizationTool.heatmap(data=df, x="month", y="category", z="value")
+
+6. histogram, box_plot, violin_plot, geographic_map, sankey_diagram, treemap, sunburst, waterfall_chart, candlestick_chart:
+   - Similar structured arguments tailored to each chart type. See individual method signatures for details.
+   - All support flexible data input and output to HTML/image formats.
+
+7. create_dashboard:
+   - Purpose: Combines multiple pre-generated chart HTML files into a single dashboard page.
+   - Arguments:
+     a) charts: List[str] - List of existing chart HTML file paths.
+     b) layout: List[Tuple[int,int]] (optional) - Grid layout control.
+     c) output_html: str (default: "dashboard.html")
+     d) title: str (default: "Dashboard")
+   - How to call: VisualizationTool.create_dashboard(charts=["chart1.html", "chart2.html"], title="Monthly Report")
+
+**Note**: All chart methods return a ToolResult with success status, message, and output path. Interactive HTML charts are highly recommended for full interactivity.
+""")
+    
     @staticmethod
     def _to_df(data):
         import pandas as pd
@@ -939,7 +1209,142 @@ class WebScrapingAdvancedTool:
         "Production-grade web scraping: JS rendering, pagination, login-protected pages, "
         "bulk scraping, email/phone extraction, site mapping, screenshots, form submission."
     )
+    use = (
+        """Name of Tool:- WebScrapingAdvancedTool
 
+Purpose of Tool:-
+The WebScrapingAdvancedTool is a production-grade, enterprise web intelligence and crawling wrapper engineered to navigate, extract, and monitor data across complex web environments. It unifies high-performance synchronous networking (requests, BeautifulSoup) with automated browser headless execution engines (Playwright). This combination allows the tool to bypass modern scraping obstacles such as client-side JavaScript rendering, deep infinite scrolling layouts, multi-page paginated catalogs, and session-locked login walls. Beyond standard content ingestion, it includes specialized routines for bulk asynchronous parsing, full-frame viewport screenshots, structural site mapping, regex-driven data extraction (emails/phone numbers), metadata schema auditing (JSON-LD, Open Graph, Microdata), and transactional form submissions.
+
+Methods:-
+- scrape_with_js: Emulates an automated browser instance to execute JavaScript, scroll layouts, capture viewports, and query UI components.
+- scrape_paginated: Automates cyclical pagination indexing workflows across nested web lists by programmatically executing page-forward actions.
+- scrape_login_protected: Simulates interactive authentication workflows to inject access credentials before routing into access-restricted directories.
+- extract_structured_data: Audits schema graphs embedded inside landing layers, parsing structured markup families like JSON-LD and Open Graph.
+- monitor_page_changes: Runs background threads to verify source consistency by comparing page checksum hashes at scheduled intervals.
+- bulk_scrape: Orchestrates distributed parallel data queries across an array of independent URLs using multithreaded network pools.
+- extract_emails_phones: Scans raw textual payloads or remote endpoints via matching patterns to harvest valid contact credentials.
+- map_website_structure: Crawls structural architectures recursively to generate relational hyperlink network maps.
+- take_full_screenshot: Fires automated browser engines to record structural visual screenshots of a targeted web address.
+- extract_all_links: Collects and lists hyperlinked paths discovered within specific source pages.
+- download_all_images: Compiles asset links from target nodes and stores assets that meet specified minimum file-size criteria.
+- fill_and_submit_form: Inputs transactional keys into text arrays or drop-down elements before executing programmatic target submission triggers.
+
+How to use Tool Methods:-
+
+1. scrape_with_js:
+   - Purpose: Extracts dynamic components that require real-time execution of client-side scripts.
+   - Arguments:
+     a) url: str - Target website web address.
+     b) selectors: Dict[str, str] - Key-value map of tracking names and their matching CSS selectors.
+     c) wait_for: str (default: "") - Specific target element string to resolve prior to parsing.
+     d) scroll: bool (default: False) - Flag determining if infinite layouts should scroll down before extraction.
+     e) screenshot: bool (default: False) - Flag defining whether to save a visual snapshot alongside data extraction.
+     f) output: str (default: "scraped_data.json") - Target storage file path.
+   - Returns: ToolResult holding targeted component string matches.
+   - How to call: WebScrapingAdvancedTool.scrape_with_js(url="https://example.com/ajax-feed", selectors={"titles": "h2.item-title"}, scroll=True)
+
+2. scrape_paginated:
+   - Purpose: Indexes lists across websites that span multiple sequential pages.
+   - Arguments:
+     a) base_url: str - Initial start page tracking path.
+     b) next_selector: str - The CSS identifier targeting the "Next Page" navigational element.
+     c) max_pages: int (default: 10) - Maximum index depth to crawl before terminating the loop.
+     d) data_selectors: Optional[Dict[str, str]] (default: None) - Extraction fields to collect per page.
+   - Returns: ToolResult storing structured lists mapped by page numbers.
+   - How to call: WebScrapingAdvancedTool.scrape_paginated(base_url="https://example.com/shop", next_selector="a.next-page-btn", max_pages=5)
+
+3. scrape_login_protected:
+   - Purpose: Accesses secure internal dashboards behind authentication walls.
+   - Arguments:
+     a) url: str - Destination tracking target resource path.
+     b) login_url: str - Gateway login address page.
+     c) credentials: Dict[str, str] - Dictionary containing access values and alternative CSS input selectors (e.g., `username`, `password`).
+     d) selectors: Optional[Dict[str, str]] (default: None) - Destination properties to extract post-authorization.
+   - Returns: ToolResult containing protected data metrics.
+   - How to call: WebScrapingAdvancedTool.scrape_login_protected(url="https://example.com/dashboard", login_url="https://example.com/login", credentials={"username": "user1", "password": "pass123"})
+
+4. extract_structured_data:
+   - Purpose: Collects formal schema objects hidden inside page source headers.
+   - Arguments:
+     a) url: str - Target address tracking path.
+     b) schema_type: str (default: "all") - Targeted framework style choice ("all", "json-ld", "meta", "opengraph", "microdata").
+   - Returns: ToolResult containing categorized structural schema records.
+   - How to call: WebScrapingAdvancedTool.extract_structured_data(url="https://example.com/product/102", schema_type="json-ld")
+
+5. monitor_page_changes:
+   - Purpose: Monitors web endpoints in the background to track content updates or modifications.
+   - Arguments:
+     a) url: str - Tracking page address.
+     b) interval: int (default: 60) - Checking frequency cadence measured in seconds.
+     b) alert_on_change: bool (default: True) - Activates automated terminal logs if changes are identified.
+     d) cred_key: str (default: "alerts") - Unique monitoring configuration tag.
+   - Returns: ToolResult confirming active background thread attachment.
+   - How to call: WebScrapingAdvancedTool.monitor_page_changes(url="https://example.com/status", interval=300)
+
+6. bulk_scrape:
+   - Purpose: Scrapes data from a batch of target URLs concurrently to optimize network throughput.
+   - Arguments:
+     a) urls: List[str] - Collection of target resource endpoints.
+     b) selectors: Dict[str, str] - Property selectors applied uniformly across pages.
+     c) concurrent: int (default: 3) - Number of parallel threads to run concurrently.
+     d) delay: float (default: 0.5) - Time buffer pause injected between network calls.
+     e) output: str (default: "bulk_scrape.json") - Storage destination path.
+   - Returns: ToolResult containing an array of page summary dictionaries.
+   - How to call: WebScrapingAdvancedTool.bulk_scrape(urls=["https://site.com/p1", "https://site.com/p2"], selectors={"header": "h1"})
+
+7. extract_emails_phones:
+   - Purpose: Scans raw text strings or live web pages for contact information.
+   - Arguments:
+     a) url_or_text: str - Live web URL string or block of plain text.
+   - Returns: ToolResult containing list components for verified emails and phone matches.
+   - How to call: WebScrapingAdvancedTool.extract_emails_phones(url_or_text="https://example.com/contact-us")
+
+8. map_website_structure:
+   - Purpose: Visualizes internal routing pathways to identify hidden directories within a domain.
+   - Arguments:
+     a) url: str - Starting site root url.
+     b) depth: int (default: 2) - Recursive link tracking depth boundary.
+     c) output: str (default: "site_map.json") - Map output tracking path.
+   - Returns: ToolResult capturing page counts and structural layouts.
+   - How to call: WebScrapingAdvancedTool.map_website_structure(url="https://example.com", depth=3)
+
+9. take_full_screenshot:
+   - Purpose: Captures high-resolution visual layouts of complex modern websites.
+   - Arguments:
+     a) url: str - Target endpoint address.
+     b) output: str (default: "screenshot.png") - File save path destination.
+     c) width: int (default: 1280) - Target viewport browser base width.
+     d) height: int (default: 900) - Target viewport browser base height.
+   - Returns: ToolResult highlighting final file payload footprints.
+   - How to call: WebScrapingAdvancedTool.take_full_screenshot(url="https://example.com", output="exports/landing.png")
+
+10. extract_all_links:
+    - Purpose: Extracts all anchor linkages from a page for structural inspection.
+    - Arguments:
+      a) url: str - Target site address.
+      b) internal_only: bool (default: False) - Restricts results exclusively to matching root domain configurations.
+    - Returns: ToolResult bundling reference link text and destination targets.
+    - How to call: WebScrapingAdvancedTool.extract_all_links(url="https://example.com/resources", internal_only=True)
+
+11. download_all_images:
+    - Purpose: Harvests remote graphical media matching specific file size parameters from a web page.
+    - Arguments:
+      a) url: str - Target asset repository source.
+      b) output_folder: str (default: "images") - Directory location to store image files.
+      c) min_size: int (default: 5000) - Minimum byte size threshold required to save an image file.
+    - Returns: ToolResult declaring total downloaded asset tallies.
+    - How to call: WebScrapingAdvancedTool.download_all_images(url="https://example.com/gallery", min_size=20000)
+
+12. fill_and_submit_form:
+    - Purpose: Automates interactive input fields and clicks submission components.
+    - Arguments:
+      a) url: str - Target page host form location.
+      b) fields: Dict[str, str] - Key-value pair configurations mapping selector pathways to text values.
+      c) submit_selector: str (default: "button[type='submit']") - Targeted trigger element component.
+    - Returns: ToolResult logging structural final URL redirection parameters.
+    - How to call: WebScrapingAdvancedTool.fill_and_submit_form(url="https://example.com/search", fields={"input#query": "AI tools"})
+    """)
+    
     @staticmethod
     def _get_page(url: str) -> "BeautifulSoup":
         import requests
@@ -1314,7 +1719,140 @@ class SearchResearchTool:
         "Academic and web research: arXiv, PubMed, Semantic Scholar, Wikipedia, "
         "Google Scholar, news, trending topics, patents."
     )
+    use = (
+        """
+Name of Tool:- SearchResearchTool,
 
+Purpose of Tool:- 
+The SearchResearchTool provides powerful academic, scientific, and general web research capabilities. 
+It integrates with arXiv, PubMed, Semantic Scholar, Wikipedia, Google Scholar, news sources, trending topics, and patent databases. 
+The tool supports searching, retrieving full details, downloading PDFs/abstracts, getting citations, and accessing structured data from authoritative sources. 
+It is designed for literature reviews, patent research, news monitoring, fact-checking, trend analysis, and agentic research automation.
+
+Methods:-
+- search_arxiv: Searches arXiv for academic papers with optional category and date filtering.
+- get_arxiv_paper: Retrieves detailed information about a specific arXiv paper (optionally downloads PDF).
+- search_pubmed: Searches PubMed for biomedical literature and abstracts.
+- search_semantic_scholar: Searches Semantic Scholar for scholarly papers with rich metadata.
+- get_citations: Retrieves citations for a paper from Semantic Scholar.
+- search_wikipedia: Searches or retrieves Wikipedia page summaries.
+- get_wikipedia_page: Fetches full content of a Wikipedia page with cleaning options.
+- search_google_scholar: Performs Google Scholar search with scraping for titles, snippets, and links.
+- search_news: Searches for news articles (NewsAPI preferred, Google News RSS fallback).
+- get_trending_topics: Retrieves current trending search topics by region.
+- search_patents: Searches for patents with structured metadata.
+
+How to use Tool Methods:-
+
+1. search_arxiv:
+   - Purpose: Searches the arXiv preprint repository for scientific papers.
+   - Arguments:
+     a) query: str - Search query (supports advanced syntax).
+     b) max_results: int (default: 10).
+     c) categories: List[str] (optional) - arXiv categories (e.g., ["cs.AI", "physics"]).
+     d) date_from: str (optional) - Filter papers published after this date (YYYY-MM-DD).
+     e) download_pdfs: bool (default: False) - Automatically download PDFs.
+     f) output_folder: str (default: "arxiv_papers") - Folder for downloaded PDFs.
+   - Returns: List of paper metadata including title, authors, abstract, PDF URL, etc.
+   - How to call: 
+     SearchResearchTool.search_arxiv(
+         query="large language models",
+         categories=["cs.AI"],
+         max_results=15,
+         download_pdfs=True
+     )
+
+2. get_arxiv_paper:
+   - Purpose: Retrieves full details for a specific arXiv paper by ID.
+   - Arguments:
+     a) paper_id: str - arXiv ID (e.g., "2406.12345" or full URL).
+     b) download: bool (default: False) - Download the PDF.
+     c) output: str (default: ".") - Download directory.
+   - Returns: Comprehensive paper metadata.
+   - How to call: SearchResearchTool.get_arxiv_paper(paper_id="2406.12345", download=True)
+
+3. search_pubmed:
+   - Purpose: Searches PubMed for biomedical and life sciences literature.
+   - Arguments:
+     a) query: str
+     b) max_results: int (default: 10)
+     c) download_abstracts: bool (default: False) - Saves all abstracts to a text file.
+   - Returns: List of PubMed IDs with links (abstracts optionally saved).
+   - How to call: SearchResearchTool.search_pubmed(query="CRISPR gene editing", max_results=20)
+
+4. search_semantic_scholar:
+   - Purpose: Searches Semantic Scholar for academic papers with rich metadata (citations, authors, abstracts).
+   - Arguments:
+     a) query: str
+     b) fields: List[str] (optional) - Fields to return.
+     c) limit: int (default: 10)
+   - Returns: List of paper objects.
+   - How to call: SearchResearchTool.search_semantic_scholar(query="transformer architecture", limit=15)
+
+5. get_citations:
+   - Purpose: Retrieves papers that cite a given paper (Semantic Scholar).
+   - Arguments:
+     a) paper_id: str - Semantic Scholar paper ID.
+     b) source: str (default: "semantic_scholar")
+   - Returns: List of citing papers.
+   - How to call: SearchResearchTool.get_citations(paper_id="paper_id_here")
+
+6. search_wikipedia:
+   - Purpose: Searches Wikipedia or retrieves a page summary.
+   - Arguments:
+     a) query: str
+     b) language: str (default: "en")
+     c) sentences: int (default: 5) - Summary length control.
+   - Returns: Summary or search results.
+   - How to call: SearchResearchTool.search_wikipedia(query="Quantum computing")
+
+7. get_wikipedia_page:
+   - Purpose: Fetches the full cleaned content of a Wikipedia article.
+   - Arguments:
+     a) title: str - Exact Wikipedia page title.
+     b) language: str (default: "en")
+     c) output_format: str (default: "text") - "text" or "html".
+   - Returns: Page title and cleaned content.
+   - How to call: SearchResearchTool.get_wikipedia_page(title="Artificial intelligence")
+
+8. search_google_scholar:
+   - Purpose: Scrapes Google Scholar for academic search results.
+   - Arguments:
+     a) query: str
+     b) num_results: int (default: 10)
+     c) year_from, year_to: int (optional) - Year range filter.
+   - Returns: List of results with title, snippet, citations, etc.
+   - How to call: SearchResearchTool.search_google_scholar(query="reinforcement learning from human feedback", num_results=15)
+
+9. search_news:
+   - Purpose: Searches for recent news articles (prefers NewsAPI, falls back to Google News RSS).
+   - Arguments:
+     a) query: str
+     b) sources: List[str] (optional)
+     c) language: str (default: "en")
+     d) date_from, date_to: str (optional)
+     e) max_results: int (default: 20)
+   - Returns: List of news articles with title, source, URL, etc.
+   - How to call: SearchResearchTool.search_news(query="AI breakthrough", date_from="2026-06-01")
+
+10. get_trending_topics:
+    - Purpose: Retrieves currently trending search topics by region.
+    - Arguments:
+      a) region: str (default: "US")
+      b) category: str (default: "all")
+    - Returns: List of trending topics with traffic estimates.
+    - How to call: SearchResearchTool.get_trending_topics(region="IN")
+
+11. search_patents:
+    - Purpose: Searches for patents using PatentsView API.
+    - Arguments:
+      a) query: str
+      b) country: str (default: "US")
+      c) date_from, date_to: str (optional)
+    - Returns: List of patent records with titles, abstracts, dates, etc.
+    - How to call: SearchResearchTool.search_patents(query="neural network", country="US")
+""")
+    
     @staticmethod
     def search_arxiv(
         query: str,
@@ -1632,7 +2170,146 @@ class FinancialDataTool:
         "Market and financial data: stocks, crypto, forex, commodities, "
         "technical indicators, earnings, economic indicators, options, portfolio analysis."
     )
+    use = (
+        """Name of Tool:- FinancialDataTool
 
+Purpose of Tool:-
+The FinancialDataTool is an all-in-one financial data ingestion, modeling, and analysis suite designed to pull and synthesize live market data across multiple asset classes. Leveraging popular programmatic wrappers and APIs (including `yfinance`, `ccxt`, `World Bank API`, and `CoinGecko`), it streamlines the retrieval of real-time quotes, technical overlays, fundamental statement data, and global macroeconomic metrics. Beyond simple data lookups, it includes processing methods for automated stock screening against valuation targets, standard financial derivative options-chain mapping, and dynamic interactive portfolio asset allocation visualization.
+
+Methods:-
+- get_stock_price: Retrieves standard historical equity charting and open-high-low-close pricing blocks for individual equities.
+- get_multiple_stocks: Aggregates historical adjusted closing timelines for a list of equities concurrently.
+- get_company_info: Compiles fundamental descriptive data profiles, capitalization structures, and operating margins for a public corporation.
+- get_financial_statements: Parses and transforms standard accounting sheets, including the corporate income statement, balance sheet, or cash flow history.
+- get_earnings_calendar: Extracts short-term projected corporate reporting timelines from live financial networks.
+- get_economic_indicators: Interfaces with international databases to query historical sovereign economic health statistics.
+- get_crypto_price: Collects daily open-high-low-close transaction series from primary token spot pairs across prominent global order books.
+- get_crypto_info: Generates operational overviews, market caps, and circulating metrics for individual digital assets.
+- get_forex_rate: Queries interbank foreign currency conversion quotes and generates multi-day performance profiles.
+- get_commodity_prices: Pulls financial exchange pricing sequences for standard resource instruments.
+- calculate_technical_indicators: Runs mathematical rolling transformations across pricing frames to build indicators like SMAs, RSI, MACD, and Bollinger Bands.
+- screen_stocks: Evaluates filter bounds across standard index constituents to target equities fitting strict fundamental criteria.
+- get_options_chain: Builds immediate expiration structures for call and put options contract listings.
+- portfolio_analysis: Evaluates aggregated position weight allocations, calculates total unrealized adjustments, and generates HTML allocation pie charts.
+
+How to use Tool Methods:-
+
+1. get_stock_price:
+   - Purpose: Obtains detailed historical data records for an isolated public ticker.
+   - Arguments:
+     a) symbol: str - Upper or lower-case company equity market ticker.
+     b) period: str (default: "1mo") - Timing data scope window (e.g., "1d", "5d", "1mo", "1y").
+     c) interval: str (default: "1d") - The frequency step dividing separate data candles (e.g., "1m", "5m", "1d").
+   - Returns: ToolResult holding an array of historical dictionary records and a separate block for the latest market quote.
+   - How to call: FinancialDataTool.get_stock_price(symbol="AAPL", period="6mo", interval="1wk")
+
+2. get_multiple_stocks:
+   - Purpose: Collects batch historical tracking records spanning multiple tickers inside an efficient structured package.
+   - Arguments:
+     a) symbols: List[str] - Target array containing clean company market indicators.
+     b) period: str (default: "1mo") - Total backward duration time bucket.
+   - Returns: ToolResult presenting combined column arrays mapped directly against specified dates.
+   - How to call: FinancialDataTool.get_multiple_stocks(symbols=["MSFT", "GOOGL", "AMZN"], period="1y")
+
+3. get_company_info:
+   - Purpose: Audits corporate operational profiles, personnel counts, and market ratios.
+   - Arguments:
+     a) symbol: str - Targeted asset market ticker.
+   - Returns: ToolResult filtering corporate descriptive metrics, 52-week ranges, forward P/E targets, and summary briefs.
+   - How to call: FinancialDataTool.get_company_info(symbol="NVDA")
+
+4. get_financial_statements:
+   - Purpose: Downloads structured filings needed to calculate core corporate valuations.
+   - Arguments:
+     a) symbol: str - target financial market indicator.
+     b) statement_type: str (default: "income") - Core structural accounting model type ("income", "balance", "cashflow").
+   - Returns: ToolResult presenting timestamped accounting categories across multiple fiscal years.
+   - How to call: FinancialDataTool.get_financial_statements(symbol="TSLA", statement_type="balance")
+
+5. get_earnings_calendar:
+   - Purpose: Identifies short-term public earnings announcements to handle sudden volatility risks.
+   - Arguments:
+     a) date_from: str (default: "") - Starting time window filter.
+     b) date_to: str (default: "") - End point time window constraint.
+   - Returns: ToolResult outputting upcoming company names, ticker references, and schedule timestamps.
+   - How to call: FinancialDataTool.get_earnings_calendar()
+
+6. get_economic_indicators:
+   - Purpose: Imports sovereign structural indicators directly from global databases.
+   - Arguments:
+     a) indicator: str (default: "gdp") - Targeted metric category code or literal name ("gdp", "inflation", "unemployment", "interest_rate").
+     b) country: str (default: "US") - standard ISO two or three-character country boundary code.
+   - Returns: ToolResult mapping historical value data sequences explicitly against calendar years.
+   - How to call: FinancialDataTool.get_economic_indicators(indicator="inflation", country="DE")
+
+7. get_crypto_price:
+   - Purpose: Tracks trading variations of major digital tokens against traditional fiat.
+   - Arguments:
+     a) symbol: str (default: "BTC") - The asset token network designation.
+     b) currency: str (default: "USD") - Counter transaction pair quote medium.
+     c) period: str (default: "30") - Number of retroactive historical days to sample.
+   - Returns: ToolResult tracking price moves alongside the final logged candle.
+   - How to call: FinancialDataTool.get_crypto_price(symbol="ETH", currency="EUR", period="15")
+
+8. get_crypto_info:
+   - Purpose: Collects capitalization weightings, market rank listings, and global descriptions for digital assets.
+   - Arguments:
+     a) symbol: str - Digital asset network tracking identifier.
+   - Returns: ToolResult reporting overall rank, valuation metrics, and short informational paragraphs.
+   - How to call: FinancialDataTool.get_crypto_info(symbol="SOL")
+
+9. get_forex_rate:
+   - Purpose: Ingests current conversion rates and changes affecting international currency markets.
+   - Arguments:
+     a) from_currency: str (default: "USD") - Base settlement denomination source.
+     b) to_currency: str (default: "EUR") - Target exchange settlement conversion type.
+     c) period: str (default: "1mo") - Total time length frame for baseline data mapping.
+   - Returns: ToolResult with exact four-decimal exchange calculations alongside historical details.
+   - How to call: FinancialDataTool.get_forex_rate(from_currency="GBP", to_currency="JPY")
+
+10. get_commodity_prices:
+    - Purpose: Gathers price information for physical resource products and raw trade items.
+    - Arguments:
+      a) commodity: str (default: "gold") - Chosen resource asset profile keyword ("gold", "silver", "oil", "natural_gas").
+    - Returns: ToolResult showing active exchange market quotes and historical timelines.
+    - How to call: FinancialDataTool.get_commodity_prices(commodity="oil")
+
+11. calculate_technical_indicators:
+    - Purpose: Generates algorithmic math overlays used to build quantitative trading indicators.
+    - Arguments:
+      a) symbol: str - target financial investment instrument ticker.
+      b) indicators: Optional[List[str]] (default: None) - Requested metrics package array ("sma20", "rsi", "macd", "bollinger", "atr").
+      c) period: str (default: "3mo") - Total structural tracking depth data window.
+    - Returns: ToolResult capturing structural values for all calculated metrics.
+    - How to call: FinancialDataTool.calculate_technical_indicators(symbol="AMD", indicators=["rsi", "macd"])
+
+12. screen_stocks:
+    - Purpose: Filters broad company indices down to high-value lists fitting strict financial metrics.
+    - Arguments:
+      a) market_cap_min: float (default: 1e9) - Minimum floor limitation required for total company market valuation.
+      b) pe_max: float (default: 30.0) - Ceiling multiplier ceiling restriction parameter for Price-to-Earnings ratios.
+      c) dividend_min: float (default: 0.0) - Minimum required percent yield parameter.
+      d) sector: str (default: "") - Specific business industry structural designation string filter.
+    - Returns: ToolResult delivering matching filtered stocks along with quick-glance data tables.
+    - How to call: FinancialDataTool.screen_stocks(market_cap_min=50e9, pe_max=15.0, sector="Technology")
+
+13. get_options_chain:
+    - Purpose: Looks up derivative option lines to inspect strike ranges and implied volatility spreads.
+    - Arguments:
+      a) symbol: str - Asset instrument market option identifier.
+      b) expiry: str (default: "") - Target string tracking date format (e.g., "YYYY-MM-DD"). Drops to nearest date if unspecified.
+    - Returns: ToolResult separating Call and Put metrics including bids, asks, and open interest tallies.
+    - How to call: FinancialDataTool.get_options_chain(symbol="META", expiry="2026-07-17")
+
+14. portfolio_analysis:
+    - Purpose: Analyzes investment balances, calculates gains/losses, and outputs visual allocation breakdowns.
+    - Arguments:
+      a) holdings: List[Dict[str, Any]] - Collection arrays grouping specific dictionaries with keys `symbol`, `shares`, and `avg_cost`.
+      b) output: str (default: "portfolio.html") - File target storage destination path.
+    - Returns: ToolResult declaring absolute valuation summaries, portfolio returns, and interactive chart exports.
+    - How to call: FinancialDataTool.portfolio_analysis(holdings=[{"symbol": "AAPL", "shares": 50, "avg_cost": 175.0}, {"symbol": "MSFT", "shares": 20, "avg_cost": 350.0}])
+    """)
+    
     @staticmethod
     def get_stock_price(
         symbol: str,
@@ -1974,7 +2651,154 @@ class SocialMediaDataTool:
         "Social media intelligence: Twitter/X, Reddit, YouTube, Instagram profiles, "
         "HackerNews — fetch posts, comments, search, and user info."
     )
+    use = (
+        """Name of Tool:- SocialMediaDataTool
 
+Purpose of Tool:-
+The SocialMediaDataTool provides unified access to open-source and authenticated intelligence across primary social media networks, including Twitter/X, Reddit, YouTube, Instagram, and HackerNews. It abstracts the underlying API clients (`tweepy`, `praw`, Google's YouTube Data API, etc.) to fetch user account states, post timelines, recent search results, comments, and real-time geographic trends. It is designed to facilitate sentiment modeling, social trend monitoring, or brand reputation tracking without requiring separate boilerplate configurations for each platform.
+
+Methods:-
+- get_twitter_user: Fetches a target Twitter/X profile's basic descriptive field metadata, verified status, and core public engagement metrics.
+- get_twitter_timeline: Retrieves a recent list of published tweets and corresponding interaction counters directly from an user's public feed.
+- search_twitter: Queries the recent Twitter/X global index using explicit strings, language settings, and optional chronological boundaries.
+- get_twitter_trends: Compiles geographic trending topics and approximate tweet transaction volumes based on platform-specific WOEID targets.
+- get_reddit_posts: Structures specific subreddit post queues across distinct sorting patterns like hot, top, or new.
+- search_reddit: Executes broad relevance scans across Reddit or restricted sub-forums matching input keyword strings.
+- get_reddit_comments: Generates flat structural threads parsing the conversation history of an isolated Reddit text or URL thread.
+- get_subreddit_info: Inspects aggregate community subscriber scales, active participant tracking, and content flags for a specific community.
+- get_youtube_video_info: Resolves descriptive briefs, publication timestamps, duration details, and global engagement counts for a video ID.
+- get_youtube_channel_info: Aggregates total view history, global subscriber counts, and video counts matching channel handles or IDs.
+- get_youtube_comments: Extracts top-tier algorithmic or chronological feedback lists attached to a video.
+- search_youtube: Executes algorithmic video search queries across the global platform index to isolate video assets matching search strings.
+- get_instagram_profile: Leverages public endpoints and structured pattern fallbacks to extract user biographic summaries and core follower metrics.
+- get_hackernews_top: Hits official database streams to collect active top-ranked stories, scores, and discussion sizes on HackerNews.
+
+How to use Tool Methods:-
+
+1. get_twitter_user:
+   - Purpose: Collects an operational metadata profile snapshot for a specified Twitter/X username.
+   - Arguments:
+     a) username: str - Plain handle pointer for the destination account.
+     b) cred_key: str (default: "twitter") - Credential dictionary alias key inside the runtime vault.
+   - Returns: ToolResult holding structured profile creation logs and total public follower metric trees.
+   - How to call: SocialMediaDataTool.get_twitter_user(username="nasa")
+
+2. get_twitter_timeline:
+   - Purpose: Reviews recent explicit user broadcasts and associated interaction metrics.
+   - Arguments:
+     a) username: str - Target profile account name string.
+     b) max_results: int (default: 20) - Cap constraining maximum output array items returned.
+     c) cred_key: str (default: "twitter") - Active client profile vault indicator.
+   - Returns: ToolResult storing a list of distinct timeline elements.
+   - How to call: SocialMediaDataTool.get_twitter_timeline(username="techcrunch", max_results=10)
+
+3. search_twitter:
+   - Purpose: Scans recent platform entries for specific topic matches or keywords.
+   - Arguments:
+     a) query: str - Expression string target for lookups.
+     b) max_results: int (default: 20) - Structural query length restriction boundary.
+     c) lang: str (default: "en") - ISO platform language constraint filter code.
+     b) date_from: str (default: "") - UTC start boundary timestamp filter.
+     e) cred_key: str (default: "twitter") - Vault storage credential link.
+   - Returns: ToolResult passing matching historical content dictionaries.
+   - How to call: SocialMediaDataTool.search_twitter(query="artificial intelligence", lang="en")
+
+4. get_twitter_trends:
+   - Purpose: Evaluates geographic regions to highlight hot tracking words and viral conversations.
+   - Arguments:
+     a) location: str (default: "worldwide") - Geographic regional label mapping to target codes (e.g., "worldwide", "us", "uk", "india").
+     b) cred_key: str (default: "twitter") - Associated configuration token identification string.
+   - Returns: ToolResult presenting ranked regional trends and calculated topic engagement volumes.
+   - How to call: SocialMediaDataTool.get_twitter_trends(location="us")
+
+5. get_reddit_posts:
+   - Purpose: Collects core tracking details for standard forum post timelines.
+   - Arguments:
+     a) subreddit: str - target forum context target name.
+     b) sort: str (default: "hot") - Platform queue arrangement option strings ("hot", "top", "new").
+     c) limit: int (default: 25) - Quantitative index size ceiling parameter.
+     d) time_filter: str (default: "week") - Chronological evaluation depth scope used for "top" sort queries ("day", "week", "month", "all").
+     e) cred_key: str (default: "reddit") - Active identity keys location mapping reference.
+   - Returns: ToolResult outputting titles, tracking links, upvote ratios, and score objects.
+   - How to call: SocialMediaDataTool.get_reddit_posts(subreddit="Python", sort="top", time_filter="month")
+
+6. search_reddit:
+   - Purpose: Finds relevant text entries or URLs matching user strings.
+   - Arguments:
+     a) query: str - Explicit text snippet mapping parameters.
+     b) subreddit: str (default: "all") - Boundary context parameter limiting matching logic.
+     c) limit: int (default: 25) - Frame results limit ceiling value.
+     d) cred_key: str (default: "reddit") - Access profile identification sequence.
+   - Returns: ToolResult packing a list of structured entry documents.
+   - How to call: SocialMediaDataTool.search_reddit(query="machine learning", subreddit="all")
+
+7. get_reddit_comments:
+   - Purpose: Flattens forum discussions to extract user feedback and replies.
+   - Arguments:
+     a) post_id: str - Explicit target forum submission reference ID string.
+     b) limit: int (default: 50) - Numeric limit tracking depth scale for entries.
+     c) sort: str (default: "top") - Direction structural sequence filter ("top", "new", "controversial").
+     d) cred_key: str (default: "reddit") - Target environment key designation reference.
+   - Returns: ToolResult storing separate comment blocks containing scores and message fragments.
+   - How to call: SocialMediaDataTool.get_reddit_comments(post_id="123xyz", limit=20)
+
+8. get_subreddit_info:
+   - Purpose: Validates forum parameters, active user limits, and overall size.
+   - Arguments:
+     a) subreddit: str - Plain sub-forum identity indicator name.
+     b) cred_key: str (default: "reddit") - Target configuration file mapping reference.
+   - Returns: ToolResult reporting total subscriber weightings, overview descriptions, and explicit age flags.
+   - How to call: SocialMediaDataTool.get_subreddit_info(subreddit="dataisbeautiful")
+
+9. get_youtube_video_info:
+   - Purpose: Looks up specific public video metrics and asset tracking attributes.
+   - Arguments:
+     a) video_id: str - target platform video parameter link character sequence.
+     b) cred_key: str (default: "youtube") - Identity store target token lookup key.
+   - Returns: ToolResult structuring channel names, view stats, descriptions, and duration trackers.
+   - How to call: SocialMediaDataTool.get_youtube_video_info(video_id="dQw4w9WgXcQ")
+
+10. get_youtube_channel_info:
+    - Purpose: Gathers overview parameters, total asset counters, and scale profiles for creators.
+    - Arguments:
+      a) channel_id_or_name: str - target alphanumeric tracking code or handle token identifier.
+      b) cred_key: str (default: "youtube") - Storage access key profile variable.
+    - Returns: ToolResult showing user creation sizes, view scales, and profile paragraphs.
+    - How to call: SocialMediaDataTool.get_youtube_channel_info(channel_id_or_name="UCBR8-60-B28hp2BmDPdntcQ")
+
+11. get_youtube_comments:
+    - Purpose: Collects public audience responses and discussion chains from videos.
+    - Arguments:
+      a) video_id: str - alphanumeric video marker.
+      b) max_results: int (default: 50) - Collection list size ceiling restriction.
+      c) cred_key: str (default: "youtube") - Client access validation block tag.
+    - Returns: ToolResult listing comments with author names, likes, and timestamps.
+    - How to call: SocialMediaDataTool.get_youtube_comments(video_id="dQw4w9WgXcQ", max_results=10)
+
+12. search_youtube:
+    - Purpose: Indexes online video assets to match query strings.
+    - Arguments:
+      a) query: str - Target scanning topic phrase context string.
+      b) max_results: int (default: 10) - Allocation count limit parameter.
+      c) cred_key: str (default: "youtube") - Key file marker string reference.
+    - Returns: ToolResult supplying matching links, channel tags, and content snippets.
+    - How to call: SocialMediaDataTool.search_youtube(query="python programming tutorials", max_results=5)
+
+13. get_instagram_profile:
+    - Purpose: Extracts biographic configurations and audience count snapshots from public profiles.
+    - Arguments:
+      a) username: str - Target profile screen handle.
+    - Returns: ToolResult mapping total following statistics, follower tallies, and text bios.
+    - How to call: SocialMediaDataTool.get_instagram_profile(username="natgeo")
+
+14. get_hackernews_top:
+    - Purpose: Monitors trending tech stories from the tech ecosystem.
+    - Arguments:
+      a) limit: int (default: 30) - Item indexing depth limit metric.
+    - Returns: ToolResult packaging active technical stories, discussion tracking links, and submission scores.
+    - How to call: SocialMediaDataTool.get_hackernews_top(limit=15)
+    """)
+    
     @staticmethod
     def _twitter_client(cred_key: str = "twitter"):
         import tweepy
@@ -2237,7 +3061,138 @@ class WeatherGeoTool:
         "Weather and geolocation: current weather, forecasts, historical data, "
         "alerts, geocoding, reverse geocode, timezone, elevation, nearby places, air quality."
     )
+    use = (
+        """Name of Tool:- WeatherGeoTool
 
+Purpose of Tool:-
+The WeatherGeoTool delivers a comprehensive global environment intelligence interface. It unifies public geospatial endpoints with major mapping services (including OpenWeatherMap, Google Maps, and Open-Elevation) into a clean programmatic structure. The suite handles structural geocoding conversions, parses atmospheric and metric variables, tracks chronological weather patterns, calculates physical road matrices, maps global elevations, and updates dynamic regional health variables like real-time UV indices or particulate air pollution components.
+
+Methods:-
+- get_current_weather: Pulls live metric or imperial meteorological readings, cloud categories, and wind speed parameters for an exact location string.
+- get_forecast: Extracts multi-day segmented atmospheric projection sequences grouped into detailed 3-hour structural candle increments.
+- get_historical_weather: References specialized atmospheric lookups to isolate complete climate snapshots for specific past dates.
+- get_weather_alerts: Polls international disaster prevention networks for active meteorological hazard warnings or life-safety notices.
+- geocode: Maps literal textual addresses directly to standard decimal coordinate pairs (latitude and longitude).
+- reverse_geocode: Translates raw terrestrial decimal coordinate matrices into formatted addresses.
+- get_timezone: Determines regional identity tags and systemic UTC temporal offset data for exact geometric points.
+- calculate_distance: Resolves multi-destination matrices calculating exact road miles and estimated driving transit times from a primary address.
+- get_elevation: Intersects target coordinates against topographic terrain maps to return vertical height meters relative to sea level.
+- get_nearby_places: Scans precise structural radial perimeters around user locations to index local businesses or restaurants by category type.
+- get_air_quality: Samples live particulate records to map an Air Quality Index (AQI) alongside distinct carbon, ozone, and sulfur micro-metrics.
+- get_uv_index: Gathers immediate solar radiation values to grade relative UV exposure hazards across standardized warning scales.
+
+How to use Tool Methods:-
+
+1. get_current_weather:
+   - Purpose: Collects active ground-level atmospheric updates for a target region.
+   - Arguments:
+     a) location: str - Town, state, or global city destination text string.
+     b) units: str (default: "metric") - Metric measurement standard choice ("metric" for Celsius, "imperial" for Fahrenheit).
+     c) cred_key: str (default: "openweather") - Vault indicator configuration mapping key.
+   - Returns: ToolResult passing exact temperature readings, relative humidity, wind metrics, and current weather text descriptions.
+   - How to call: WeatherGeoTool.get_current_weather(location="London, UK", units="metric")
+
+2. get_forecast:
+   - Purpose: Monitors intermediate atmospheric transformations to determine approaching weather trends.
+   - Arguments:
+     a) location: str - target alphanumeric location designation.
+     b) days: int (default: 5) - Forward chronological day scale ceiling length constraint.
+     c) units: str (default: "metric") - Internal conversion scalar formatting framework.
+     d) cred_key: str (default: "openweather") - Active credentials link location.
+   - Returns: ToolResult packaging consecutive segmented weather prediction frames.
+   - How to call: WeatherGeoTool.get_forecast(location="Tokyo", days=3, units="metric")
+
+3. get_historical_weather:
+   - Purpose: Reconstructs exact past weather criteria to assist tracking calculations or climate studies.
+   - Arguments:
+     a) location: str - Target environment description.
+     b) date: str - Historical calendar checkpoint formatted explicitly as "YYYY-MM-DD".
+     c) units: str (default: "metric") - Output standard variable format.
+     d) cred_key: str (default: "openweather") - Configuration secret validation reference pointer.
+   - Returns: ToolResult delivering the chosen date's climate properties.
+   - How to call: WeatherGeoTool.get_historical_weather(location="New York", date="2025-07-04")
+
+4. get_weather_alerts:
+   - Purpose: Captures high-severity local safety warnings or weather events.
+   - Arguments:
+     a) location: str - Alphanumeric community identity label string.
+     b) cred_key: str (default: "openweather") - Internal API authentication identifier map string.
+   - Returns: ToolResult supplying critical emergency broadcast alert data blocks.
+   - How to call: WeatherGeoTool.get_weather_alerts(location="Miami, FL")
+
+5. geocode:
+   - Purpose: Translates descriptive text strings into specific mathematical terrestrial parameters.
+   - Arguments:
+     a) address: str - Street layout coordinates, city names, or region labels.
+     b) cred_key: str (default: "googlemaps") - Associated routing data license locator string.
+   - Returns: ToolResult yielding decimal values for coordinate parameters along with formatted labels.
+   - How to call: WeatherGeoTool.geocode(address="1600 Amphitheatre Pkwy, Mountain View, CA")
+
+6. reverse_geocode:
+   - Purpose: Decodes complex geographical points back into traditional mailing addresses.
+   - Arguments:
+     a) lat: float - Terrestrial horizontal meridian position point identifier.
+     b) lng: float - Terrestrial vertical meridian position point identifier.
+     c) cred_key: str (default: "googlemaps") - Key profile variable marker.
+   - Returns: ToolResult with formatted geographic attributes and structural address details.
+   - How to call: WeatherGeoTool.reverse_geocode(lat=40.7128, lng=-74.0060)
+
+7. get_timezone:
+   - Purpose: Resolves local timezone rules and daylight saving offsets for any coordinate pair.
+   - Arguments:
+     a) lat: float - target horizontal location parameter.
+     b) lng: float - target vertical location parameter.
+     c) cred_key: str (default: "googlemaps") - API validation authorization pointer variable.
+   - Returns: ToolResult storing standard IANA timezone strings and current offset structures.
+   - How to call: WeatherGeoTool.get_timezone(lat=35.6762, lng=139.6503)
+
+8. calculate_distance:
+   - Purpose: Computes dynamic travel metrics spanning various routes and destinations.
+   - Arguments:
+     a) from_location: str - True origins departure baseline address context string.
+     b) to_locations: List[str] - Destination coordinate array index.
+     c) mode: str (default: "driving") - Transit behavior model ("driving", "walking", "bicycling", "transit").
+     d) cred_key: str (default: "googlemaps") - Google engine verification tag mapping reference.
+   - Returns: ToolResult outputting absolute distances alongside logical travel durations.
+   - How to call: WeatherGeoTool.calculate_distance(from_location="Paris", to_locations=["Lyon", "Marseille"], mode="driving")
+
+9. get_elevation:
+   - Purpose: Inspects raw physical vertical heights relative to international base sea measurements.
+   - Arguments:
+     a) lat: float - Latitude parameter element value.
+     b) lng: float - Longitude parameter element value.
+     c) cred_key: str (default: "openweather") - Internal API vault storage key mapping text.
+   - Returns: ToolResult mapping altitude properties in meters.
+   - How to call: WeatherGeoTool.get_elevation(lat=46.5588, lng=10.4368)
+
+10. get_nearby_places:
+    - Purpose: Locates local points of interest inside specified spatial ranges.
+    - Arguments:
+      a) lat: float - Baseline anchor horizontal tracking axis coordinate value.
+      b) lng: float - Baseline anchor vertical tracking axis coordinate value.
+      c) type: str (default: "restaurant") - Specific structural classification marker category (e.g., "hotel", "atm", "gas_station").
+      d) radius: int (default: 1000) - Circular constraint scanning distance parameter in meters.
+      e) cred_key: str (default: "googlemaps") - Platform engine tracking keys mapping path string.
+    - Returns: ToolResult summarizing local destination names, addresses, and user rating metrics.
+    - How to call: WeatherGeoTool.get_nearby_places(lat=48.8566, lng=2.3522, type="cafe", radius=500)
+
+11. get_air_quality:
+    - Purpose: Evaluates environmental purity variables and structural pollution components.
+    - Arguments:
+      a) location: str - target structural community address query context.
+      b) cred_key: str (default: "openweather") - Active verification token path selector string.
+    - Returns: ToolResult evaluating AQI threat ranges alongside exact structural concentration maps.
+    - How to call: WeatherGeoTool.get_air_quality(location="Beijing")
+
+12. get_uv_index:
+    - Purpose: Gauges potential ultraviolet burn hazards to manage outdoor risks.
+    - Arguments:
+      a) location: str - Targeted regional tracking location indicator name.
+      b) cred_key: str (default: "openweather") - Validation credential configuration profile tag.
+    - Returns: ToolResult grading absolute radiation levels across qualitative risk brackets.
+    - How to call: WeatherGeoTool.get_uv_index(location="Sydney, Australia")
+    """)
+    
     @staticmethod
     def _owm_key(cred_key: str = "openweather") -> str:
         return CredStore.load(cred_key).get("api_key", "")
@@ -2517,7 +3472,150 @@ class TextAnalyticsTool:
         "keywords, summarization, translation, language detection, grammar, readability, "
         "topic modeling, similarity, embeddings, semantic search, plagiarism detection."
     )
+    use = (
+        """Name of Tool:- TextAnalyticsTool
 
+Purpose of Tool:-
+The TextAnalyticsTool acts as an all-in-one Natural Language Processing (NLP) framework. It bundles lightweight heuristic models, statistical processors, and machine learning pipelines (such as `TextBlob`, `scikit-learn`, `Helsinki-NLP`, and local LLMs via `Ollama`). The tool handles textual feature discovery, semantic indexing, cross-lingual translation, structural grammar profiling, readability math verification, and multidimensional semantic vector alignment.
+
+Methods:-
+- sentiment_analysis: Scores explicit text strings on polar scales to classify the underlying emotional sentiment context.
+- classify_text: Assigns zero-shot classifications across user-provided target labels.
+- extract_entities: Groups structural strings into classified token types like proper names, organizations, dates, or emails.
+- extract_keywords: Scores distinctive text tokens using TF-IDF matrices, noun phrase parsing, or literal structural word frequencies.
+- summarize: Condenses long documents into abstractive concepts or extractive sentences.
+- translate: Converts source strings into matching destination target language arrays using transformers or generative frameworks.
+- detect_language: Analyzes input strings to generate a prioritized list of predicted structural language matches.
+- check_grammar: Runs language syntax checkers to detect errors and export fully corrected strings.
+- calculate_readability: Solves traditional linguistic mathematical formulas to return Flesch Reading Ease and equivalent school grade rankings.
+- topic_modeling: Deconstructs text arrays into clear semantic thematic word groups using unsupervised LDA or NMF algorithms.
+- text_similarity: Calculates literal structural or deeper semantic document similarities via Edit-Distance or Vector Space matrices.
+- generate_embeddings: Converts plain text into dense dimensional vector embeddings for custom vector tasks.
+- semantic_search: Scores query vector positions against document corpora to pull matching contextual fragments.
+- detect_plagiarism: Audits test texts against an array of reference documents using token overlap thresholds.
+
+How to use Tool Methods:-
+
+1. sentiment_analysis:
+   - Purpose: Examines contextual tone across one or more texts to evaluate emotional leanings.
+   - Arguments:
+     a) texts: Union[str, List[str]] - A single string block or a list of target text sentences.
+     b) model: str (default: "textblob") - Operational pipeline engine logic selector ("textblob" or "ollama").
+   - Returns: ToolResult passing polarity scores, subjective weightings, and qualitative labels.
+   - How to call: TextAnalyticsTool.sentiment_analysis(texts="I love using this new software tool!", model="textblob")
+
+2. classify_text:
+   - Purpose: Flags unstructured strings using predefined descriptive evaluation labels.
+   - Arguments:
+     a) text: str - Source text content snippet.
+     b) labels: List[str] - Target classification labels.
+     c) model: str (default: "transformers") - Core algorithm runtime vehicle ("transformers" or "ollama").
+   - Returns: ToolResult outputting the most relevant labels alongside relative model confidence metrics.
+   - How to call: TextAnalyticsTool.classify_text(text="The stock market crashed today.", labels=["politics", "finance", "sports"])
+
+3. extract_entities:
+   - Purpose: Traverses phrases to detect and categorize real-world entities.
+   - Arguments:
+     a) text: str - Document body being mapped.
+     b) entity_types: Optional[List[str]] (default: None) - Constraints limiting output to specific classes (e.g., ["PER", "LOC"]).
+   - Returns: ToolResult storing structured arrays of tokens, structural classifications, and pipeline scores.
+   - How to call: TextAnalyticsTool.extract_entities(text="Elon Musk visited the Tesla factory in Berlin.")
+
+4. extract_keywords:
+   - Purpose: Extracts the most informative and distinct words or phrases from a text block.
+   - Arguments:
+     a) text: str - Main raw document target text string.
+     b) n: int (default: 10) - Total allocation count limit for final keyword list.
+     c) method: str (default: "tfidf") - Statistical model selector strategy ("tfidf", "textrank", "frequency").
+   - Returns: ToolResult mapping relevant keyword elements along with their calculated relevance indicators.
+   - How to call: TextAnalyticsTool.extract_keywords(text="Data science relies on statistics and machine learning.", n=5)
+
+5. summarize:
+   - Purpose: Shrinks documents down to their key sentences or ideas.
+   - Arguments:
+     a) text: str - Target body of text.
+     b) length: str (default: "medium") - Intended footprint restriction scale ("short", "medium", "long").
+     c) style: str (default: "abstractive") - Compression structural strategy selection ("abstractive" or "extractive").
+     d) model: str (default: "ollama") - Engine execution driver identity string ("ollama" or "transformers").
+   - Returns: ToolResult featuring a condensed summary string.
+   - How to call: TextAnalyticsTool.summarize(text="Very long article text here...", length="short", style="abstractive")
+
+6. translate:
+   - Purpose: Rewrites text from a source language into a different target language.
+   - Arguments:
+     a) text: str - Source text block meant for translation.
+     b) target_language: str (default: "es") - Destination language code string abbreviation (e.g., "es", "fr", "hi").
+     c) model: str (default: "ollama") - Runtime pipeline system platform reference ("ollama" or "transformers").
+   - Returns: ToolResult yielding the translated text block.
+   - How to call: TextAnalyticsTool.translate(text="Hello, how are you today?", target_language="fr")
+
+7. detect_language:
+   - Purpose: Evaluates phonetic and syntax structural indicators to identify the source language.
+   - Arguments:
+     a) text: str - Plain language string query block.
+   - Returns: ToolResult logging top predicted ISO codes coupled with clear statistical probability scales.
+   - How to call: TextAnalyticsTool.detect_language(text="Bonjour tout le monde")
+
+8. check_grammar:
+   - Purpose: Scans documents to identify spelling issues, typing slipups, and grammatical errors.
+   - Arguments:
+     a) text: str - Input copy awaiting processing evaluation.
+   - Returns: ToolResult returning list maps highlighting exact context offsets, error details, and updated replacement text string variants.
+   - How to call: TextAnalyticsTool.check_grammar(text="He do not know where to go.")
+
+9. calculate_readability:
+   - Purpose: Grades text difficulty to measure how easy it is for humans to comprehend.
+   - Arguments:
+     a) text: str - Target document copy.
+   - Returns: ToolResult exporting structural word variables alongside Flesch and SMOG grade metric scores.
+   - How to call: TextAnalyticsTool.calculate_readability(text="The quick brown fox jumps over the lazy dog.")
+
+10. topic_modeling:
+    - Purpose: Discovers hidden thematic structures within a collection of text documents.
+    - Arguments:
+      a) texts: List[str] - Collection index holding separate text documents.
+      b) n_topics: int (default: 5) - Target allocation count for cluster extractions.
+      b) method: str (default: "lda") - Matrix processing algorithm strategy ("lda" or "nmf").
+      d) output: str (default: "topics.json") - Path destination file name.
+    - Returns: ToolResult presenting key keyword matrix bundles sorted into clean topic groups.
+    - How to call: TextAnalyticsTool.topic_modeling(texts=["doc one content", "doc two content"], n_topics=3)
+
+11. text_similarity:
+    - Purpose: Measures the closeness between two texts using either raw characters or conceptual meaning.
+    - Arguments:
+      a) text1: str - Baseline comparison source string.
+      b) text2: str - Destination tracking target comparison text.
+      c) method: str (default: "cosine") - Algorithmic tracking engine selection ("cosine", "embedding", "levenshtein").
+    - Returns: ToolResult supplying explicit mathematical similarity values scaled from 0 to 1.
+    - How to call: TextAnalyticsTool.text_similarity(text1="Machine Learning", text2="Deep Learning", method="embedding")
+
+12. generate_embeddings:
+    - Purpose: Encodes texts into high-dimensional vector representations for mathematical distance modeling.
+    - Arguments:
+      a) texts: Union[str, List[str]] - Singular string sequence or list array containing target strings.
+      b) model: str (default: "all-MiniLM-L6-v2") - SentenceTransformer vector mapping identity reference.
+    - Returns: ToolResult containing multi-dimensional vector arrays alongside dimension structural shapes.
+    - How to call: TextAnalyticsTool.generate_embeddings(texts=["Deep learning is a subset of AI."])
+
+13. semantic_search:
+    - Purpose: Finds relevant matches within a text database based on the core meaning of a search query rather than exact keywords.
+    - Arguments:
+      a) query: str - Plain language search statement context query.
+      b) corpus: List[str] - Data baseline array indexing available document references.
+      c) top_k: int (default: 5) - Maximum length limit defining returned results array.
+    - Returns: ToolResult delivering ranked documents paired with their structural cosine value proximity records.
+    - How to call: TextAnalyticsTool.semantic_search(query="fruits", corpus=["An apple a day", "Cars drive fast", "Bananas are yellow"])
+
+14. detect_plagiarism:
+    - Purpose: Compares a test string against known resource text arrays to isolate copycat text issues.
+    - Arguments:
+      a) text: str - Document undergoing audit verification checks.
+      b) reference_texts: List[str] - Known source materials checklist array.
+      c) threshold: float (default: 0.7) - Evaluation flag ceiling constraint index (0.0 to 1.0).
+    - Returns: ToolResult reporting individual match scores and active plagiarism alert flags.
+    - How to call: TextAnalyticsTool.detect_plagiarism(text="Sample check essay text", reference_texts=["Original reference source one"])
+    """)
+        
     @staticmethod
     def sentiment_analysis(texts: Union[str, List[str]], model: str = "textblob") -> ToolResult:
         try:
@@ -2841,7 +3939,247 @@ class DatabaseTool:
         "Multi-database operations: PostgreSQL, MySQL, MongoDB, Redis, SQLite. "
         "Query execution, transactions, backup/restore, schema inspection, CSV import/export."
     )
+    use = (
+        """Name of Tool:- DatabaseTool
 
+Purpose of Tool:-
+The DatabaseTool provides a unified interface for executing multi-engine database operations across relational (PostgreSQL, MySQL, SQLite), document-oriented (MongoDB), and key-value/in-memory systems (Redis). It abstracts routine administrative workflows including connection state management, single/transactional query dispatch, structural schema indexing, backup/restore streams, and data serialization between database tables and local flat CSV sheets.
+
+Methods:-
+- connect_postgres: Initializes a connection instance to a PostgreSQL server cluster.
+- execute_query: Runs structured queries against an open PostgreSQL or MySQL relational connection, converting rows into dynamic dictionaries.
+- execute_transaction: Wraps a sequence of modification commands within an explicit ACID transaction block.
+- backup_postgres: Triggers a shell subprocess executing `pg_dump` to capture full snapshots of a given database.
+- restore_postgres: Feeds a saved snapshot file directly back into a targeted database connection utilizing native command utilities.
+- get_schema: Queries the relational database information schema to map public column specifications and type requirements.
+- connect_mysql: Opens a connection stream targeting a MySQL database instance.
+- connect_mongodb: Resolves a standard MongoDB connection string connection into an operational database mapping client.
+- mongo_find: Queries a Document store cluster collection, translating object primitives into standard JSON serializable objects.
+- mongo_insert: Packs single or multi-document dictionary definitions straight into a designated NoSQL collection.
+- mongo_update: Finds and replaces targeted attributes across one or many structured documents.
+- mongo_delete: Triggers structural document deletions for objects meeting explicit filter parameters.
+- connect_redis: Verifies connectivity to a live key-value Redis storage server instance.
+- redis_set: Maps an individual string variable to a unique key string with optional Time-To-Live parameters.
+- redis_get: Extracts cached string payloads mapped to specific key locations.
+- redis_hset: Groups complex multi-attribute dictionary maps inside structured Redis hash definitions.
+- redis_hget: Retreives individual string value fragments nested inside specified Redis hashes.
+- redis_lpush: Prepends sequence vectors directly onto a tracking Redis array index location.
+- export_to_csv: Pipelines data records straight into isolated tabular `.csv` sheets using data science frameworks.
+- import_from_csv: Parses local flat `.csv` records to populate a live target database table framework using automatic fallbacks.
+- create_sqlite_db: Instantiates a standalone relational SQLite database file embedded on local disk media.
+- query_sqlite: Executes commands targeting a local embedded SQLite file.
+
+How to use Tool Methods:-
+
+1. connect_postgres:
+   - Purpose: Instantiates an open connection handle to a live PostgreSQL relational instance.
+   - Arguments:
+     a) host: str (default: "localhost") - Destination server cluster IP network endpoint text.
+     b) port: int (default: 5432) - Active networking portal path constraints.
+     c) database: str - Target schema namespace text identifier.
+     b) user: str - Access profile identity authorization text string.
+     e) password: str - Authentication entry passphrase string.
+     f) cred_key: str (default: "postgres") - Internal credential vault profile index configuration string.
+   - Returns: Connection object allowing communication down the pipeline.
+   - How to call: DatabaseTool.connect_postgres(database="production_db", user="admin")
+
+2. execute_query:
+   - Purpose: Dispatches custom commands against an active engine connection handle.
+   - Arguments:
+     a) conn: object - Active, instantiated connection session reference hook.
+     b) query: str - Structured query language string statement text.
+     c) params: Optional[tuple] (default: None) - Variable mapping parameters to prevent injections.
+   - Returns: ToolResult passing structured dict rows or record count change tallies.
+   - How to call: DatabaseTool.execute_query(conn, "SELECT * FROM users WHERE status = %s", ("active",))
+
+3. execute_transaction:
+   - Purpose: Ensures uniform processing of multi-query changes via structural rollback handling.
+   - Arguments:
+     a) conn: object - Destination target engine connection session wrapper.
+     b) queries: List[str] - Sequence array containing raw manipulation queries.
+   - Returns: ToolResult validating transaction execution status properties.
+   - How to call: DatabaseTool.execute_transaction(conn, ["UPDATE accounts SET balance = 100 WHERE id = 1", "INSERT INTO logs (msg) VALUES ('updated')"])
+
+4. backup_postgres:
+   - Purpose: Dumps full schema structures and inline records down into isolated recovery files.
+   - Arguments:
+     a) conn_string: str - Server connectivity profile description array.
+     b) output_file: str - Target workspace dump output path tracking string.
+   - Returns: ToolResult tracking processing performance metrics along with byte sizes.
+   - How to call: DatabaseTool.backup_postgres(conn_string="postgresql://user:pass@localhost/db", output_file="/backups/daily.sql")
+
+5. restore_postgres:
+   - Purpose: Imports complete schema layouts back into active database configurations.
+   - Arguments:
+     a) conn_string: str - Server initialization credentials statement string.
+     b) backup_file: str - Workspace path indexing the target resource backup source file.
+   - Returns: ToolResult capturing standard error stream outputs and success statements.
+   - How to call: DatabaseTool.restore_postgres(conn_string="postgresql://user:pass@localhost/db", backup_file="/backups/daily.sql")
+
+6. get_schema:
+   - Purpose: Audits structure types to help write clean queries.
+   - Arguments:
+     a) conn: object - Live active connection context platform session wrapper.
+     b) table_or_all: str (default: "all") - Targeted structural context table selection label.
+   - Returns: ToolResult breaking down schemas, defaults, and data properties.
+   - How to call: DatabaseTool.get_schema(conn, table_or_all="orders")
+
+7. connect_mysql:
+   - Purpose: Establishes a connection interface link targeting a live MySQL relational endpoint.
+   - Arguments:
+     a) host: str (default: "localhost") - Network host server interface string.
+     b) port: int (default: 3306) - System communication interface ports channel index.
+     c) database: str - Targeted database name context.
+     d) user: str - Connection authorization credentials identity text string.
+     e) password: str - Authentication code access passphrase string.
+     f) cred_key: str (default: "mysql") - Credentials database tracking index mapping path text.
+   - Returns: Connection resource interface allowing programmatic transactional pipeline routines.
+   - How to call: DatabaseTool.connect_mysql(database="ecommerce", user="root")
+
+8. connect_mongodb:
+   - Purpose: Initiates a document client engine targeting distributed NoSQL databases.
+   - Arguments:
+     a) uri: str - Multi-node connection initialization endpoint string text.
+     b) database: str - Target collection namespace definition label string.
+     c) cred_key: str (default: "mongodb") - Internal configuration management credential vault index pointer.
+   - Returns: Pymongo workspace Database layer reference hook or raw Client index engine.
+   - How to call: DatabaseTool.connect_mongodb(uri="mongodb://localhost:27017/", database="app_store")
+
+9. mongo_find:
+   - Purpose: Searches document repositories to filter and return serializable objects.
+   - Arguments:
+     a) db: object - Verified document client instance profile.
+     b) collection: str - target data collection grouping label.
+     c) filter: Optional[Dict] (default: None) - Filter conditions dict.
+     d) projection: Optional[Dict] (default: None) - Target field inclusion or exclusion rules.
+     e) limit: int (default: 100) - Maximum return threshold capacity limits integer constraints.
+     f) sort: Optional[List[Tuple[str, int]]] (default: None) - Target arrangement order sorting tuple indices array.
+   - Returns: ToolResult passing document arrays without native Object primitives.
+   - How to call: DatabaseTool.mongo_find(db, collection="logs", filter={"level": "error"}, limit=10)
+
+10. mongo_insert:
+    - Purpose: Saves single document records or batch arrays into a given collection.
+    - Arguments:
+      a) db: object - target database wrapper anchor context session object.
+      b) collection: str - target data storage domain identifier group.
+      b) documents: Union[Dict, List[Dict]] - Individual dictionary record map or sequence list array containing document dictionaries.
+    - Returns: ToolResult reflecting successful item counts along with standard document string references.
+    - How to call: DatabaseTool.mongo_insert(db, collection="users", documents={"name": "Alice", "role": "dev"})
+
+11. mongo_update:
+    - Purpose: Performs field manipulations inside a document layer collection framework.
+    - Arguments:
+      a) db: object - target database driver environment handle.
+      b) collection: str - Target destination storage array namespace label.
+      c) filter: Dict - Target locating search query criteria rule statement dictionary.
+      d) update: Dict - Modification instructions structured dictionary.
+      e) many: bool (default: False) - System structural wide scaling directive choices option flag.
+    - Returns: ToolResult tracking matching records vs modified asset counts.
+    - How to call: DatabaseTool.mongo_update(db, collection="users", filter={"role": "dev"}, update={"$set": {"status": "verified"}}, many=True)
+
+12. mongo_delete:
+    - Purpose: Clears database document objects based on matching filter queries.
+    - Arguments:
+      a) db: object - Core platform collection cluster runtime layer workspace connector.
+      b) collection: str - Targeted system tracking storage space category identifier.
+      c) filter: Dict - Structural parameters dictionary isolating elements targeted for removal.
+      d) many: bool (default: False) - Multi-element operational sweep selection tracking flag.
+    - Returns: ToolResult showing total records deleted from the collection.
+    - How to call: DatabaseTool.mongo_delete(db, collection="sessions", filter={"expired": True}, many=True)
+
+13. connect_redis:
+    - Purpose: Opens up quick channels to interact with high-speed volatile storage grids.
+    - Arguments:
+      a) host: str (default: "localhost") - Network host server interface string.
+      b) port: int (default: 6379) - Port parameter configuration mapping location identifier.
+      c) password: str - Target security string profile access code passphrase.
+      d) db: int (default: 0) - Active virtual memory tracking frame slot address allocation.
+      o) cred_key: str (default: "redis") - Storage secrets locator lookup profile identifier text.
+    - Returns: Active Redis pipeline client utility engine entity context model.
+    - How to call: DatabaseTool.connect_redis(host="cache.local", db=1)
+
+14. redis_set:
+    - Purpose: Assigns scalar entries straight onto global fast-access tracking namespaces.
+    - Arguments:
+      a) r: object - Active initialized Redis engine workspace handle.
+      b) key: str - Reference identity variable identifier tracking string name.
+      c) value: str - Target values literal data element payload.
+      d) ttl: Optional[int] (default: None) - Life window constraints duration limit metrics in seconds.
+    - Returns: ToolResult confirming key allocation properties.
+    - How to call: DatabaseTool.redis_set(r, key="session_101", value="active_user", ttl=3600)
+
+15. redis_get:
+    - Purpose: Pulls key values from the memory database.
+    - Arguments:
+      a) r: object - Verified workspace interface context runner handle.
+      b) key: str - Destination tracking reference identity key term.
+    - Returns: ToolResult housing string values or target omission errors.
+    - How to call: DatabaseTool.redis_get(r, key="session_101")
+
+16. redis_hset:
+    - Purpose: Serializes nested dictionary tables directly inside localized high-speed memory maps.
+    - Arguments:
+      a) r: object - Live environment tracking memory platform driver context layer.
+      b) name: str - Target group reference identity tag term string text.
+      c) mapping: Dict[str, str] - Multi-attribute parameter layout element configurations data table.
+    - Returns: ToolResult displaying field initialization stats.
+    - How to call: DatabaseTool.redis_hset(r, name="user:1001", mapping={"name": "Bob", "auth": "true"})
+
+17. redis_hget:
+    - Purpose: Extracts isolated attributes from multi-field memory maps.
+    - Arguments:
+      a) r: object - Active volatile engine system connection reference session hook.
+      b) name: str - Target cluster group identification key tracking text label.
+      c) key: str - target attribute tracking item property parameter identifier string name.
+    - Returns: ToolResult delivering the internal attribute value.
+    - How to call: DatabaseTool.redis_hget(r, name="user:1001", key="auth")
+
+18. redis_lpush:
+    - Purpose: Pushes entry parameters directly onto volatile queuing pipelines.
+    - Arguments:
+      a) r: object - Active programmatic memory grid connector handle session.
+      b) key: str - Target tracker pipeline registry identity tag name string text.
+      c) values: List[str] - Data components array index sequence collection.
+    - Returns: ToolResult showing updated length calculations.
+    - How to call: DatabaseTool.redis_lpush(r, key="task_queue", values=["task_1", "task_2"])
+
+19. export_to_csv:
+    - Purpose: Formats tabular record data tables into file blocks.
+    - Arguments:
+      a) conn: object - Valid open query engine driver configuration handler connection.
+      b) query: str - Target source collection extraction query framework directive.
+      c) output: str - Target workspace output destination file configuration tracking framework.
+    - Returns: ToolResult tracking row extraction limits exported down onto local storage media.
+    - How to call: DatabaseTool.export_to_csv(conn, "SELECT * FROM products", "products_export.csv")
+
+20. import_from_csv:
+    - Purpose: Parses flat file tables to ingest records into existing tables.
+    - Arguments:
+      a) conn: object - Operational destination cluster runtime layer environment pipeline handle.
+      b) table: str - Destination framework target schema matrix block identifier text.
+      c) csv_path: str - Local spreadsheet resource data origin file tracking location path string text.
+      d) if_exists: str (default: "append") - Action rules if structural conflicts manifest ("fail", "replace", "append").
+    - Returns: ToolResult validating absolute load metrics indicators.
+    - How to call: DatabaseTool.import_from_csv(conn, table="subscribers", csv_path="subscribers.csv")
+
+21. create_sqlite_db:
+    - Purpose: Provisions zero-infrastructure database environments straight onto local storage spaces.
+    - Arguments:
+      a) path: str - Target destination disk execution directory path text location indicator.
+      b) schema: str - Multi-table SQL layout schema build scripts declaration block text.
+    - Returns: ToolResult indicating environment deployment parameters.
+    - How to call: DatabaseTool.create_sqlite_db(path="local_cache.db", schema="CREATE TABLE cache (id INT, data TEXT);")
+
+22. query_sqlite:
+    - Purpose: Interacts with embedded database single-file instances without network overhead.
+    - Arguments:
+      a) path: str - Workspace database deployment system file path tracking string text.
+      b) query: str - Command script syntax target direction directive text label.
+      c) params: Optional[tuple] (default: None) - Safe insertion query values data parameter tuple components.
+    - Returns: ToolResult returning target dynamic list map rows or database commit tracking flags.
+    - How to call: DatabaseTool.query_sqlite("local_cache.db", "SELECT * FROM cache WHERE id = ?", (101,))
+    """)
+    
     # ── PostgreSQL ────────────────────────────────────────────────────────────
 
     @staticmethod
@@ -3194,7 +4532,109 @@ class ReportGeneratorTool:
         "Automated report generation: PDF, Word, Excel, PowerPoint, research reports, "
         "scheduled reports, dashboard HTML reports, and template-based generation."
     )
+    use = (
+        """Name of Tool: ReportGeneratorTool
 
+Purpose of Tool:
+The ReportGeneratorTool provides an automated, unified interface to generate multi-format corporate, technical, and research reports (including PDF, Word, Excel, PowerPoint, and HTML). It handles end-to-end publishing workflows, incorporating structural design elements like tables of contents, multi-sheet analytical books with embedded charts, dynamic dashboard layouts, background scheduling runners, template string substitutions, and automated AI research drafting.
+
+Methods:
+- create_pdf_report: Generates a publication-grade PDF file including custom covers, dynamic pagination markers, explicit section styles, and automatic dataset tables.
+- create_word_report: Assembles an editable Microsoft Word document (.docx) tracking document metadata, structured section hierarchies, and native tabular layouts.
+- create_excel_report: Compiles structural data frames into styled Excel workbooks (.xlsx) featuring zebra-striping formatting, custom widths, and auto-generated bar charts.
+- create_presentation: Provisions high-impact, programmatic presentation slides (.pptx) adhering to modern widescreen parameters and layout themes.
+- generate_research_report: Drives local or remote Large Language Models to architect multi-section academic outlines, compose long-form prose, and compile relevant citation strings into a polished PDF artifact.
+- schedule_report: Spins up concurrent background scheduler threads to execute periodic reporting blocks and dispatch completions via secure SMTP channels.
+- create_dashboard_report: Packages dynamic metric maps alongside external data visualization components into an inline styled HTML dashboard application interface.
+- generate_from_template: Evaluates flat text template structures to complete macro variable substitutions and emit completed documents to target disk targets using multiple format formats.
+
+How to use Tool Methods:
+
+1. create_pdf_report:
+   - Purpose: Generates a publication-ready PDF document complete with cover page options, section rules, and embedded table definitions.
+   - Arguments:
+     a) title: str - Primary header text mapping for the main cover page.
+     b) sections: List[Dict[str, str]] - Data structures containing 'title', 'content', and optional matrix list arrays mapped to 'table'.
+     c) output: str (default: "report.pdf") - Target workspace file storage location string.
+     d) logo: str - Optional filesystem string pointing to a corporate header graphic.
+     e) author: str (default: "NPM Agent") - Identification name tag tracking responsibility metadata.
+     f) date: str - Specific formatting placeholder; falls back to runtime capture if omitted.
+     g) toc: bool (default: True) - Flag controlling table of contents index structure generation.
+   - Returns: ToolResult mapping successful compilation flags along with complete file metrics.
+   - How to call: ReportGeneratorTool.create_pdf_report(title="Q2 Audit", sections=[{"title": "Summary", "content": "All clear.", "table": [["ID", "Status"], [1, "OK"]]}] )
+
+2. create_word_report:
+   - Purpose: Assembles standard editable document hierarchies targeting word processing software suites.
+   - Arguments:
+     a) title: str - Document root header tracking text string.
+     b) sections: List[Dict[str, str]] - Sequence collections parsing out text paragraphs and structural arrays.
+     c) output: str (default: "report.docx") - Local system target path storage tracking variable.
+     d) logo: str - Local file location reference locating corporate image assets.
+     e) author: str (default: "NPM Agent") - Standard workspace system identification text indicator.
+     f) styles: Optional[Dict[str, Any]] (default: None) - Structural formatting directives profile dictionary map.
+   - Returns: ToolResult tracking processing performance traits along with total target bytes metrics.
+   - How to call: ReportGeneratorTool.create_word_report(title="Project Scope", sections=[{"title": "Overview", "content": "Text here."}])
+
+3. create_excel_report:
+   - Purpose: Compiles data frame grids across independent workbook tabs applying specific visibility parameters.
+   - Arguments:
+     a) data_dict: Dict[str, Any] - Core data tracking dictionary containing data structures or Pandas DataFrames indexed by sheet labels.
+     b) output: str (default: "report.xlsx") - Target output spreadsheet location string locator.
+     c) charts: bool (default: True) - Structural directive flag forcing parsing of numerical tracks to build companion graphics.
+     d) formatting: bool (default: True) - Determines whether grid design overrides are activated.
+   - Returns: ToolResult identifying processed sheet counts and underlying binary output sizes.
+   - How to call: ReportGeneratorTool.create_excel_report(data_dict={"Sales": [{"Item": "A", "Qty": 20}, {"Item": "B", "Qty": 35}]})
+
+4. create_presentation:
+   - Purpose: Programmatically renders complete slide graphics frameworks based on quick-reference bullet specifications.
+   - Arguments:
+     a) slides_data: List[Dict[str, Any]] - Collection arrays grouping title parameters, body statements, and lists of components.
+     b) output: str (default: "presentation.pptx") - Document delivery deployment path selector.
+     c) theme: str (default: "dark") - Canvas color rules layout template switcher switch ("light" or "dark").
+   - Returns: ToolResult providing validation of absolute page count metrics completed.
+   - How to call: ReportGeneratorTool.create_presentation(slides_data=[{"title": "Intro", "bullets": ["Point 1", "Point 2"]}])
+
+5. generate_research_report:
+   - Purpose: Coordinates semantic processing loops to draft authoritative materials based on flat subject strings.
+   - Arguments:
+     a) topic: str - Descriptive subject string directing the AI drafting scope.
+     b) model: str (default: "llama3.2:3b") - Core language model selection index tracking framework identifier.
+     c) output: str (default: "research_report.pdf") - Target workspace file storage location string.
+     d) include_citations: bool (default: True) - Flag adding a references section with plausible source listings.
+   - Returns: ToolResult showing completion states and sub-component generation tallies.
+   - How to call: ReportGeneratorTool.generate_research_report(topic="Quantum Cryptography Evolution", model="mistral:7b")
+
+6. schedule_report:
+   - Purpose: Spawns independent execution engines tasked with compiling updates based on explicit chronological intervals.
+   - Arguments:
+     a) report_func: Callable - Programmatic target block parameter defining the reporting action.
+     b) schedule: str - Timing configuration expression syntax (e.g., "every 10 minutes", "monday at 08:00").
+     c) email_to: str - Optional routing parameters assigning transmission goals to a mail agent.
+     d) output_folder: str (default: "scheduled_reports") - Filesystem directory root handling asset sorting.
+   - Returns: ToolResult registering task acceptance inside the global background runner system context.
+   - How to call: ReportGeneratorTool.schedule_report(report_func=my_pdf_builder, schedule="every 5 minutes", email_to="lead@firm.com")
+
+7. create_dashboard_report:
+   - Purpose: Merges standalone numerical summaries and external charting sources into an isolated HTML display.
+   - Arguments:
+     a) metrics: Dict[str, Any] - Core flat parameters index capturing tracking KPIs.
+     b) charts: List[str] - Local target document paths capturing vector or layout visual blocks.
+     c) output_html: str (default: "dashboard_report.html") - Web deployment string location file index parameter.
+     d) title: str (default: "Dashboard Report") - Core application structural view header label text.
+   - Returns: ToolResult documenting dashboard component tracking distributions.
+   - How to call: ReportGeneratorTool.create_dashboard_report(metrics={"ROI": "14%", "Users": 1200}, charts=["clicks.html"])
+
+8. generate_from_template:
+   - Purpose: Scans raw layout fields to resolve tag expressions using specified data maps.
+   - Arguments:
+     a) template_path: str - Local filesystem index highlighting source format structure files.
+     b) data: Dict[str, Any] - Complete value mapping dict matching target document keys.
+     c) output_format: str (default: "html") - Output file type identifier choice ("html", "pdf", "docx").
+     d) output_path: str (default: "output_report") - Runtime structural name pointer identifying target deployment targets.
+   - Returns: ToolResult noting validation profiles, fallback scenarios, or byte limits completed.
+   - How to call: ReportGeneratorTool.generate_from_template(template_path="invoice.tmpl", data={"user": "John Doe", "total": "$50"}, output_format="html")
+   """)
+    
     @staticmethod
     def create_pdf_report(
         title: str,
