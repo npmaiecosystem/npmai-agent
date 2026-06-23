@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Converted from IPYNB to PY
-"""
-
-# %% [code] Cell 1
 import os, sys, json, re, shutil, subprocess, tempfile, traceback, platform, tarfile, socket, uuid, asyncio, zipfile, colorsys, glob, base64, hashlib, threading, time, math, io, csv, sqlite3
 from pathlib import Path
 from datetime import datetime, timedelta, timezone, date
@@ -30429,12 +30423,14566 @@ How to use Tool Methods:-
 #####################################################################################################################################
 
 
+# ═════════════════════════════════════════════════════════════════════════════
+# 1. GoogleWorkspaceTool
+# ═════════════════════════════════════════════════════════════════════════════
+
+class GoogleWorkspaceTool:
+    name = "google_workspace"
+    description = (
+        "Google Docs, Sheets, Drive, and Forms — create, read, write, "
+        "share, export, upload, download, and manage files"
+    )
+    use = ("""
+Name of Tool:- GoogleWorkspaceTool
+
+Purpose of Tool:-
+The GoogleWorkspaceTool provides a unified interface for programmatic interaction with core Google Workspace 
+applications, including Google Docs, Sheets, Drive, and Forms. Utilizing service account credentials managed through a 
+central store, it handles multi-scope OAuth2 authentication. The tool abstracts the complexity of separate Google API 
+discovery clients into a single utility, enabling automated workflows for generating and editing text documents, reading 
+and updating spreadsheets, adding data formatting or visual charts, managing cloud storage architectures (uploading, 
+downloading, moving, and sharing assets), and constructing responsive online forms alongside retrieving user responses.
+
+Methods:-
+- docs_create: Instantiates a new cloud text document and initializes its primary contents.
+- docs_get: Retrieves structural document maps and extracts an unformatted, plain text stream.
+- docs_append: Evaluates the structural end index of a target document to append fresh string content.
+- docs_replace_text: Performs optimized global find-and-replace text modifications across document structures.
+- docs_export: Leverages Google Drive endpoint translations to stream and convert documents into localized file formats (e.g., PDF, DOCX).
+- sheets_create: Initializes a multi-sheet spreadsheet workbook complete with explicit naming array declarations.
+- sheets_read: Polls a defined spreadsheet string grid cell range to capture row values.
+- sheets_write: Overwrites an target spreadsheet block matrix array using custom ingestion policies.
+- sheets_append: Identifies the tail edge of a spreadsheet log array to append tracking metrics.
+- sheets_format_cells: Injects structural design modifications into grid parameters.
+- sheets_add_chart: Binds embedded visualization configurations to data range sources.
+- drive_upload: Packages local files into chunked upload media requests to store them in Drive locations.
+- drive_download: Streams binary file streams sequentially out of Drive cloud nodes into local destination layouts.
+- drive_list: Queries storage indexes using parameter conditions to compile file asset metadata reports.
+- drive_create_folder: Constructs structural collection nodes within a target folder layout.
+- drive_share: Allocates identity access permissions over files to target emails with defined user roles.
+- drive_move: Modifies parent structural mapping lists to change an item's file hierarchy location.
+- forms_create: Generates interactive questionnaire matrices with various question styles (e.g., Radio, Checkbox, Scale).
+- forms_get_responses: Downloads active submission histories recorded from user form entries.
+- forms_list: Scans file metadata registries specifically filtering for active form assets.
+
+How to use Tool Methods:-
+
+1. docs_create:
+   - Purpose: Creates a new document and inserts optional initial text contents.
+   - Arguments:
+     a) title: str - The visual filename title assigned to the document (required).
+     b) content: str - Text payload string to insert at the first index (required).
+     c) cred_key: str (default: "google") - Reference key for looking up service credentials.
+   - Returns: ToolResult containing the generated unique "documentId".
+   - How to call: GoogleWorkspaceTool.docs_create(title="Project Scope", content="Initial draft body...")
+
+2. docs_get:
+   - Purpose: Pulls down full document objects and isolates clean plain-text strings.
+   - Arguments:
+     a) doc_id: str - Target document identifier code string (required).
+     b) cred_key: str (default: "google") - Storage key locator for API authentication.
+   - Returns: ToolResult storing full schema maps alongside stripped "plain_text" values.
+   - How to call: GoogleWorkspaceTool.docs_get(doc_id="1xA2bC3d...")
+
+3. docs_append:
+   - Purpose: Automatically finds the end boundary index of a document to attach new paragraphs.
+   - Arguments:
+     a) doc_id: str - Target document asset identifier code (required).
+     b) content: str - String segment containing the text block additions (required).
+     c) cred_key: str (default: "google") - Active service credential key name.
+   - Returns: ToolResult reporting total characters successfully appended.
+   - How to call: GoogleWorkspaceTool.docs_append(doc_id="1xA2bC3d...", content="\nUpdate: Section approved.")
+
+4. docs_replace_text:
+   - Purpose: Batch modifies text phrases throughout a document based on an input key-value dictionary.
+   - Arguments:
+     a) doc_id: str - Target document asset identifier (required).
+     b) replacements: dict - Mapping dictionary of {"old text string": "new text string"} (required).
+     c) cred_key: str (default: "google") - Reference key for lookup service account credentials.
+   - Returns: ToolResult capturing API confirmation properties.
+   - How to call: GoogleWorkspaceTool.docs_replace_text(doc_id="1xA2bC3d...", replacements={"[COMPANY]": "Acme Corp"})
+
+5. docs_export:
+   - Purpose: Converts Google Workspace document structures into downloadable desktop formats.
+   - Arguments:
+     a) doc_id: str - Target source cloud document id (required).
+     b) format: str (default: "pdf") - Choice format export target type ("pdf", "docx", "txt", "html", "odt").
+     c) output: str (default: "document.pdf") - Target local path where export bytes are saved.
+     b) cred_key: str (default: "google") - Reference key for credentials lookup.
+   - Returns: ToolResult confirming binary stream output path.
+   - How to call: GoogleWorkspaceTool.docs_export(doc_id="1xA2bC3d...", format="docx", output="./downloads/final.docx")
+
+6. sheets_create:
+   - Purpose: Initializes empty spreadsheet container layouts with defined sheet names.
+   - Arguments:
+     a) title: str - Workbook title name identifier (required).
+     b) sheets: list (default: None) - Array listing sub-tab names, e.g., ["Q1_Sales", "Q2_Sales"].
+     c) cred_key: str (default: "google") - Associated credential lookup key.
+   - Returns: ToolResult tracking "spreadsheetId" and access URL links.
+   - How to call: GoogleWorkspaceTool.sheets_create(title="2026 Financials", sheets=["Revenue", "Expenses"])
+
+7. sheets_read:
+   - Purpose: Extracts row lists out of spreadsheets according to sheet names and block range indicators.
+   - Arguments:
+     a) spreadsheet_id: str - Target document workspace container id (required).
+     b) range_: str (default: "Sheet1") - Target section layout coordinates (e.g., "Sheet1!A1:D20").
+     c) cred_key: str (default: "google") - Service account store index key.
+   - Returns: ToolResult enclosing row arrays.
+   - How to call: GoogleWorkspaceTool.sheets_read(spreadsheet_id="1sH2eEt...", range_="Revenue!B2:C10")
+
+8. sheets_write:
+   - Purpose: Performs specific value matrix block overwrites starting at a given grid cell coordinate.
+   - Arguments:
+     a) spreadsheet_id: str - Target spreadsheet workspace identifier (required).
+     b) range_: str - Cell coordinate target boundary start anchor (e.g., "Sheet1!A1") (required).
+     c) values: list - Matrix list array outlining column block rows (required).
+     d) value_input_option: str (default: "RAW") - Formatting parser standard ("RAW" or "USER_ENTERED").
+     e) cred_key: str (default: "google") - Associated verification access identifier.
+   - Returns: ToolResult confirming cell update lengths.
+   - How to call: GoogleWorkspaceTool.sheets_write(spreadsheet_id="1sH2eEt...", range_="Sheet1!A1", values=[["Name", "Age"], ["Alice", 24]])
+
+9. sheets_append:
+   - Purpose: appends tracking metrics immediately below the last populated row in a table.
+   - Arguments:
+     a) spreadsheet_id: str - Target spreadsheet workspace container id (required).
+     b) range_: str - Search table region filter anchor used to isolate targeted table lists (required).
+     c) values: list - Dynamic row array listings to insert at the table bottom (required).
+     d) cred_key: str (default: "google") - Active profile identity credential key.
+   - Returns: ToolResult logging processed line changes.
+   - How to call: GoogleWorkspaceTool.sheets_append(spreadsheet_id="1sH2eEt...", range_="Sheet1!A:B", values=[["Bob", 30]])
+
+10. sheets_format_cells:
+    - Purpose: Applies presentation formatting values across workbook coordinates.
+    - Arguments:
+      a) spreadsheet_id: str - Target workspace cloud workbook layout ID (required).
+      b) range_: str - Coordinate region reference track block labels (required).
+      c) format: dict - Configuration mapping parameters matching Sheets API CellFormat specifications (required).
+      d) cred_key: str (default: "google") - Workspace context authorization profile lookup tag.
+    - Returns: ToolResult tracking successful presentation styling updates.
+    - How to call: GoogleWorkspaceTool.sheets_format_cells(spreadsheet_id="1sH2eEt...", range_="A1:A10", format={"textFormat": {"bold": True}})
+
+11. sheets_add_chart:
+    - Purpose: Attaches charts onto spreadsheet grid layers based on custom chart data source mappings.
+    - Arguments:
+      a) spreadsheet_id: str - Target workbook cloud reference workspace layout (required).
+      b) sheet_id: int - Integer identifier targeting the specific sheet sub-tab (required).
+      b) chart_config: dict - Configuration dictionary matching Sheets API AddChartRequest structures (required).
+      c) cred_key: str (default: "google") - Active service context profile lookup token.
+    - Returns: ToolResult confirming chart injection.
+    - How to call: GoogleWorkspaceTool.sheets_add_chart(spreadsheet_id="1sH2eEt...", sheet_id=0, chart_config={...})
+
+12. drive_upload:
+    - Purpose: Streams local physical file buffers into managed Drive storage spaces.
+    - Arguments:
+      a) local_path: str - Target local computer file layout path (required).
+      b) folder_id: str (default: None) - Optional cloud destination folder parent container code.
+      c) mime_type: str (default: None) - Data content classification wrapper tag.
+      d) cred_key: str (default: "google") - Storage credentials profile key.
+    - Returns: ToolResult containing file reference data objects including cloud links.
+    - How to call: GoogleWorkspaceTool.drive_upload(local_path="./reports/summary.csv", folder_id="fol_98765")
+
+13. drive_download:
+    - Purpose: Downloads binary files from the cloud into a specified local file path.
+    - Arguments:
+      a) file_id: str - Unique target cloud file reference node identifier (required).
+      b) output_path: str - Target local disk pathway location mapping destination (required).
+      c) cred_key: str (default: "google") - Storage lookup credential access identifier.
+    - Returns: ToolResult documenting file receipt verification tracking metrics.
+    - How to call: GoogleWorkspaceTool.drive_download(file_id="drv_fl123...", output_path="./local_mirror.zip")
+
+14. drive_list:
+    - Purpose: Queries Drive file metadata registries using search filters and ordering fields.
+    - Arguments:
+      a) folder_id: str (default: None) - Targets searches exclusively within a specific parent node folder.
+      b) query: str (default: None) - Search query statement criteria matching Drive API formats (e.g., "name contains 'Invoice'").
+      c) order_by: str (default: "name") - Sorting criteria key instruction ("name", "modifiedTime", etc.).
+      d) cred_key: str (default: "google") - Account credentials lookup index name pointer.
+    - Returns: ToolResult wrapping file lists with names, sizes, modtimes, and links.
+    - How to call: GoogleWorkspaceTool.drive_list(query="mimeType='application/pdf'", order_by="modifiedTime desc")
+
+15. drive_create_folder:
+    - Purpose: Sets up specialized collection nodes within Drive filesystem hierarchies.
+    - Arguments:
+      a) name: str - Target foldernaming label string (required).
+      b) parent_id: str (default: None) - Optional parent identifier string to build nested architectures.
+      c) cred_key: str (default: "google") - Target credentials access map identifier pointer.
+    - Returns: ToolResult tracking the created folder instance configuration objects.
+    - How to call: GoogleWorkspaceTool.drive_create_folder(name="Archive_2026", parent_id="fol_root55")
+
+16. drive_share:
+    - Purpose: Assigns user collaboration roles over designated cloud files.
+    - Arguments:
+      a) file_id: str - Target file unique asset identifier code (required).
+      b) email: str - User target contact email address (required).
+      c) role: str (default: "reader") - Authorized permission standard ("reader", "writer", "commenter", "owner").
+      d) cred_key: str (default: "google") - Service context profile lookup credential token.
+    - Returns: ToolResult monitoring target credential validation maps.
+    - How to call: GoogleWorkspaceTool.drive_share(file_id="drv_fl123...", email="partner@example.com", role="writer")
+
+17. drive_move:
+    - Purpose: Changes folder parent tracking variables to move files between directories.
+    - Arguments:
+      a) file_id: str - Target file unique asset identifier code string (required).
+      b) new_parent_id: str - Target folder destination container identifier layout reference (required).
+      c) cred_key: str (default: "google") - Target credential reference verification key.
+    - Returns: ToolResult confirming parent node updates.
+    - How to call: GoogleWorkspaceTool.drive_move(file_id="drv_fl123...", new_parent_id="fol_processed77")
+
+18. forms_create:
+    - Purpose: Constructs a new Form layout filled with diverse structural item questions.
+    - Arguments:
+      a) title: str - Questionnaire visual heading label (required).
+      b) items: list - Collection map dictionaries configuring text fields, multiple-choice options, or checkboxes (required).
+      c) cred_key: str (default: "google") - Associated authorization profile lookup parameter tag.
+    - Returns: ToolResult including "formId" along with public user-facing "responderUri" URLs.
+    - How to call: GoogleWorkspaceTool.forms_create(title="Feedback Survey", items=[{"title": "Full Name", "type": "TEXT"}, {"title": "Rating", "type": "SCALE"}])
+
+19. forms_get_responses:
+    - Purpose: Retrieves active submission records collected from user form entries.
+    - Arguments:
+      a) form_id: str - Target questionnaire structural container code key (required).
+      b) cred_key: str (default: "google") - System profile lookup reference credentials validation block.
+    - Returns: ToolResult bundling all response data tracking logs.
+    - How to call: GoogleWorkspaceTool.forms_get_responses(form_id="frm_abc123...")
+
+20. forms_list:
+    - Purpose: Queries localized storage layouts to discover and report active Form file components.
+    - Arguments:
+      a) cred_key: str (default: "google") - Active credentials profile system access code lookup.
+    - Returns: ToolResult listing metadata summaries for discovered forms.
+    - How to call: GoogleWorkspaceTool.forms_list()
+""")
+       
+    # ── internal helpers ──────────────────────────────────────────────────
+
+    @staticmethod
+    def _creds(cred_key: str = "google"):
+        """Return google.oauth2 Credentials from stored service-account JSON."""
+        from google.oauth2.service_account import Credentials
+        data = CredStore.load(cred_key)
+        if not data:
+            raise ValueError("No Google credentials. Store service-account JSON under 'google'.")
+        scopes = [
+            "https://www.googleapis.com/auth/documents",
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive",
+            "https://www.googleapis.com/auth/forms",
+        ]
+        return Credentials.from_service_account_info(data, scopes=scopes)
+
+    @staticmethod
+    def _docs_service(cred_key: str = "google"):
+        from googleapiclient.discovery import build
+        return build("docs", "v1", credentials=GoogleWorkspaceTool._creds(cred_key))
+
+    @staticmethod
+    def _sheets_service(cred_key: str = "google"):
+        from googleapiclient.discovery import build
+        return build("sheets", "v4", credentials=GoogleWorkspaceTool._creds(cred_key))
+
+    @staticmethod
+    def _drive_service(cred_key: str = "google"):
+        from googleapiclient.discovery import build
+        return build("drive", "v3", credentials=GoogleWorkspaceTool._creds(cred_key))
+
+    @staticmethod
+    def _forms_service(cred_key: str = "google"):
+        from googleapiclient.discovery import build
+        return build("forms", "v1", credentials=GoogleWorkspaceTool._creds(cred_key))
+
+    # ── Docs ─────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def docs_create(title: str, content: str, cred_key: str = "google") -> ToolResult:
+        try:
+            svc = GoogleWorkspaceTool._docs_service(cred_key)
+            doc = svc.documents().create(body={"title": title}).execute()
+            doc_id = doc["documentId"]
+            if content:
+                requests_ = [{"insertText": {"location": {"index": 1}, "text": content}}]
+                svc.documents().batchUpdate(documentId=doc_id,
+                                            body={"requests": requests_}).execute()
+            return ToolResult(True, f"✓ Doc created: {doc_id}",
+                              {"documentId": doc_id, "title": title})
+        except Exception as e:
+            return ToolResult(False, f"✗ docs_create failed: {e}")
+
+    @staticmethod
+    def docs_get(doc_id: str, cred_key: str = "google") -> ToolResult:
+        try:
+            svc = GoogleWorkspaceTool._docs_service(cred_key)
+            doc = svc.documents().get(documentId=doc_id).execute()
+            # extract plain text
+            text_parts = []
+            for el in doc.get("body", {}).get("content", []):
+                for run in el.get("paragraph", {}).get("elements", []):
+                    t = run.get("textRun", {}).get("content", "")
+                    if t:
+                        text_parts.append(t)
+            plain = "".join(text_parts)
+            return ToolResult(True, f"✓ Doc fetched ({len(plain)} chars)",
+                              {"doc": doc, "plain_text": plain})
+        except Exception as e:
+            return ToolResult(False, f"✗ docs_get failed: {e}")
+
+    @staticmethod
+    def docs_append(doc_id: str, content: str, cred_key: str = "google") -> ToolResult:
+        try:
+            svc = GoogleWorkspaceTool._docs_service(cred_key)
+            doc = svc.documents().get(documentId=doc_id).execute()
+            end_index = doc["body"]["content"][-1]["endIndex"] - 1
+            requests_ = [{"insertText": {"location": {"index": end_index}, "text": content}}]
+            svc.documents().batchUpdate(documentId=doc_id,
+                                        body={"requests": requests_}).execute()
+            return ToolResult(True, f"✓ Appended {len(content)} chars to {doc_id}")
+        except Exception as e:
+            return ToolResult(False, f"✗ docs_append failed: {e}")
+
+    @staticmethod
+    def docs_replace_text(doc_id: str, replacements: dict,
+                          cred_key: str = "google") -> ToolResult:
+        """replacements: {old_text: new_text, ...}"""
+        try:
+            svc = GoogleWorkspaceTool._docs_service(cred_key)
+            requests_ = [
+                {"replaceAllText": {
+                    "containsText": {"text": old, "matchCase": True},
+                    "replaceText": new
+                }}
+                for old, new in replacements.items()
+            ]
+            result = svc.documents().batchUpdate(documentId=doc_id,
+                                                  body={"requests": requests_}).execute()
+            return ToolResult(True, f"✓ Replaced {len(replacements)} text(s)", result)
+        except Exception as e:
+            return ToolResult(False, f"✗ docs_replace_text failed: {e}")
+
+    @staticmethod
+    def docs_export(doc_id: str, format: str = "pdf",
+                    output: str = "document.pdf", cred_key: str = "google") -> ToolResult:
+        """format: pdf | docx | txt | html | odt"""
+        try:
+            mime_map = {
+                "pdf":  "application/pdf",
+                "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "txt":  "text/plain",
+                "html": "text/html",
+                "odt":  "application/vnd.oasis.opendocument.text",
+            }
+            mime = mime_map.get(format.lower(), "application/pdf")
+            svc = GoogleWorkspaceTool._drive_service(cred_key)
+            content_bytes = svc.files().export_media(fileId=doc_id,
+                                                      mimeType=mime).execute()
+            Path(output).write_bytes(content_bytes)
+            return ToolResult(True, f"✓ Exported to {output}")
+        except Exception as e:
+            return ToolResult(False, f"✗ docs_export failed: {e}")
+
+    # ── Sheets ────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def sheets_create(title: str, sheets: list = None,
+                      cred_key: str = "google") -> ToolResult:
+        """sheets: list of sheet names, e.g. ['Sheet1','Data']"""
+        try:
+            svc = GoogleWorkspaceTool._sheets_service(cred_key)
+            body = {"properties": {"title": title}}
+            if sheets:
+                body["sheets"] = [{"properties": {"title": s}} for s in sheets]
+            ss = svc.spreadsheets().create(body=body).execute()
+            return ToolResult(True, f"✓ Spreadsheet created: {ss['spreadsheetId']}",
+                              {"spreadsheetId": ss["spreadsheetId"],
+                               "url": ss["spreadsheetUrl"]})
+        except Exception as e:
+            return ToolResult(False, f"✗ sheets_create failed: {e}")
+
+    @staticmethod
+    def sheets_read(spreadsheet_id: str, range_: str = "Sheet1",
+                    cred_key: str = "google") -> ToolResult:
+        try:
+            svc = GoogleWorkspaceTool._sheets_service(cred_key)
+            resp = svc.spreadsheets().values().get(
+                spreadsheetId=spreadsheet_id, range=range_).execute()
+            values = resp.get("values", [])
+            return ToolResult(True, f"✓ Read {len(values)} rows", values)
+        except Exception as e:
+            return ToolResult(False, f"✗ sheets_read failed: {e}")
+
+    @staticmethod
+    def sheets_write(spreadsheet_id: str, range_: str,
+                     values: list, value_input_option: str = "RAW",
+                     cred_key: str = "google") -> ToolResult:
+        try:
+            svc = GoogleWorkspaceTool._sheets_service(cred_key)
+            body = {"values": values}
+            resp = svc.spreadsheets().values().update(
+                spreadsheetId=spreadsheet_id, range=range_,
+                valueInputOption=value_input_option, body=body).execute()
+            return ToolResult(True, f"✓ Written {resp.get('updatedCells',0)} cells")
+        except Exception as e:
+            return ToolResult(False, f"✗ sheets_write failed: {e}")
+
+    @staticmethod
+    def sheets_append(spreadsheet_id: str, range_: str, values: list,
+                      cred_key: str = "google") -> ToolResult:
+        try:
+            svc = GoogleWorkspaceTool._sheets_service(cred_key)
+            body = {"values": values}
+            resp = svc.spreadsheets().values().append(
+                spreadsheetId=spreadsheet_id, range=range_,
+                valueInputOption="RAW", insertDataOption="INSERT_ROWS",
+                body=body).execute()
+            return ToolResult(True, f"✓ Appended rows",
+                              resp.get("updates", {}))
+        except Exception as e:
+            return ToolResult(False, f"✗ sheets_append failed: {e}")
+
+    @staticmethod
+    def sheets_clear(spreadsheet_id: str, range_: str,
+                     cred_key: str = "google") -> ToolResult:
+        try:
+            svc = GoogleWorkspaceTool._sheets_service(cred_key)
+            svc.spreadsheets().values().clear(
+                spreadsheetId=spreadsheet_id, range=range_, body={}).execute()
+            return ToolResult(True, f"✓ Cleared {range_}")
+        except Exception as e:
+            return ToolResult(False, f"✗ sheets_clear failed: {e}")
+
+    @staticmethod
+    def sheets_format_cells(spreadsheet_id: str, range_: str,
+                            format: dict, cred_key: str = "google") -> ToolResult:
+        """format: CellFormat dict e.g. {'backgroundColor': {'red':1,'green':0,'blue':0}}"""
+        try:
+            svc = GoogleWorkspaceTool._sheets_service(cred_key)
+            # Parse range to get sheet id
+            meta = svc.spreadsheets().get(spreadsheetId=spreadsheet_id).execute()
+            sheet_id = meta["sheets"][0]["properties"]["sheetId"]
+            requests_ = [{
+                "repeatCell": {
+                    "range": {"sheetId": sheet_id},
+                    "cell": {"userEnteredFormat": format},
+                    "fields": "userEnteredFormat"
+                }
+            }]
+            svc.spreadsheets().batchUpdate(spreadsheetId=spreadsheet_id,
+                                           body={"requests": requests_}).execute()
+            return ToolResult(True, f"✓ Format applied to {range_}")
+        except Exception as e:
+            return ToolResult(False, f"✗ sheets_format_cells failed: {e}")
+
+    @staticmethod
+    def sheets_add_chart(spreadsheet_id: str, sheet_id: int,
+                         chart_config: dict, cred_key: str = "google") -> ToolResult:
+        """chart_config: AddChartRequest spec dict from Sheets API"""
+        try:
+            svc = GoogleWorkspaceTool._sheets_service(cred_key)
+            requests_ = [{"addChart": {"chart": chart_config}}]
+            resp = svc.spreadsheets().batchUpdate(
+                spreadsheetId=spreadsheet_id,
+                body={"requests": requests_}).execute()
+            return ToolResult(True, "✓ Chart added", resp)
+        except Exception as e:
+            return ToolResult(False, f"✗ sheets_add_chart failed: {e}")
+
+    # ── Drive ─────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def drive_upload(local_path: str, folder_id: str = None,
+                     mime_type: str = None, cred_key: str = "google") -> ToolResult:
+        try:
+            from googleapiclient.http import MediaFileUpload
+            svc = GoogleWorkspaceTool._drive_service(cred_key)
+            name = Path(local_path).name
+            meta = {"name": name}
+            if folder_id:
+                meta["parents"] = [folder_id]
+            media = MediaFileUpload(local_path, mimetype=mime_type,
+                                    resumable=True)
+            f = svc.files().create(body=meta, media_body=media,
+                                   fields="id,name,webViewLink").execute()
+            return ToolResult(True, f"✓ Uploaded {name}", f)
+        except Exception as e:
+            return ToolResult(False, f"✗ drive_upload failed: {e}")
+
+    @staticmethod
+    def drive_download(file_id: str, output_path: str,
+                       cred_key: str = "google") -> ToolResult:
+        try:
+            import io
+            from googleapiclient.http import MediaIoBaseDownload
+            svc = GoogleWorkspaceTool._drive_service(cred_key)
+            request = svc.files().get_media(fileId=file_id)
+            buf = io.BytesIO()
+            dl = MediaIoBaseDownload(buf, request)
+            done = False
+            while not done:
+                _, done = dl.next_chunk()
+            Path(output_path).write_bytes(buf.getvalue())
+            return ToolResult(True, f"✓ Downloaded to {output_path}")
+        except Exception as e:
+            return ToolResult(False, f"✗ drive_download failed: {e}")
+
+    @staticmethod
+    def drive_list(folder_id: str = None, query: str = None,
+                   order_by: str = "name", cred_key: str = "google") -> ToolResult:
+        try:
+            svc = GoogleWorkspaceTool._drive_service(cred_key)
+            q_parts = []
+            if folder_id:
+                q_parts.append(f"'{folder_id}' in parents")
+            if query:
+                q_parts.append(query)
+            q_parts.append("trashed=false")
+            q_str = " and ".join(q_parts)
+            results = svc.files().list(
+                q=q_str, orderBy=order_by,
+                fields="files(id,name,mimeType,size,modifiedTime,webViewLink)"
+            ).execute()
+            files = results.get("files", [])
+            return ToolResult(True, f"✓ {len(files)} files", files)
+        except Exception as e:
+            return ToolResult(False, f"✗ drive_list failed: {e}")
+
+    @staticmethod
+    def drive_create_folder(name: str, parent_id: str = None,
+                            cred_key: str = "google") -> ToolResult:
+        try:
+            svc = GoogleWorkspaceTool._drive_service(cred_key)
+            meta = {"name": name,
+                    "mimeType": "application/vnd.google-apps.folder"}
+            if parent_id:
+                meta["parents"] = [parent_id]
+            folder = svc.files().create(body=meta,
+                                        fields="id,name").execute()
+            return ToolResult(True, f"✓ Folder created: {folder['id']}", folder)
+        except Exception as e:
+            return ToolResult(False, f"✗ drive_create_folder failed: {e}")
+
+    @staticmethod
+    def drive_share(file_id: str, email: str, role: str = "reader",
+                    cred_key: str = "google") -> ToolResult:
+        """role: reader | writer | commenter | owner"""
+        try:
+            svc = GoogleWorkspaceTool._drive_service(cred_key)
+            perm = {"type": "user", "role": role, "emailAddress": email}
+            resp = svc.permissions().create(fileId=file_id, body=perm,
+                                            sendNotificationEmail=True).execute()
+            return ToolResult(True, f"✓ Shared {file_id} with {email} as {role}", resp)
+        except Exception as e:
+            return ToolResult(False, f"✗ drive_share failed: {e}")
+
+    @staticmethod
+    def drive_move(file_id: str, new_parent_id: str,
+                   cred_key: str = "google") -> ToolResult:
+        try:
+            svc = GoogleWorkspaceTool._drive_service(cred_key)
+            f = svc.files().get(fileId=file_id, fields="parents").execute()
+            old_parents = ",".join(f.get("parents", []))
+            svc.files().update(fileId=file_id,
+                               addParents=new_parent_id,
+                               removeParents=old_parents,
+                               fields="id,parents").execute()
+            return ToolResult(True, f"✓ Moved {file_id} to {new_parent_id}")
+        except Exception as e:
+            return ToolResult(False, f"✗ drive_move failed: {e}")
+
+    # ── Forms ─────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def forms_create(title: str, items: list,
+                     cred_key: str = "google") -> ToolResult:
+        """
+        items: list of dicts, e.g.
+          [{"title": "Name?", "type": "TEXT"},
+           {"title": "Age?",  "type": "TEXT"},
+           {"title": "Color?","type":"RADIO","options":["Red","Blue"]}]
+        """
+        try:
+            svc = GoogleWorkspaceTool._forms_service(cred_key)
+            form = svc.forms().create(
+                body={"info": {"title": title, "documentTitle": title}}
+            ).execute()
+            form_id = form["formId"]
+            requests_ = []
+            for idx, item in enumerate(items):
+                q_type = item.get("type", "TEXT").upper()
+                question: dict = {}
+                if q_type == "TEXT":
+                    question = {"textQuestion": {"paragraph": False}}
+                elif q_type == "RADIO":
+                    opts = [{"value": o} for o in item.get("options", [])]
+                    question = {"choiceQuestion": {"type": "RADIO",
+                                                   "options": opts}}
+                elif q_type == "CHECKBOX":
+                    opts = [{"value": o} for o in item.get("options", [])]
+                    question = {"choiceQuestion": {"type": "CHECKBOX",
+                                                   "options": opts}}
+                elif q_type == "SCALE":
+                    question = {"scaleQuestion": {"low": 1, "high": 5}}
+                requests_.append({
+                    "createItem": {
+                        "item": {
+                            "title": item.get("title", f"Question {idx+1}"),
+                            "questionItem": {"question": question}
+                        },
+                        "location": {"index": idx}
+                    }
+                })
+            if requests_:
+                svc.forms().batchUpdate(formId=form_id,
+                                        body={"requests": requests_}).execute()
+            return ToolResult(True, f"✓ Form created: {form_id}",
+                              {"formId": form_id,
+                               "responderUri": form.get("responderUri", "")})
+        except Exception as e:
+            return ToolResult(False, f"✗ forms_create failed: {e}")
+
+    @staticmethod
+    def forms_get_responses(form_id: str,
+                            cred_key: str = "google") -> ToolResult:
+        try:
+            svc = GoogleWorkspaceTool._forms_service(cred_key)
+            resp = svc.forms().responses().list(formId=form_id).execute()
+            responses = resp.get("responses", [])
+            return ToolResult(True, f"✓ {len(responses)} responses", responses)
+        except Exception as e:
+            return ToolResult(False, f"✗ forms_get_responses failed: {e}")
+
+    @staticmethod
+    def forms_list(cred_key: str = "google") -> ToolResult:
+        try:
+            svc = GoogleWorkspaceTool._drive_service(cred_key)
+            results = svc.files().list(
+                q="mimeType='application/vnd.google-apps.form' and trashed=false",
+                fields="files(id,name,modifiedTime,webViewLink)"
+            ).execute()
+            forms = results.get("files", [])
+            return ToolResult(True, f"✓ {len(forms)} forms", forms)
+        except Exception as e:
+            return ToolResult(False, f"✗ forms_list failed: {e}")
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# 2. NotionAdvancedTool
+# ═════════════════════════════════════════════════════════════════════════════
+
+class NotionAdvancedTool:
+    name = "notion_advanced"
+    description = (
+        "Advanced Notion operations — databases, pages, blocks, tables, "
+        "kanban views, CSV import/export, templates, and page duplication"
+    )
+    use = ("""
+Name of Tool: NotionAdvancedTool
+
+Purpose of Tool:
+The NotionAdvancedTool acts as an advanced wrapper around the official Notion API client (`notion_client`). 
+It streamlines programmatic workflows for workspace administration by abstracting raw HTTP/SDK patterns into 
+clean, reusable static methods. This tool handles database design and operations (querying, adding items, tracking property 
+updates, and bulk archiving), layout rendering (pages and block elements), custom data structure formatting (native 
+tables and Kanban pipelines), bulk data management (CSV import/export mechanisms), and content orchestration 
+(template building and structural page duplication).
+
+Methods:
+- search: Queries workspace objects matching specific text parameters and sort orders.
+- get_database: Pulls the structural schema mapping for a target database ID.
+- query_database: Polls database entries based on pagination criteria, filters, and sorting parameters.
+- create_database: Constructs a structured database matching defined custom schema types.
+- add_database_item: Injects a new workspace row entry filled with mapped properties.
+- update_database_item: Overwrites specific property values on an existing database item page.
+- delete_database_item: Sets the page archive state flag to drop items from active workspace views.
+- create_page: Generates a blank canvas or standard layout page context populated with block children arrays.
+- get_page: Pulls structural properties and system metadata fields from a designated page node.
+- update_page: Alters page header titles and general system properties.
+- append_blocks: Chains structural content components to the bottom of a block layout.
+- get_blocks: Iterates over layout child elements to return structured content streams.
+- delete_block: Targets and deletes a content component by ID.
+- create_table: Transforms basic string vectors into formatted child row matrix block layouts.
+- create_kanban_view: Injects task pipeline choices ("Todo", "In Progress", "Done") into database schemas.
+- export_database_to_csv: Processes pagination streams to serialize database values into flat CSV sheets.
+- import_csv_to_database: Maps dynamic CSV input streams into standardized rich-text database properties.
+- create_template: Packages custom headers, emoji icons, structural covers, and boilerplate blocks into template layouts.
+- duplicate_page: Deep-copies page states and block children arrays while pruning read-only metadata fields.
+
+How to use Tool Methods:
+
+1. search:
+   - Purpose: Searches for matching page or database items across the user's workspace.
+   - Arguments:
+     a) query: str - Text search term query string (required).
+     b) filter_type: str (default: None) - Scopes objects by type ("page" or "database").
+     c) sort: str (default: "last_edited_time") - Target timestamp mapping anchor.
+     d) cred_key: str (default: "notion") - Vault key location for authentication.
+   - Returns: ToolResult containing matching search result payload lists.
+   - How to call: NotionAdvancedTool.search(query="2026 Roadmap", filter_type="database")
+
+2. get_database:
+   - Purpose: Pulls the data structure and schema metadata of a database.
+   - Arguments:
+     a) database_id: str - target database identifier code string (required).
+     b) cred_key: str (default: "notion") - Vault authentication lookup index.
+   - Returns: ToolResult tracking full schema definitions.
+   - How to call: NotionAdvancedTool.get_database(database_id="db_abc123...")
+
+3. query_database:
+   - Purpose: Searches and filters records within a specific database.
+   - Arguments:
+     a) database_id: str - target database workspace container ID (required).
+     b) filter: dict (default: None) - Structured payload matching Notion API compound filter styles.
+     c) sorts: list (default: None) - Sorting parameter maps.
+     d) page_size: int (default: 100) - Caps maximum returned records.
+     e) cred_key: str (default: "notion") - Active workspace authorization token tag.
+   - Returns: ToolResult holding rows extracted from the query.
+   - How to call: NotionAdvancedTool.query_database(database_id="db_abc123...", filter={"property": "Status", "select": {"equals": "Done"}})
+
+4. create_database:
+   - Purpose: Initializes a new structural database matching user property requirements.
+   - Arguments:
+     a) parent_id: str - Target parent page location anchor ID (required).
+     b) title: str - Database display header title string (required).
+     c) properties: dict - Schema mapping properties defining names and cell type shapes (required).
+     d) cred_key: str (default: "notion") - Storage lookup credential access identifier.
+   - Returns: ToolResult tracking generated structural schemas.
+   - How to call: NotionAdvancedTool.create_database(parent_id="pg_xyz987...", title="Bug Tracker", properties={"Bug Name": {"title": {}}, "Severity": {"select": {}}})
+
+5. add_database_item:
+   - Purpose: Appends a newly populated page entry record row to a database.
+   - Arguments:
+     a) database_id: str - Target structural database workspace container ID (required).
+     b) properties: dict - Value mapping properties populated to match targeted schemas (required).
+     c) cred_key: str (default: "notion") - Active credential identification key locator.
+   - Returns: ToolResult reporting target object entry confirmations.
+   - How to call: NotionAdvancedTool.add_database_item(database_id="db_abc123...", properties={"Bug Name": {"title": [{"text": {"content": "Login Timeout"}}]}})
+
+6. update_database_item:
+   - Purpose: Updates cell properties for a single database entry page.
+   - Arguments:
+     a) page_id: str - Target data page row tracking entry ID (required).
+     b) properties: dict - Property maps grouping structural updates (required).
+     c) cred_key: str (default: "notion") - Target verification access profile tracker.
+   - Returns: ToolResult confirming updated entry records.
+   - How to call: NotionAdvancedTool.update_database_item(page_id="pg_row11...", properties={"Severity": {"select": {"name": "Critical"}}})
+
+7. delete_database_item:
+   - Purpose: Moves an entry page row from active views into the workspace trash archive.
+   - Arguments:
+     a) page_id: str - Target tracking record identity node string (required).
+     b) cred_key: str (default: "notion") - Token storage profile reference map key.
+   - Returns: ToolResult reporting successful target record deletion.
+   - How to call: NotionAdvancedTool.delete_database_item(page_id="pg_row11...")
+
+8. create_page:
+   - Purpose: Generates blank canvas spaces or rich custom sub-page layers.
+   - Arguments:
+     a) parent_id: str - Parent container page id (required).
+     b) title: str - Document title name string header (required).
+     c) content_blocks: list (default: None) - Structural block array configuring paragraph or visual parts.
+     d) cred_key: str (default: "notion") - Account lookup configuration index verification keys.
+   - Returns: ToolResult containing the generated public URL web access path.
+   - How to call: NotionAdvancedTool.create_page(parent_id="pg_xyz987...", title="Meeting Minutes", content_blocks=[{"object": "block", "type": "heading_1", "heading_1": {"rich_text": [{"text": {"content": "Notes"}}]}}])
+
+9. get_page:
+   - Purpose: Resolves layout definitions and metadata indexes associated with a page.
+   - Arguments:
+     a) page_id: str - target page locator identity node (required).
+     b) cred_key: str (default: "notion") - Verification credentials registry reference link.
+   - Returns: ToolResult enclosing structural meta mapping arrays.
+   - How to call: NotionAdvancedTool.get_page(page_id="pg_xyz987...")
+
+10. update_page:
+    - Purpose: Updates structural page layouts or top-level titles.
+    - Arguments:
+      a) page_id: str - Target page unique container block identifier (required).
+      b) properties: dict - Structural value properties updating key locations (required).
+      d) cred_key: str (default: "notion") - Associated authorization verification identity parameter.
+    - Returns: ToolResult tracking layout property changes.
+    - How to call: NotionAdvancedTool.update_page(page_id="pg_xyz987...", properties={"title": {"title": [{"text": {"content": "Archived Minutes"}}]}})
+
+11. append_blocks:
+    - Purpose: Attaches a batch of layout blocks to a target page canvas or callout block.
+    - Arguments:
+      a) block_id: str - Target structural layout container ID anchor block (required).
+      b) children: list - Block arrays detailing layout additions (required).
+      c) cred_key: str (default: "notion") - Identity profile connection lookup variables.
+    - Returns: ToolResult reporting validation updates.
+    - How to call: NotionAdvancedTool.append_blocks(block_id="pg_xyz987...", children=[{"object": "block", "type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "New line"}}]}}])
+
+12. get_blocks:
+    - Purpose: Returns the layout child blocks belonging to a parent page block container.
+    - Arguments:
+      a) block_id: str - target structure container component reference code (required).
+      b) cred_key: str (default: "notion") - Reference credentials verification key token.
+    - Returns: ToolResult delivering localized layout element configurations.
+    - How to call: NotionAdvancedTool.get_blocks(block_id="pg_xyz987...")
+
+13. delete_block:
+    - Purpose: Deletes a specific block layout element from a page canvas.
+    - Arguments:
+      a) block_id: str - Unique target block component element ID (required).
+      b) cred_key: str (default: "notion") - Profile authorization token tracking lookup.
+    - Returns: ToolResult logging the deleted elements.
+    - How to call: NotionAdvancedTool.delete_block(block_id="blk_99887...")
+
+14. create_table:
+    - Purpose: Builds inline, formatted layout table rows inside a parent block workspace canvas.
+    - Arguments:
+      a) parent_id: str - Target canvas page container identifier layout ID (required).
+      b) headers: list - Core headers string label vector (required).
+      c) rows: list - Multi-level grid string array rows to display in the table cells (required).
+      d) cred_key: str (default: "notion") - Core credential verification pointer index.
+    - Returns: ToolResult detailing the processed cell structures.
+    - How to call: NotionAdvancedTool.create_table(parent_id="pg_xyz987...", headers=["Task", "Owner"], rows=[["Setup Auth", "Dev A"], ["Tests", "Dev B"]])
+
+15. create_kanban_view:
+    - Purpose: Sets up workflow status trackers within custom item databases.
+    - Arguments:
+      a) database_id: str - target structural schema mapping container (required).
+      b) cred_key: str (default: "notion") - Associated authorization profile lookup configuration token.
+    - Returns: ToolResult tracking structural board column definitions.
+    - How to call: NotionAdvancedTool.create_kanban_view(database_id="db_abc123...")
+
+16. export_database_to_csv:
+    - Purpose: flattens structural cell types into standard, downloadable CSV spreadsheets.
+    - Arguments:
+      a) database_id: str - Target structural schema layout block database ID (required).
+      b) output: str - Target file path where local data is written (required).
+      c) cred_key: str (default: "notion") - Active server login profiles authentication map.
+    - Returns: ToolResult validating flat layout entries.
+    - How to call: NotionAdvancedTool.export_database_to_csv(database_id="db_abc123...", output="./backups/vault.csv")
+
+17. import_csv_to_database:
+    - Purpose: Parses flat local files to generate matching database items.
+    - Arguments:
+      a) database_id: str - Target structural schema repository ID location (required).
+      b) csv_path: str - Local spreadsheet location directory mapping path (required).
+      c) property_mapping: dict (default: None) - Dictionary mapping CSV column headers to Notion properties.
+      d) cred_key: str (default: "notion") - Storage lookup authorization index token pointers.
+    - Returns: ToolResult displaying the imported dataset counts.
+    - How to call: NotionAdvancedTool.import_csv_to_database(database_id="db_abc123...", csv_path="./data/users.csv", property_mapping={"User Name": "Title"})
+
+18. create_template:
+    - Purpose: Assembles design placeholders, emoji markers, canvas headers, and content layout blocks into a reusable template page.
+    - Arguments:
+      a) parent_id: str - Target directory layout storage parent ID (required).
+      b) template_data: dict - Dictionary holding page properties (`title`, `content_blocks`, `icon`, `cover`) (required).
+      c) cred_key: str (default: "notion") - Target service access certificate keys.
+    - Returns: ToolResult verifying design template canvas properties.
+    - How to call: NotionAdvancedTool.create_template(parent_id="pg_xyz987...", template_data={"title": "Weekly Sprint Boilerplate", "icon": "🚀"})
+
+19. duplicate_page:
+    - Purpose: Deep-copies page assets and nested blocks to a target destination directory while stripping system fields.
+    - Arguments:
+      a) page_id: str - Target page asset design profile template code key (required).
+      b) parent_id: str - Target destination parent directory location id (required).
+      c) cred_key: str (default: "notion") - Active client system tokens connection access validation.
+    - Returns: ToolResult providing entry path access URLs for the duplicated asset canvas.
+    - How to call: NotionAdvancedTool.duplicate_page(page_id="pg_source77...", parent_id="pg_dest88...")
+""")
+       
+    @staticmethod
+    def _client(cred_key: str = "notion"):
+        from notion_client import Client
+        token = CredStore.load(cred_key).get("token", "")
+        if not token:
+            raise ValueError("No Notion token. Store under 'notion' key.")
+        return Client(auth=token)
+
+    @staticmethod
+    def _rich_text(s: str) -> list:
+        return [{"type": "text", "text": {"content": s}}]
+
+    # ── Search / Database ────────────────────────────────────────────────
+
+    @staticmethod
+    def search(query: str, filter_type: str = None,
+               sort: str = "last_edited_time",
+               cred_key: str = "notion") -> ToolResult:
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            body: dict = {"query": query,
+                          "sort": {"direction": "descending",
+                                   "timestamp": sort}}
+            if filter_type:
+                body["filter"] = {"value": filter_type, "property": "object"}
+            resp = n.search(**body)
+            results = resp.get("results", [])
+            return ToolResult(True, f"✓ {len(results)} results", results)
+        except Exception as e:
+            return ToolResult(False, f"✗ search failed: {e}")
+
+    @staticmethod
+    def get_database(database_id: str,
+                     cred_key: str = "notion") -> ToolResult:
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            db = n.databases.retrieve(database_id=database_id)
+            return ToolResult(True, "✓ Database retrieved", db)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_database failed: {e}")
+
+    @staticmethod
+    def query_database(database_id: str, filter: dict = None,
+                       sorts: list = None, page_size: int = 100,
+                       cred_key: str = "notion") -> ToolResult:
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            kwargs: dict = {"database_id": database_id,
+                            "page_size": page_size}
+            if filter:
+                kwargs["filter"] = filter
+            if sorts:
+                kwargs["sorts"] = sorts
+            resp = n.databases.query(**kwargs)
+            rows = resp.get("results", [])
+            return ToolResult(True, f"✓ {len(rows)} rows", rows)
+        except Exception as e:
+            return ToolResult(False, f"✗ query_database failed: {e}")
+
+    @staticmethod
+    def create_database(parent_id: str, title: str, properties: dict,
+                        cred_key: str = "notion") -> ToolResult:
+        """
+        properties: Notion property schema dict, e.g.
+          {"Name": {"title": {}}, "Status": {"select": {}}}
+        """
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            db = n.databases.create(
+                parent={"type": "page_id", "page_id": parent_id},
+                title=NotionAdvancedTool._rich_text(title),
+                properties=properties
+            )
+            return ToolResult(True, f"✓ Database created: {db['id']}", db)
+        except Exception as e:
+            return ToolResult(False, f"✗ create_database failed: {e}")
+
+    @staticmethod
+    def add_database_item(database_id: str, properties: dict,
+                          cred_key: str = "notion") -> ToolResult:
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            page = n.pages.create(
+                parent={"database_id": database_id},
+                properties=properties
+            )
+            return ToolResult(True, f"✓ Item added: {page['id']}", page)
+        except Exception as e:
+            return ToolResult(False, f"✗ add_database_item failed: {e}")
+
+    @staticmethod
+    def update_database_item(page_id: str, properties: dict,
+                              cred_key: str = "notion") -> ToolResult:
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            page = n.pages.update(page_id=page_id, properties=properties)
+            return ToolResult(True, f"✓ Item updated: {page_id}", page)
+        except Exception as e:
+            return ToolResult(False, f"✗ update_database_item failed: {e}")
+
+    @staticmethod
+    def delete_database_item(page_id: str,
+                             cred_key: str = "notion") -> ToolResult:
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            n.pages.update(page_id=page_id, archived=True)
+            return ToolResult(True, f"✓ Item archived/deleted: {page_id}")
+        except Exception as e:
+            return ToolResult(False, f"✗ delete_database_item failed: {e}")
+
+    # ── Pages ─────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def create_page(parent_id: str, title: str,
+                    content_blocks: list = None,
+                    cred_key: str = "notion") -> ToolResult:
+        """
+        content_blocks: list of Notion block dicts.
+        If None, a simple paragraph is created.
+        """
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            children = content_blocks or [{
+                "object": "block", "type": "paragraph",
+                "paragraph": {"rich_text": NotionAdvancedTool._rich_text("")}
+            }]
+            page = n.pages.create(
+                parent={"page_id": parent_id},
+                properties={"title": {"title": NotionAdvancedTool._rich_text(title)}},
+                children=children
+            )
+            return ToolResult(True, f"✓ Page created: {page['url']}", page)
+        except Exception as e:
+            return ToolResult(False, f"✗ create_page failed: {e}")
+
+    @staticmethod
+    def get_page(page_id: str, cred_key: str = "notion") -> ToolResult:
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            page = n.pages.retrieve(page_id=page_id)
+            return ToolResult(True, "✓ Page retrieved", page)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_page failed: {e}")
+
+    @staticmethod
+    def update_page(page_id: str, properties: dict,
+                    cred_key: str = "notion") -> ToolResult:
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            page = n.pages.update(page_id=page_id, properties=properties)
+            return ToolResult(True, f"✓ Page updated: {page_id}", page)
+        except Exception as e:
+            return ToolResult(False, f"✗ update_page failed: {e}")
+
+    # ── Blocks ────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def append_blocks(block_id: str, children: list,
+                      cred_key: str = "notion") -> ToolResult:
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            resp = n.blocks.children.append(block_id=block_id,
+                                            children=children)
+            return ToolResult(True, f"✓ Blocks appended", resp)
+        except Exception as e:
+            return ToolResult(False, f"✗ append_blocks failed: {e}")
+
+    @staticmethod
+    def get_blocks(block_id: str, cred_key: str = "notion") -> ToolResult:
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            resp = n.blocks.children.list(block_id=block_id)
+            return ToolResult(True, f"✓ {len(resp.get('results',[]))} blocks",
+                              resp.get("results", []))
+        except Exception as e:
+            return ToolResult(False, f"✗ get_blocks failed: {e}")
+
+    @staticmethod
+    def delete_block(block_id: str, cred_key: str = "notion") -> ToolResult:
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            n.blocks.delete(block_id=block_id)
+            return ToolResult(True, f"✓ Block deleted: {block_id}")
+        except Exception as e:
+            return ToolResult(False, f"✗ delete_block failed: {e}")
+
+    # ── Special structures ────────────────────────────────────────────────
+
+    @staticmethod
+    def create_table(parent_id: str, headers: list, rows: list,
+                     cred_key: str = "notion") -> ToolResult:
+        """headers: ['Col1','Col2'...], rows: [['v1','v2'...], ...]"""
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            table_width = len(headers)
+
+            def _cell(text: str) -> list:
+                return [{"type": "text", "text": {"content": text}}]
+
+            table_rows = []
+            # header row
+            table_rows.append({
+                "type": "table_row", "object": "block",
+                "table_row": {"cells": [_cell(h) for h in headers]}
+            })
+            # data rows
+            for row in rows:
+                cells = [_cell(str(v)) for v in row]
+                while len(cells) < table_width:
+                    cells.append(_cell(""))
+                table_rows.append({
+                    "type": "table_row", "object": "block",
+                    "table_row": {"cells": cells[:table_width]}
+                })
+            block = {
+                "object": "block", "type": "table",
+                "table": {
+                    "table_width": table_width,
+                    "has_column_header": True,
+                    "has_row_header": False,
+                    "children": table_rows
+                }
+            }
+            resp = n.blocks.children.append(block_id=parent_id,
+                                            children=[block])
+            return ToolResult(True, f"✓ Table created with {len(rows)} rows", resp)
+        except Exception as e:
+            return ToolResult(False, f"✗ create_table failed: {e}")
+
+    @staticmethod
+    def create_kanban_view(database_id: str,
+                           cred_key: str = "notion") -> ToolResult:
+        """Adds a 'Status' select property and board view to the database."""
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            # Ensure Status property exists
+            n.databases.update(
+                database_id=database_id,
+                properties={
+                    "Status": {
+                        "select": {
+                            "options": [
+                                {"name": "Todo",        "color": "gray"},
+                                {"name": "In Progress", "color": "blue"},
+                                {"name": "Done",        "color": "green"},
+                            ]
+                        }
+                    }
+                }
+            )
+            return ToolResult(True, "✓ Kanban Status property added to database")
+        except Exception as e:
+            return ToolResult(False, f"✗ create_kanban_view failed: {e}")
+
+    @staticmethod
+    def export_database_to_csv(database_id: str, output: str,
+                               cred_key: str = "notion") -> ToolResult:
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            rows = []
+            cursor = None
+            while True:
+                kwargs: dict = {"database_id": database_id, "page_size": 100}
+                if cursor:
+                    kwargs["start_cursor"] = cursor
+                resp = n.databases.query(**kwargs)
+                rows.extend(resp.get("results", []))
+                if not resp.get("has_more"):
+                    break
+                cursor = resp.get("next_cursor")
+
+            if not rows:
+                return ToolResult(True, "✓ No rows to export", [])
+
+            # Flatten properties
+            all_keys: set = set()
+            flat_rows = []
+            for row in rows:
+                flat: dict = {"id": row["id"]}
+                for prop_name, prop_val in row.get("properties", {}).items():
+                    ptype = prop_val.get("type", "")
+                    if ptype == "title":
+                        val = "".join(t["text"]["content"]
+                                      for t in prop_val.get("title", []))
+                    elif ptype == "rich_text":
+                        val = "".join(t["text"]["content"]
+                                      for t in prop_val.get("rich_text", []))
+                    elif ptype == "select":
+                        val = (prop_val.get("select") or {}).get("name", "")
+                    elif ptype == "multi_select":
+                        val = ", ".join(o["name"] for o in prop_val.get("multi_select", []))
+                    elif ptype == "checkbox":
+                        val = str(prop_val.get("checkbox", False))
+                    elif ptype == "number":
+                        val = str(prop_val.get("number", ""))
+                    elif ptype == "date":
+                        d = prop_val.get("date") or {}
+                        val = d.get("start", "")
+                    elif ptype == "url":
+                        val = prop_val.get("url", "") or ""
+                    elif ptype == "email":
+                        val = prop_val.get("email", "") or ""
+                    elif ptype == "phone_number":
+                        val = prop_val.get("phone_number", "") or ""
+                    else:
+                        val = str(prop_val)
+                    flat[prop_name] = val
+                    all_keys.add(prop_name)
+                flat_rows.append(flat)
+
+            cols = ["id"] + sorted(all_keys)
+            with open(output, "w", newline="", encoding="utf-8") as f:
+                w = csv.DictWriter(f, fieldnames=cols, extrasaction="ignore")
+                w.writeheader()
+                w.writerows(flat_rows)
+            return ToolResult(True, f"✓ Exported {len(flat_rows)} rows to {output}")
+        except Exception as e:
+            return ToolResult(False, f"✗ export_database_to_csv failed: {e}")
+
+    @staticmethod
+    def import_csv_to_database(database_id: str, csv_path: str,
+                                property_mapping: dict = None,
+                                cred_key: str = "notion") -> ToolResult:
+        """
+        property_mapping: {csv_col: notion_property_name} — defaults to identity.
+        All values imported as rich_text unless column name is 'title'/'Title'.
+        """
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            mapping = property_mapping or {}
+            added = 0
+            with open(csv_path, newline="", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    props: dict = {}
+                    for col, val in row.items():
+                        notion_col = mapping.get(col, col)
+                        if notion_col.lower() == "title":
+                            props[notion_col] = {
+                                "title": [{"text": {"content": val or ""}}]}
+                        else:
+                            props[notion_col] = {
+                                "rich_text": [{"text": {"content": val or ""}}]}
+                    n.pages.create(
+                        parent={"database_id": database_id},
+                        properties=props
+                    )
+                    added += 1
+            return ToolResult(True, f"✓ Imported {added} rows")
+        except Exception as e:
+            return ToolResult(False, f"✗ import_csv_to_database failed: {e}")
+
+    @staticmethod
+    def create_template(parent_id: str, template_data: dict,
+                        cred_key: str = "notion") -> ToolResult:
+        """
+        template_data: {title, content_blocks, icon, cover}
+        Creates a page intended as a reusable template.
+        """
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            body: dict = {
+                "parent": {"page_id": parent_id},
+                "properties": {
+                    "title": {
+                        "title": NotionAdvancedTool._rich_text(
+                            template_data.get("title", "Template"))
+                    }
+                },
+            }
+            if template_data.get("icon"):
+                body["icon"] = {"type": "emoji",
+                                "emoji": template_data["icon"]}
+            if template_data.get("cover"):
+                body["cover"] = {"type": "external",
+                                 "external": {"url": template_data["cover"]}}
+            if template_data.get("content_blocks"):
+                body["children"] = template_data["content_blocks"]
+            page = n.pages.create(**body)
+            return ToolResult(True, f"✓ Template created: {page['url']}", page)
+        except Exception as e:
+            return ToolResult(False, f"✗ create_template failed: {e}")
+
+    @staticmethod
+    def duplicate_page(page_id: str, parent_id: str,
+                       cred_key: str = "notion") -> ToolResult:
+        try:
+            n = NotionAdvancedTool._client(cred_key)
+            orig = n.pages.retrieve(page_id=page_id)
+            blocks_resp = n.blocks.children.list(block_id=page_id)
+            children = blocks_resp.get("results", [])
+            # strip server-managed fields from blocks
+            clean_children = []
+            skip_keys = {"id", "created_time", "last_edited_time",
+                         "created_by", "last_edited_by", "has_children"}
+            for b in children:
+                cb = {k: v for k, v in b.items() if k not in skip_keys}
+                clean_children.append(cb)
+            new_page = n.pages.create(
+                parent={"page_id": parent_id},
+                properties=orig.get("properties", {}),
+                children=clean_children[:100]  # API limit
+            )
+            return ToolResult(True, f"✓ Page duplicated: {new_page['url']}", new_page)
+        except Exception as e:
+            return ToolResult(False, f"✗ duplicate_page failed: {e}")
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# 3. LinearTool
+# ═════════════════════════════════════════════════════════════════════════════
+
+class LinearTool:
+    name = "linear"
+    description = (
+        "Linear project management — issues, teams, projects, labels, "
+        "cycles, members, and comments via GraphQL API"
+    )
+    use = ("""
+Name of Tool: LinearTool
+
+Purpose of Tool:
+The LinearTool is a streamlined wrapper around Linear's GraphQL API, providing synchronous management 
+for Agile software engineering projects. It translates complex GraphQL queries and mutations into clean 
+Python static methods. This tool enables automation scripts to manage the full issue lifecycle (creating, 
+filtering, updating, closing, and deleting tickets), organize spatial workspace frameworks (teams and projects), 
+and orchestrate precise execution structures like development cycles (sprints), user management, taxonomy labels, 
+and context-driven comment threads.
+
+Methods:
+- list_issues: Queries issues based on criteria like team, state, assignee, priority, or labels.
+- get_issue: Fetches a single issue's deep information including state, priority, metadata, and comments.
+- create_issue: Generates a new tracking issue with specific priority configurations, tags, and assignments.
+- update_issue: Patches metadata attributes, title details, descriptions, or relational bindings on an issue.
+- close_issue: Automates issue state conversion by resolving the parent team's active 'completed' workflow node.
+- delete_issue: Erases an active tracking issue permanently from the workspace registry.
+- list_teams: Extracts all accessible engineering teams alongside system profile keys and descriptions.
+- get_team: Gathers individual team identities, structural descriptors, and nested member profiles.
+- list_projects: Returns cross-team initiative groups or drills down into specific tracking project clusters.
+- create_project: Establishes a major project timeline or feature roadmap tracked against targeted target dates.
+- update_project: Overwrites specific operational milestones or descriptive headers on a project.
+- list_members: Resolves member name indexes and internal communications tracking emails for a team.
+- list_labels: Pulls custom scoping labels and visual color schemes applied across issue fields.
+- create_label: Generates specific classification metadata or taxonomy tags for issues.
+- list_cycles: Retrieves historical, current, and upcoming development cycles (sprints) detailing timeline spans.
+- create_cycle: Launches a dedicated team sprint sequence bound by a start and end date.
+- add_issue_to_cycle: Moves an operational tracking ticket directly into a target development sprint.
+- get_comments: Fetches the raw text stream and author identity footprints of a ticket's comments.
+- add_comment: Appends an absolute markdown contextual comment directly onto an active ticket.
+
+How to use Tool Methods:
+
+1. list_issues:
+   - Purpose: Polls workspace issues matching specific parameters or structural scopes.
+   - Arguments:
+     a) team_id: str (default: None) - Structural team scope identifier string.
+     b) state: str (default: None) - Workflow condition name query token matching target labels (e.g., "In Progress").
+     c) assignee: str (default: None) - Identity pointer tracking a specific engineer.
+     d) priority: int (default: None) - Numerical rank indexing priority severity.
+     e) label: str (default: None) - Issue classification tag name filter.
+     f) cred_key: str (default: "linear") - System credential key used to extract the API token.
+   - Returns: ToolResult mapping matching issue dictionaries containing fundamental properties.
+   - How to call: LinearTool.list_issues(team_id="team-xyz", state="In Progress", priority=1)
+
+2. get_issue:
+   - Purpose: Resolves complete contextual properties and operational comment blocks for a ticket.
+   - Arguments:
+     a) issue_id: str - Target issue identifier key string (required).
+     b) cred_key: str (default: "linear") - Secure system vault key index location.
+   - Returns: ToolResult holding complete descriptive nested schemas.
+   - How to call: LinearTool.get_issue(issue_id="ISSUE-101")
+
+3. create_issue:
+   - Purpose: Adds a new issue payload record directly into Linear's active issue graph.
+   - Arguments:
+     a) title: str - Primary issue context abstract summary heading string (required).
+     b) description: str (default: "") - Core structural problem reproduction notes.
+     c) team_id: str (default: "") - Unique destination project team reference path.
+     d) priority: int (default: 0) - Priority tier level rank indicator.
+     e) assignee_id: str (default: None) - Core workspace engineer ID code block.
+     f) label_ids: list (default: None) - Array of category labels strings to attach.
+     g) due_date: str (default: None) - Target date tracking calendar deadline (YYYY-MM-DD format).
+     h) cred_key: str (default: "linear") - Target execution vault client verification profile.
+   - Returns: ToolResult validating transaction execution properties.
+   - How to call: LinearTool.create_issue(title="Fix Session Timeout", team_id="team-abc", priority=1)
+
+4. update_issue:
+   - Purpose: Performs selective property structural mutations against a target tracking ticket.
+   - Arguments:
+     a) id: str - Target unique tracking node issue tracking ID (required).
+     b) data: dict - Input mutation values matching Linear's 'IssueUpdateInput' structures (required).
+     c) cred_key: str (default: "linear") - Account authentication lookups key profile pointer.
+   - Returns: ToolResult checking return property results.
+   - How to call: LinearTool.update_issue(id="ISSUE-101", data={"title": "Updated Session Timeout Title"})
+
+5. close_issue:
+   - Purpose: Moves an issue to its team's defined 'completed' state automatically.
+   - Arguments:
+     a) id: str - Target issue identifier alphanumeric sequence (required).
+     b) resolution: str (default: "Done") - Resolution workflow status label lookup.
+     c) cred_key: str (default: "linear") - Key mapping configuration reference pointers.
+   - Returns: ToolResult providing update execution confirmations.
+   - How to call: LinearTool.close_issue(id="ISSUE-101")
+
+6. delete_issue:
+   - Purpose: Drops an analytical project tracking issue from database indexes completely.
+   - Arguments:
+     a) id: str - Target issue tracking asset key string (required).
+     b) cred_key: str (default: "linear") - Active workspace workspace integration profile key.
+   - Returns: ToolResult displaying task success status.
+   - How to call: LinearTool.delete_issue(id="ISSUE-101")
+
+7. list_teams:
+   - Purpose: Lists teams linked with a user workspace setup profile.
+   - Arguments:
+     a) cred_key: str (default: "linear") - Authorization store reference access key.
+   - Returns: ToolResult containing array structures parsing operational profiles.
+   - How to call: LinearTool.list_teams()
+
+8. get_team:
+   - Purpose: Pulls deep system architecture metrics and team details.
+   - Arguments:
+     a) team_id: str - Target corporate architecture team node ID code block (required).
+     b) cred_key: str (default: "linear") - Internal credential lookup tracking directory index.
+   - Returns: ToolResult verifying organizational details lists.
+   - How to call: LinearTool.get_team(team_id="team-xyz")
+
+9. list_projects:
+   - Purpose: Collects cross-functional structural projects active in the product engine ecosystem.
+   - Arguments:
+     a) team_id: str (default: None) - Optional target team scope filter.
+     b) cred_key: str (default: "linear") - Active repository identity credential access link maps.
+   - Returns: ToolResult tracking structural project arrays.
+   - How to call: LinearTool.list_projects(team_id="team-xyz")
+
+10. create_project:
+    - Purpose: Launches large-scale features or cross-sprint track items.
+    - Arguments:
+      a) name: str - Target scope initiative descriptor text (required).
+      b) team_id: str - Core parent group tracker team container code link (required).
+      c) description: str (default: "") - Operational objectives overview detailing plans.
+      d) target_date: str (default: None) - Target completion calendar mapping (YYYY-MM-DD).
+      e) cred_key: str (default: "linear") - System validation profile credentials pointer.
+    - Returns: ToolResult logging the generated project metadata.
+    - How to call: LinearTool.create_project(name="Migration 2026", team_id="team-abc", target_date="2026-12-31")
+
+11. update_project:
+    - Purpose: Updates general operational parameters or deadline dates across existing projects.
+    - Arguments:
+      a) id: str - Project identification asset tracking reference code (required).
+      b) data: dict - Map definitions parsing 'ProjectUpdateInput' criteria mutations (required).
+      c) cred_key: str (default: "linear") - Target network service connection profile key tags.
+    - Returns: ToolResult verifying project state overrides.
+    - How to call: LinearTool.update_project(id="proj-999", data={"description": "Updated roadmap details."})
+
+12. list_members:
+    - Purpose: Extracts engineers linked with a specified engineering tracking cluster.
+    - Arguments:
+      a) team_id: str - Target group cluster configuration path identifier (required).
+      b) cred_key: str (default: "linear") - Reference integration verification workspace token.
+    - Returns: ToolResult containing engineer profiles array definitions.
+    - How to call: LinearTool.list_members(team_id="team-xyz")
+
+13. list_labels:
+    - Purpose: Pulls taxonomy scoping keys applied to differentiate work modules.
+    - Arguments:
+      a) team_id: str - Core targeted infrastructure group profile container key (required).
+      b) cred_key: str (default: "linear") - Active credentials profile store key selector.
+    - Returns: ToolResult providing dynamic categorization fields listings.
+    - How to call: LinearTool.list_labels(team_id="team-xyz")
+
+14. create_label:
+    - Purpose: Registers new scope keywords or triage classification labels.
+    - Arguments:
+      a) name: str - Scoping name design label identifier text (required).
+      b) color: str - Hex color code string format defining workspace display elements (required).
+      c) team_id: str - Target architecture tracker profile group key code block (required).
+      d) cred_key: str (default: "linear") - Server connection authentication locator array map keys.
+    - Returns: ToolResult logging newly built category attributes.
+    - How to call: LinearTool.create_label(name="Security Risk", color="#FF0000", team_id="team-xyz")
+
+15. list_cycles:
+    - Purpose: Returns timeline intervals mapping development work sprint cycles.
+    - Arguments:
+      a) team_id: str - Parent team tracker profile code block string (required).
+      b) cred_key: str (default: "linear") - Verification credentials database token path locator.
+    - Returns: ToolResult packaging nested roadmap tracking intervals.
+    - How to call: LinearTool.list_cycles(team_id="team-xyz")
+
+16. create_cycle:
+    - Purpose: Initiates scheduled work intervals within team delivery tracks.
+    - Arguments:
+      a) name: str - Title header identification sequence identifying delivery sprints (required).
+      b) team_id: str - Core parent production tracker group identifier token code (required).
+      c) start_date: str - Sequence deployment commencement index tracking point (required).
+      d) end_date: str - Sequence termination timeframe reference date (required).
+      e) cred_key: str (default: "linear") - Security account authorization validation token tags.
+    - Returns: ToolResult logging deployment schedule boundaries.
+    - How to call: LinearTool.create_cycle(name="Cycle 14", team_id="team-xyz", start_date="2026-07-01", end_date="2026-07-14")
+
+17. add_issue_to_cycle:
+    - Purpose: Pins an orphan development ticket into a specific execution period schedule.
+    - Arguments:
+      a) cycle_id: str - Target structural sprint interval framework tracking index (required).
+      b) issue_id: str - Target individual tracking node item key code string (required).
+      c) cred_key: str (default: "linear") - Vault credentials collection storage index access markers.
+    - Returns: ToolResult verifying track schedule reallocation.
+    - How to call: LinearTool.add_issue_to_cycle(cycle_id="cycle-44", issue_id="ISSUE-101")
+
+18. get_comments:
+    - Purpose: Pulls asynchronous dialogue documentation history entries from an active tracking task card.
+    - Arguments:
+      a) issue_id: str - Target problem description tracking document id (required).
+      b) cred_key: str (default: "linear") - Network endpoint profile reference token pointers.
+    - Returns: ToolResult packaging dialog log structures array entries.
+    - How to call: LinearTool.get_comments(issue_id="ISSUE-101")
+
+19. add_comment:
+    - Purpose: Encodes analytical observations, execution status logs, or links onto tickets.
+    - Arguments:
+      a) issue_id: str - Destination item card workspace container identifier node string (required).
+      b) body: str - Main communication content note block format using markdown styling options (required).
+      c) cred_key: str (default: "linear") - Vault database index profile interface access tokens.
+    - Returns: ToolResult confirming dialogue stream integration updates.
+    - How to call: LinearTool.add_comment(issue_id="ISSUE-101", body="PR merged successfully. Ready to verify.")
+""")
+       
+    @staticmethod
+    def _gql(query: str, variables: dict = None,
+             cred_key: str = "linear") -> dict:
+        import requests
+        token = CredStore.load(cred_key).get("api_key", "")
+        if not token:
+            raise ValueError("No Linear API key. Store under 'linear' key.")
+        resp = requests.post(
+            "https://api.linear.app/graphql",
+            json={"query": query, "variables": variables or {}},
+            headers={"Authorization": token,
+                     "Content-Type": "application/json"},
+            timeout=20
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        if "errors" in data:
+            raise ValueError(data["errors"][0].get("message", "GraphQL error"))
+        return data.get("data", {})
+
+    # ── Issues ────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def list_issues(team_id: str = None, state: str = None,
+                    assignee: str = None, priority: int = None,
+                    label: str = None,
+                    cred_key: str = "linear") -> ToolResult:
+        try:
+            filters = []
+            if team_id:
+                filters.append(f'team: {{id: {{eq: "{team_id}"}}}}')
+            if state:
+                filters.append(f'state: {{name: {{eq: "{state}"}}}}')
+            if assignee:
+                filters.append(f'assignee: {{id: {{eq: "{assignee}"}}}}')
+            if priority is not None:
+                filters.append(f"priority: {{eq: {priority}}}")
+            filter_str = ("{" + ", ".join(filters) + "}") if filters else ""
+            filter_arg = f"(filter: {filter_str})" if filter_str else "(first: 50)"
+            q = f"""
+            query {{
+              issues{filter_arg} {{
+                nodes {{
+                  id title state {{ name }} priority
+                  assignee {{ name }}
+                  labels {{ nodes {{ name }} }}
+                  dueDate createdAt url
+                }}
+              }}
+            }}"""
+            data = LinearTool._gql(q, cred_key=cred_key)
+            issues = data.get("issues", {}).get("nodes", [])
+            return ToolResult(True, f"✓ {len(issues)} issues", issues)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_issues failed: {e}")
+
+    @staticmethod
+    def get_issue(issue_id: str, cred_key: str = "linear") -> ToolResult:
+        try:
+            q = """
+            query($id: String!) {
+              issue(id: $id) {
+                id title description state { name } priority
+                assignee { name email }
+                labels { nodes { name } }
+                dueDate createdAt updatedAt url
+                comments { nodes { id body createdAt user { name } } }
+              }
+            }"""
+            data = LinearTool._gql(q, {"id": issue_id}, cred_key)
+            return ToolResult(True, "✓ Issue retrieved", data.get("issue"))
+        except Exception as e:
+            return ToolResult(False, f"✗ get_issue failed: {e}")
+
+    @staticmethod
+    def create_issue(title: str, description: str = "",
+                     team_id: str = "", priority: int = 0,
+                     assignee_id: str = None, label_ids: list = None,
+                     due_date: str = None,
+                     cred_key: str = "linear") -> ToolResult:
+        try:
+            m = """
+            mutation($input: IssueCreateInput!) {
+              issueCreate(input: $input) {
+                success issue { id title url }
+              }
+            }"""
+            inp: dict = {"title": title, "description": description,
+                         "teamId": team_id, "priority": priority}
+            if assignee_id:
+                inp["assigneeId"] = assignee_id
+            if label_ids:
+                inp["labelIds"] = label_ids
+            if due_date:
+                inp["dueDate"] = due_date
+            data = LinearTool._gql(m, {"input": inp}, cred_key)
+            result = data.get("issueCreate", {})
+            return ToolResult(result.get("success", False),
+                              f"✓ Issue created" if result.get("success")
+                              else "✗ Creation failed",
+                              result.get("issue"))
+        except Exception as e:
+            return ToolResult(False, f"✗ create_issue failed: {e}")
+
+    @staticmethod
+    def update_issue(id: str, data: dict,
+                     cred_key: str = "linear") -> ToolResult:
+        try:
+            m = """
+            mutation($id: String!, $input: IssueUpdateInput!) {
+              issueUpdate(id: $id, input: $input) {
+                success issue { id title }
+              }
+            }"""
+            resp = LinearTool._gql(m, {"id": id, "input": data}, cred_key)
+            result = resp.get("issueUpdate", {})
+            return ToolResult(result.get("success", False),
+                              "✓ Issue updated" if result.get("success")
+                              else "✗ Update failed",
+                              result.get("issue"))
+        except Exception as e:
+            return ToolResult(False, f"✗ update_issue failed: {e}")
+
+    @staticmethod
+    def close_issue(id: str, resolution: str = "Done",
+                    cred_key: str = "linear") -> ToolResult:
+        try:
+            # Get the "Done" state id for the issue's team
+            q = """
+            query($id: String!) {
+              issue(id: $id) { team { id } }
+            }"""
+            d = LinearTool._gql(q, {"id": id}, cred_key)
+            team_id = d["issue"]["team"]["id"]
+            sq = """
+            query($filter: WorkflowStateFilter) {
+              workflowStates(filter: $filter) {
+                nodes { id name type }
+              }
+            }"""
+            sd = LinearTool._gql(
+                sq,
+                {"filter": {"team": {"id": {"eq": team_id}},
+                            "type": {"eq": "completed"}}},
+                cred_key
+            )
+            states = sd.get("workflowStates", {}).get("nodes", [])
+            state_id = states[0]["id"] if states else None
+            inp: dict = {}
+            if state_id:
+                inp["stateId"] = state_id
+            return LinearTool.update_issue(id, inp, cred_key)
+        except Exception as e:
+            return ToolResult(False, f"✗ close_issue failed: {e}")
+
+    @staticmethod
+    def delete_issue(id: str, cred_key: str = "linear") -> ToolResult:
+        try:
+            m = """
+            mutation($id: String!) {
+              issueDelete(id: $id) { success }
+            }"""
+            data = LinearTool._gql(m, {"id": id}, cred_key)
+            ok = data.get("issueDelete", {}).get("success", False)
+            return ToolResult(ok, "✓ Deleted" if ok else "✗ Delete failed")
+        except Exception as e:
+            return ToolResult(False, f"✗ delete_issue failed: {e}")
+
+    # ── Teams / Projects ──────────────────────────────────────────────────
+
+    @staticmethod
+    def list_teams(cred_key: str = "linear") -> ToolResult:
+        try:
+            q = "query { teams { nodes { id name key description } } }"
+            data = LinearTool._gql(q, cred_key=cred_key)
+            teams = data.get("teams", {}).get("nodes", [])
+            return ToolResult(True, f"✓ {len(teams)} teams", teams)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_teams failed: {e}")
+
+    @staticmethod
+    def get_team(team_id: str, cred_key: str = "linear") -> ToolResult:
+        try:
+            q = """
+            query($id: String!) {
+              team(id: $id) { id name key description members { nodes { id name } } }
+            }"""
+            data = LinearTool._gql(q, {"id": team_id}, cred_key)
+            return ToolResult(True, "✓ Team retrieved", data.get("team"))
+        except Exception as e:
+            return ToolResult(False, f"✗ get_team failed: {e}")
+
+    @staticmethod
+    def list_projects(team_id: str = None,
+                      cred_key: str = "linear") -> ToolResult:
+        try:
+            if team_id:
+                q = """
+                query($id: String!) {
+                  team(id: $id) { projects { nodes { id name state description } } }
+                }"""
+                data = LinearTool._gql(q, {"id": team_id}, cred_key)
+                projects = (data.get("team", {})
+                            .get("projects", {})
+                            .get("nodes", []))
+            else:
+                q = "query { projects { nodes { id name state } } }"
+                data = LinearTool._gql(q, cred_key=cred_key)
+                projects = data.get("projects", {}).get("nodes", [])
+            return ToolResult(True, f"✓ {len(projects)} projects", projects)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_projects failed: {e}")
+
+    @staticmethod
+    def create_project(name: str, team_id: str, description: str = "",
+                       target_date: str = None,
+                       cred_key: str = "linear") -> ToolResult:
+        try:
+            m = """
+            mutation($input: ProjectCreateInput!) {
+              projectCreate(input: $input) {
+                success project { id name url }
+              }
+            }"""
+            inp: dict = {"name": name, "teamIds": [team_id],
+                         "description": description}
+            if target_date:
+                inp["targetDate"] = target_date
+            data = LinearTool._gql(m, {"input": inp}, cred_key)
+            result = data.get("projectCreate", {})
+            return ToolResult(result.get("success", False),
+                              "✓ Project created",
+                              result.get("project"))
+        except Exception as e:
+            return ToolResult(False, f"✗ create_project failed: {e}")
+
+    @staticmethod
+    def update_project(id: str, data: dict,
+                       cred_key: str = "linear") -> ToolResult:
+        try:
+            m = """
+            mutation($id: String!, $input: ProjectUpdateInput!) {
+              projectUpdate(id: $id, input: $input) {
+                success project { id name }
+              }
+            }"""
+            resp = LinearTool._gql(m, {"id": id, "input": data}, cred_key)
+            result = resp.get("projectUpdate", {})
+            return ToolResult(result.get("success", False),
+                              "✓ Project updated", result.get("project"))
+        except Exception as e:
+            return ToolResult(False, f"✗ update_project failed: {e}")
+
+    # ── Members / Labels / Cycles ─────────────────────────────────────────
+
+    @staticmethod
+    def list_members(team_id: str, cred_key: str = "linear") -> ToolResult:
+        try:
+            q = """
+            query($id: String!) {
+              team(id: $id) { members { nodes { id name email } } }
+            }"""
+            data = LinearTool._gql(q, {"id": team_id}, cred_key)
+            members = (data.get("team", {})
+                       .get("members", {})
+                       .get("nodes", []))
+            return ToolResult(True, f"✓ {len(members)} members", members)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_members failed: {e}")
+
+    @staticmethod
+    def list_labels(team_id: str, cred_key: str = "linear") -> ToolResult:
+        try:
+            q = """
+            query($id: String!) {
+              team(id: $id) { labels { nodes { id name color } } }
+            }"""
+            data = LinearTool._gql(q, {"id": team_id}, cred_key)
+            labels = (data.get("team", {})
+                      .get("labels", {})
+                      .get("nodes", []))
+            return ToolResult(True, f"✓ {len(labels)} labels", labels)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_labels failed: {e}")
+
+    @staticmethod
+    def create_label(name: str, color: str, team_id: str,
+                     cred_key: str = "linear") -> ToolResult:
+        try:
+            m = """
+            mutation($input: IssueLabelCreateInput!) {
+              issueLabelCreate(input: $input) {
+                success issueLabel { id name color }
+              }
+            }"""
+            data = LinearTool._gql(
+                m, {"input": {"name": name, "color": color,
+                              "teamId": team_id}}, cred_key)
+            result = data.get("issueLabelCreate", {})
+            return ToolResult(result.get("success", False),
+                              "✓ Label created", result.get("issueLabel"))
+        except Exception as e:
+            return ToolResult(False, f"✗ create_label failed: {e}")
+
+    @staticmethod
+    def list_cycles(team_id: str, cred_key: str = "linear") -> ToolResult:
+        try:
+            q = """
+            query($id: String!) {
+              team(id: $id) { cycles { nodes { id name number startsAt endsAt } } }
+            }"""
+            data = LinearTool._gql(q, {"id": team_id}, cred_key)
+            cycles = (data.get("team", {})
+                      .get("cycles", {})
+                      .get("nodes", []))
+            return ToolResult(True, f"✓ {len(cycles)} cycles", cycles)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_cycles failed: {e}")
+
+    @staticmethod
+    def create_cycle(name: str, team_id: str, start_date: str,
+                     end_date: str, cred_key: str = "linear") -> ToolResult:
+        try:
+            m = """
+            mutation($input: CycleCreateInput!) {
+              cycleCreate(input: $input) {
+                success cycle { id name startsAt endsAt }
+              }
+            }"""
+            data = LinearTool._gql(
+                m, {"input": {"name": name, "teamId": team_id,
+                              "startsAt": start_date,
+                              "endsAt": end_date}}, cred_key)
+            result = data.get("cycleCreate", {})
+            return ToolResult(result.get("success", False),
+                              "✓ Cycle created", result.get("cycle"))
+        except Exception as e:
+            return ToolResult(False, f"✗ create_cycle failed: {e}")
+
+    @staticmethod
+    def add_issue_to_cycle(cycle_id: str, issue_id: str,
+                           cred_key: str = "linear") -> ToolResult:
+        try:
+            m = """
+            mutation($id: String!, $input: IssueUpdateInput!) {
+              issueUpdate(id: $id, input: $input) { success }
+            }"""
+            data = LinearTool._gql(
+                m, {"id": issue_id, "input": {"cycleId": cycle_id}}, cred_key)
+            ok = data.get("issueUpdate", {}).get("success", False)
+            return ToolResult(ok, "✓ Issue added to cycle" if ok
+                              else "✗ Failed")
+        except Exception as e:
+            return ToolResult(False, f"✗ add_issue_to_cycle failed: {e}")
+
+    # ── Comments ──────────────────────────────────────────────────────────
+
+    @staticmethod
+    def get_comments(issue_id: str, cred_key: str = "linear") -> ToolResult:
+        try:
+            q = """
+            query($id: String!) {
+              issue(id: $id) {
+                comments { nodes { id body createdAt user { name } } }
+              }
+            }"""
+            data = LinearTool._gql(q, {"id": issue_id}, cred_key)
+            comments = (data.get("issue", {})
+                        .get("comments", {})
+                        .get("nodes", []))
+            return ToolResult(True, f"✓ {len(comments)} comments", comments)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_comments failed: {e}")
+
+    @staticmethod
+    def add_comment(issue_id: str, body: str,
+                    cred_key: str = "linear") -> ToolResult:
+        try:
+            m = """
+            mutation($input: CommentCreateInput!) {
+              commentCreate(input: $input) {
+                success comment { id body }
+              }
+            }"""
+            data = LinearTool._gql(
+                m, {"input": {"issueId": issue_id, "body": body}}, cred_key)
+            result = data.get("commentCreate", {})
+            return ToolResult(result.get("success", False),
+                              "✓ Comment added", result.get("comment"))
+        except Exception as e:
+            return ToolResult(False, f"✗ add_comment failed: {e}")
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# 4. AsanaTool
+# ═════════════════════════════════════════════════════════════════════════════
+
+class AsanaTool:
+    name = "asana"
+    description = (
+        "Asana project management — workspaces, projects, tasks, subtasks, "
+        "sections, tags, and comments"
+    )
+    use = ("""
+Name of Tool: AsanaTool
+
+Purpose of Tool:
+The AsanaTool is a synchronous python wrapper around the official Asana python SDK. It simplifies complex workspace, 
+project, task, subtask, section, tag, and conversation story interactions into accessible static methods. It abstracts 
+authentication mechanics using a centralized credential storage system (`CredStore`), safely packages API actions inside 
+a standardized transactional return model (`ToolResult`), and offers an automation-friendly matrix for cross-functional 
+project management pipelines.
+
+Methods:
+- list_workspaces: Retrieves available primary workspaces or collaborative organizational units.
+- list_projects: Returns scoped projects mapped to specific workspaces or teams.
+- get_project: Retrieves exact operational definitions, settings, and metadata profiles for an active project.
+- create_project: provisions a brand new container project inside a dedicated target workspace architecture.
+- list_tasks: Polls active work item registries applying custom assignment, project, or schedule limits.
+- get_task: Fetches comprehensive field configurations, state mappings, and core profiles of a specific item task card.
+- create_task: Injects a brand new deliverable task directly into a defined target workspace cluster.
+- update_task: Performs partial patch property replacements across mutable field sets on an active task.
+- complete_task: Quickly transitions a targeted task card status into a finalized "completed" validation state.
+- delete_task: Permanently drops a work tracking item entry from active database records.
+- add_subtask: Spawns an execution dependency child task tracking element directly beneath an existing parent card.
+- list_subtasks: Extracts an ordered list collection identifying child dependency elements under a target task.
+- add_comment: Posts an informative thread entry (story node) to capture communication context directly onto a card.
+- list_comments: Filters through raw task histories to extract purely textual human comment entry points.
+- list_sections: Identifies organizational tracking pipelines (kanban stages/list groupings) inside a target project.
+- create_section: Injects an isolated sorting header stage or column inside an explicit project dashboard canvas.
+- move_task_to_section: Relocates an execution task item card laterally into a different operational lifecycle phase.
+- list_tags: Queries global categorization labels or taxonomy chips indexing a parent workspace structure.
+- add_tag_to_task: Pins an indexing taxonomy classification label directly onto an active target item.
+
+How to use Tool Methods:
+
+1. list_workspaces:
+   - Purpose: Lists accessible workspaces mapped to the integration context profile.
+   - Arguments:
+     a) cred_key: str (default: "asana") - Token mapping index key located within the system configuration vault.
+   - Returns: ToolResult holding an array of workspace summary dictionary items.
+   - How to call: AsanaTool.list_workspaces()
+
+2. list_projects:
+   - Purpose: Extracts projects filtered across specified structural containers.
+   - Arguments:
+     a) workspace_id: str (default: None) - Global identifier parsing a target workspace node.
+     b) team_id: str (default: None) - Filter constraint isolating a targeted workspace group tracker.
+     c) cred_key: str (default: "asana") - Integration vault validation access identity lookup indicator.
+   - Returns: ToolResult storing array maps describing match project profiles.
+   - How to call: AsanaTool.list_projects(workspace_id="12345")
+
+3. get_project:
+   - Purpose: Pulls deep system metadata parameters referencing an established workspace project.
+   - Arguments:
+     a) project_id: str - Target identification system string mapping a live project entry (required).
+     b) cred_key: str (default: "asana") - Encryption store profile lookup indicator mapping key tokens.
+   - Returns: ToolResult containing key-value configurations indexing the target project node.
+   - How to call: AsanaTool.get_project(project_id="98765")
+
+4. create_project:
+   - Purpose: Instantiates a distinct tracking blueprint module inside a user workspace environment.
+   - Arguments:
+     a) name: str - Target title header classifying the newly generated project space (required).
+     b) workspace_id: str - Absolute parent infrastructure identity token block string (required).
+     c) team_id: str (default: None) - Sub-group team architecture alignment pointer sequence.
+     d) notes: str (default: "") - Operational objectives description overview log detailing context.
+     e) color: str (default: "none") - Theme element hex styling token color keyword tracker.
+     f) public: bool (default: True) - Visibility access permissions state control indicator.
+     g) cred_key: str (default: "asana") - System gateway authorization credentials validation key.
+   - Returns: ToolResult packing transaction results alongside properties of the new workspace instance.
+   - How to call: AsanaTool.create_project(name="Q3 Product Roadmap", workspace_id="12345", color="dark-blue")
+
+5. list_tasks:
+   - Purpose: Fetches matching action items based on contextual parameters.
+   - Arguments:
+     a) project_id: str (default: None) - Scope identifier limiting results to a single workspace grid canvas.
+     b) assignee: str (default: None) - Identity lookup filtering elements specifically assigned to an engineer.
+     c) completed: bool (default: False) - Flag toggling the exclusion of archive closed actions lists.
+     d) due_on: str (default: None) - Target completion deadline milestone tracker (YYYY-MM-DD).
+     e) cred_key: str (default: "asana") - Core authentication credential profile identifier code string.
+   - Returns: ToolResult packaging matched array entries tracking task parameters.
+   - How to call: AsanaTool.list_tasks(project_id="98765", assignee="user_abc_77")
+
+6. get_task:
+   - Purpose: Exposes explicit property states, custom metric fields, and descriptions of a specific ticket.
+   - Arguments:
+     a) task_id: str - Unique entity global mapping tracking identifier code block sequence (required).
+     b) cred_key: str (default: "asana") - Security parameters client context lookup locator token.
+   - Returns: ToolResult detailing complete internal variable settings defining the target node card.
+   - How to call: AsanaTool.get_task(task_id="112233")
+
+7. create_task:
+   - Purpose: Builds a discrete tracking card module mapping operational actions into active records.
+   - Arguments:
+     a) name: str - Title header description labeling the target core deliverable action item (required).
+     b) workspace_id: str - Core parent architecture container reference link index string (required).
+     c) project_id: str (default: None) - Optional secondary project map list assignment index array.
+     d) assignee: str (default: None) - Target identity engineer parameter mapping primary ownership.
+     d) notes: str (default: "") - Problem log descriptions, reproduction pathways, or goal text.
+     e) due_on: str (default: None) - Calendar target limit constraints configuration values (YYYY-MM-DD).
+     f) custom_fields: dict (default: None) - Map parameters defining company metadata workspace fields.
+     g) cred_key: str (default: "asana") - System access key validation token reference profile.
+   - Returns: ToolResult logging the generated output asset attributes tracking codes.
+   - How to call: AsanaTool.create_task(name="Refactor Auth Middleware", workspace_id="12345", project_id="98765")
+
+8. update_task:
+   - Purpose: Mutates specific parameters directly across a running project management ticket asset.
+   - Arguments:
+     a) id: str - Target global asset identity tracking code sequence index value (required).
+     b) data: dict - Map payload detailing specific field attributes to selectively replace (required).
+     c) cred_key: str (default: "asana") - Connection store verification directory key string.
+   - Returns: ToolResult confirming updated state schemas data returns.
+   - How to call: AsanaTool.update_task(id="112233", data={"notes": "Updated engineering deployment notes."})
+
+9. complete_task:
+   - Purpose: Shifts task configuration parameter values to mark items as resolved.
+   - Arguments:
+     a) id: str - Target ticket card global instance validation code locator (required).
+     b) cred_key: str (default: "asana") - Access profiles infrastructure registry store tag.
+   - Returns: ToolResult detailing updated metadata properties showing success state.
+   - How to call: AsanaTool.complete_task(id="112233")
+
+10. delete_task:
+    - Purpose: Removes an active task module record configuration map out of workspace registers.
+    - Arguments:
+      a) id: str - Targeted asset database unique mapping index identifier key code (required).
+      b) cred_key: str (default: "asana") - Active workspace security server profile access verification keys.
+    - Returns: ToolResult validating task deletion execution properties.
+    - How to call: AsanaTool.delete_task(id="112233")
+
+11. add_subtask:
+    - Purpose: Attaches structural workflow dependency items hierarchically directly underneath a target card.
+    - Arguments:
+      a) parent_task_id: str - Target parent tracking card index system identifier path (required).
+      b) name: str - Title text defining scope tracking elements assigned to subtasks (required).
+      c) assignee: str (default: None) - Selected engineer profile reference tracking identity.
+      d) notes: str (default: "") - Descriptive criteria text providing details for subtasks.
+      e) cred_key: str (default: "asana") - Active internal connection mapping access credential token keys.
+    - Returns: ToolResult verifying new nested deployment item generation tracking codes.
+    - How to call: AsanaTool.add_subtask(parent_task_id="112233", name="Write Unit Tests")
+
+12. list_subtasks:
+    - Purpose: Extracts nested sub-tier work assignments clustered under an active tracking task card.
+    - Arguments:
+      a) task_id: str - Base parent node ticket index reference verification identifier code (required).
+      b) cred_key: str (default: "asana") - Corporate credentials storage vault system reference directory.
+    - Returns: ToolResult enclosing data arrays detailing subtask summary elements.
+    - How to call: AsanaTool.list_subtasks(task_id="112233")
+
+13. add_comment:
+    - Purpose: Appends dialogue documentation remarks directly into active team tracking communication logs.
+    - Arguments:
+      a) task_id: str - Target context documentation workspace card identity sequence (required).
+      b) text: str - Textual communication block layout outlining status changes or remarks (required).
+      c) cred_key: str (default: "asana") - Network endpoints validation verification access key string.
+    - Returns: ToolResult reporting transaction confirmations over created story nodes.
+    - How to call: AsanaTool.add_comment(task_id="112233", text="Code review completed; awaiting deployment approvals.")
+
+14. list_comments:
+    - Purpose: Traverses task history records to fetch operational dialogue remarks while discarding system actions logs.
+    - Arguments:
+      a) task_id: str - Base platform infrastructure data tracking lookup asset key (required).
+      b) cred_key: str (default: "asana") - Network channel connection verification workspace key profiles.
+    - Returns: ToolResult parsing filtered conversational story item list configurations.
+    - How to call: AsanaTool.list_comments(task_id="112233")
+
+15. list_sections:
+    - Purpose: Displays workflow progression lanes mapped to the architectural design of a specified project canvas.
+    - Arguments:
+      a) project_id: str - Target project layout configuration system identification string (required).
+      b) cred_key: str (default: "asana") - Internal integration token lookup location pointer profile.
+    - Returns: ToolResult packing array collections sorting column block lane identities.
+    - How to call: AsanaTool.list_sections(project_id="98765")
+
+16. create_section:
+    - Purpose: Adds structured pipeline stages or categorizations inside project canvas layouts.
+    - Arguments:
+      a) project_id: str - Target design container interface registry locator path (required).
+      b) name: str - Unique staging text phrase identifying pipeline milestones (required).
+      c) cred_key: str (default: "asana") - Account configuration integration interface secret locator indices.
+    - Returns: ToolResult verifying step stage generation metadata.
+    - How to call: AsanaTool.create_section(project_id="98765", name="Awaiting QA")
+
+17. move_task_to_section:
+    - Purpose: Shifts task assignments horizontally across workflow stages in list or board tracking configurations.
+    - Arguments:
+      a) task_id: str - Core individual tracking card element lookup code string (required).
+      b) section_id: str - Destination column milestone framework structural reference parameter (required).
+      c) cred_key: str (default: "asana") - Vault data repository credential interface access profiles.
+    - Returns: ToolResult tracking pipeline state reassignment validations.
+    - How to call: AsanaTool.move_task_to_section(task_id="112233", section_id="sec_554433")
+
+18. list_tags:
+    - Purpose: Pulls taxonomy labels applied across a broad corporate workspace environment.
+    - Arguments:
+      a) workspace_id: str - Base parent architecture tracking system group path code blocks (required).
+      b) cred_key: str (default: "asana") - Identity interface verification workspace database token keys.
+    - Returns: ToolResult detailing available workspace taxonomy keyword chips.
+    - How to call: AsanaTool.list_tags(workspace_id="12345")
+
+19. add_tag_to_task:
+    - Purpose: Links an existing categorization tag token element onto an active target tracking item.
+    - Arguments:
+      a) task_id: str - Destination tracking card item system identifier lookup sequence (required).
+      b) tag_id: str - Targeted cross-project triage categorization reference code tag (required).
+      c) cred_key: str (default: "asana") - Authentication store system server security configuration records.
+    - Returns: ToolResult mapping successful completion status logs.
+    - How to call: AsanaTool.add_tag_to_task(task_id="112233", tag_id="tag_776655")
+""")
+       
+    @staticmethod
+    def _client(cred_key: str = "asana"):
+        import asana
+        token = CredStore.load(cred_key).get("access_token", "")
+        if not token:
+            raise ValueError("No Asana token. Store under 'asana' key.")
+        config = asana.Configuration()
+        config.access_token = token
+        return asana.ApiClient(config)
+
+    @staticmethod
+    def list_workspaces(cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.WorkspacesApi(client)
+            ws = list(api.get_workspaces({}))
+            return ToolResult(True, f"✓ {len(ws)} workspaces", ws)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_workspaces failed: {e}")
+
+    @staticmethod
+    def list_projects(workspace_id: str = None, team_id: str = None,
+                      cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.ProjectsApi(client)
+            opts: dict = {}
+            if workspace_id:
+                opts["workspace"] = workspace_id
+            if team_id:
+                opts["team"] = team_id
+            projects = list(api.get_projects(opts))
+            return ToolResult(True, f"✓ {len(projects)} projects", projects)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_projects failed: {e}")
+
+    @staticmethod
+    def get_project(project_id: str, cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.ProjectsApi(client)
+            proj = api.get_project(project_id, {})
+            return ToolResult(True, "✓ Project retrieved", proj)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_project failed: {e}")
+
+    @staticmethod
+    def create_project(name: str, workspace_id: str,
+                       team_id: str = None, notes: str = "",
+                       color: str = "none", public: bool = True,
+                       cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.ProjectsApi(client)
+            body: dict = {
+                "data": {"name": name, "workspace": workspace_id,
+                         "notes": notes, "color": color,
+                         "public": public}
+            }
+            if team_id:
+                body["data"]["team"] = team_id
+            proj = api.create_project(body, {})
+            return ToolResult(True, f"✓ Project created: {proj.get('gid','')}", proj)
+        except Exception as e:
+            return ToolResult(False, f"✗ create_project failed: {e}")
+
+    @staticmethod
+    def list_tasks(project_id: str = None, assignee: str = None,
+                   completed: bool = False, due_on: str = None,
+                   cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.TasksApi(client)
+            opts: dict = {"completed_since": "now" if not completed else ""}
+            if project_id:
+                opts["project"] = project_id
+            if assignee:
+                opts["assignee"] = assignee
+            if due_on:
+                opts["due_on"] = due_on
+            tasks = list(api.get_tasks(opts))
+            return ToolResult(True, f"✓ {len(tasks)} tasks", tasks)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_tasks failed: {e}")
+
+    @staticmethod
+    def get_task(task_id: str, cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.TasksApi(client)
+            task = api.get_task(task_id, {})
+            return ToolResult(True, "✓ Task retrieved", task)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_task failed: {e}")
+
+    @staticmethod
+    def create_task(name: str, workspace_id: str,
+                    project_id: str = None, assignee: str = None,
+                    notes: str = "", due_on: str = None,
+                    custom_fields: dict = None,
+                    cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.TasksApi(client)
+            body: dict = {
+                "data": {"name": name, "workspace": workspace_id,
+                         "notes": notes}
+            }
+            if project_id:
+                body["data"]["projects"] = [project_id]
+            if assignee:
+                body["data"]["assignee"] = assignee
+            if due_on:
+                body["data"]["due_on"] = due_on
+            if custom_fields:
+                body["data"]["custom_fields"] = custom_fields
+            task = api.create_task(body, {})
+            return ToolResult(True, f"✓ Task created: {task.get('gid','')}", task)
+        except Exception as e:
+            return ToolResult(False, f"✗ create_task failed: {e}")
+
+    @staticmethod
+    def update_task(id: str, data: dict,
+                    cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.TasksApi(client)
+            task = api.update_task({"data": data}, id, {})
+            return ToolResult(True, "✓ Task updated", task)
+        except Exception as e:
+            return ToolResult(False, f"✗ update_task failed: {e}")
+
+    @staticmethod
+    def complete_task(id: str, cred_key: str = "asana") -> ToolResult:
+        return AsanaTool.update_task(id, {"completed": True}, cred_key)
+
+    @staticmethod
+    def delete_task(id: str, cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.TasksApi(client)
+            api.delete_task(id)
+            return ToolResult(True, f"✓ Task deleted: {id}")
+        except Exception as e:
+            return ToolResult(False, f"✗ delete_task failed: {e}")
+
+    @staticmethod
+    def add_subtask(parent_task_id: str, name: str,
+                    assignee: str = None, notes: str = "",
+                    cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.TasksApi(client)
+            body: dict = {"data": {"name": name, "notes": notes}}
+            if assignee:
+                body["data"]["assignee"] = assignee
+            subtask = api.create_subtask_for_task(body, parent_task_id, {})
+            return ToolResult(True, f"✓ Subtask created: {subtask.get('gid','')}", subtask)
+        except Exception as e:
+            return ToolResult(False, f"✗ add_subtask failed: {e}")
+
+    @staticmethod
+    def list_subtasks(task_id: str, cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.TasksApi(client)
+            subs = list(api.get_subtasks_for_task(task_id, {}))
+            return ToolResult(True, f"✓ {len(subs)} subtasks", subs)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_subtasks failed: {e}")
+
+    @staticmethod
+    def add_comment(task_id: str, text: str,
+                    cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.StoriesApi(client)
+            story = api.create_story_for_task(
+                {"data": {"text": text}}, task_id, {})
+            return ToolResult(True, "✓ Comment added", story)
+        except Exception as e:
+            return ToolResult(False, f"✗ add_comment failed: {e}")
+
+    @staticmethod
+    def list_comments(task_id: str, cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.StoriesApi(client)
+            stories = list(api.get_stories_for_task(task_id, {}))
+            comments = [s for s in stories
+                        if s.get("type") == "comment"]
+            return ToolResult(True, f"✓ {len(comments)} comments", comments)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_comments failed: {e}")
+
+    @staticmethod
+    def list_sections(project_id: str, cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.SectionsApi(client)
+            secs = list(api.get_sections_for_project(project_id, {}))
+            return ToolResult(True, f"✓ {len(secs)} sections", secs)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_sections failed: {e}")
+
+    @staticmethod
+    def create_section(project_id: str, name: str,
+                       cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.SectionsApi(client)
+            sec = api.create_section_for_project(
+                {"data": {"name": name}}, project_id, {})
+            return ToolResult(True, f"✓ Section created: {name}", sec)
+        except Exception as e:
+            return ToolResult(False, f"✗ create_section failed: {e}")
+
+    @staticmethod
+    def move_task_to_section(task_id: str, section_id: str,
+                              cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.SectionsApi(client)
+            api.add_task_for_section(
+                {"data": {"task": task_id}}, section_id, {})
+            return ToolResult(True, f"✓ Task moved to section")
+        except Exception as e:
+            return ToolResult(False, f"✗ move_task_to_section failed: {e}")
+
+    @staticmethod
+    def list_tags(workspace_id: str, cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.TagsApi(client)
+            tags = list(api.get_tags_for_workspace(workspace_id, {}))
+            return ToolResult(True, f"✓ {len(tags)} tags", tags)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_tags failed: {e}")
+
+    @staticmethod
+    def add_tag_to_task(task_id: str, tag_id: str,
+                        cred_key: str = "asana") -> ToolResult:
+        try:
+            import asana
+            client = AsanaTool._client(cred_key)
+            api = asana.TasksApi(client)
+            api.add_tag_for_task({"data": {"tag": tag_id}}, task_id, {})
+            return ToolResult(True, f"✓ Tag added to task")
+        except Exception as e:
+            return ToolResult(False, f"✗ add_tag_to_task failed: {e}")
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# 5. TrelloTool
+# ═════════════════════════════════════════════════════════════════════════════
+
+class TrelloTool:
+    name = "trello"
+    description = (
+        "Trello board management — boards, lists, cards, checklists, "
+        "labels, members, comments, and attachments"
+    )
+    use = ("""
+Name of Tool: TrelloTool
+
+Purpose of Tool:
+The TrelloTool is a streamlined Python wrapper around the Trello REST API (v1). It abstracts HTTP requests 
+and authorization configuration parameters to expose clean, synchronous static methods for managing Kanban-style 
+project ecosystems. The tool maps operations cleanly across Trello's primary structural layers—boards, lists, 
+cards, checklists, comments, attachments, membership states, and classification labels. Every interaction automatically 
+resolves system authentication fields via `CredStore` and reports transaction statuses inside a standardized `ToolResult` container.
+
+Methods:
+- list_boards: Returns summary profiles for all workspace boards accessible by a target member.
+- get_board: Resolves structural properties and unique variable states for a target board.
+- create_board: Provisions a fresh board canvas workspace, optionally pre-seeded with target operational default columns.
+- list_lists: Extracts the pipeline column nodes mapped inside an explicit board interface.
+- create_list: Spawns an isolated vertical phase lane or column category header at a target board coordinate.
+- archive_list: Toggles the closed status flag to move a targeted tracking pipeline list into workspace archives.
+- list_cards: Polls active work tokens across list canvas elements or wide parent board views.
+- get_card: Fetches granular variable configurations, data links, and description properties mapping a specific ticket.
+- create_card: Injects a brand new task card record directly into a specified pipeline tracking list lane.
+- update_card: Dispatches partial patch property modifications across generic field elements on an active card.
+- move_card: Relocates an execution ticket card laterally into an alternative structural processing list column.
+- archive_card: Flags a target task node as closed to remove it from live dashboard lists.
+- add_checklist: Attaches discrete checklist blocks containing multiple sub-tier item actions to a parent card.
+- check_checklist_item: Modifies individual checkbox states within a nested task card checklist collection.
+- add_comment: Posts text logs or discussion stream threads directly onto an active card's log structure.
+- add_attachment: Uploads local asset binary records or binds network resource URLs to a target task card.
+- list_members: Resolves collaborator membership arrays linked directly with a board workspace context.
+- add_member: Welcomes a fresh collaborator into a board workspace cluster via email configuration routes.
+- create_label: Declares specialized metadata taxonomy tokens and chips inside a parent board configuration.
+- add_label_to_card: Attaches an indexing taxonomy label element directly onto a target execution card.
+
+How to use Tool Methods:
+
+1. list_boards:
+   - Purpose: Polls active boards belonging to a specified collaborator identity string.
+   - Arguments:
+     a) member_id: str (default: "me") - Target collaborator ID code or alias token.
+     b) cred_key: str (default: "trello") - System integration lookup validation profile key.
+   - Returns: ToolResult packing dictionaries tracking available workspace board architectures.
+   - How to call: TrelloTool.list_boards(member_id="user_id_123")
+
+2. get_board:
+   - Purpose: Exposes exact internal settings data, descriptions, and state values for a target board registry.
+   - Arguments:
+     a) board_id: str - Target identification system string mapping an active board entry (required).
+     b) cred_key: str (default: "trello") - Secret vault entry configuration lookup path locator.
+   - Returns: ToolResult matching the returned JSON schema definitions from the target board node.
+   - How to call: TrelloTool.get_board(board_id="board_xyz_789")
+
+3. create_board:
+   - Purpose: Registers a completely new primary board canvas frame into the user's active workspace.
+   - Arguments:
+     a) name: str - Target title descriptor labeling the fresh board interface (required).
+     b) desc: str (default: "") - Core functional summary tracking the goals of the board.
+     c) default_lists: bool (default: True) - Toggles pre-populating standard To Do/Doing/Done column lanes.
+     d) cred_key: str (default: "trello") - Security channel identity integration validation profile.
+   - Returns: ToolResult logging execution successes and provisioning parameters.
+   - How to call: TrelloTool.create_board(name="Sprint Backlog 2026", desc="Engineering deliverables tracker", default_lists=False)
+
+4. list_lists:
+   - Purpose: Retrieves workflow phase columns structured horizontally inside a designated board frame.
+   - Arguments:
+     a) board_id: str - Unique target structural container reference identifier string (required).
+     b) cred_key: str (default: "trello") - Active security client context configuration directory keys.
+   - Returns: ToolResult packaging matched list columns schemas.
+   - How to call: TrelloTool.list_lists(board_id="board_xyz_789")
+
+5. create_list:
+   - Purpose: appends a fresh stage column node category onto an operational project board environment.
+   - Arguments:
+     a) board_id: str - Destination board asset system identifier code string (required).
+     b) name: str - Operational tracking lane summary header labeling the new column list (required).
+     c) pos: str (default: "bottom") - Positioning grid sorting parameter ("top", "bottom", or a float index number).
+     d) cred_key: str (default: "trello") - System validation account credentials pointer string.
+   - Returns: ToolResult returning newly populated list structure identities.
+   - How to call: TrelloTool.create_list(board_id="board_xyz_789", name="Code Review Phase", pos="top")
+
+6. archive_list:
+   - Purpose: Cleans up the workspace board view by shifting an entire column lane out of active layouts.
+   - Arguments:
+     a) list_id: str - Target lane mapping system location indicator sequence (required).
+     b) cred_key: str (default: "trello") - Central authorization profile configuration selector keys.
+   - Returns: ToolResult showing transaction status confirmations.
+   - How to call: TrelloTool.archive_list(list_id="list_555_abc")
+
+7. list_cards:
+   - Purpose: Gathers tracking tickets indexed inside a particular workflow list column or broad parent board.
+   - Arguments:
+     a) list_or_board_id: str - Base container identifier tracking either an explicit list lane or wide board structure (required).
+     b) filter: str (default: "open") - Visibility query restriction rule (e.g., "open", "closed", "all").
+     c) cred_key: str (default: "trello") - Core access credentials repository storage path selector.
+   - Returns: ToolResult enclosing data arrays detailing matched card data nodes.
+   - How to call: TrelloTool.list_cards(list_or_board_id="list_555_abc", filter="all")
+
+8. get_card:
+   - Purpose: Resolves highly complete property parameters, metadata chips, and field descriptions for a ticket.
+   - Arguments:
+     a) card_id: str - Alphanumeric unique platform item identity code tracker (required).
+     b) cred_key: str (default: "trello") - Integration store authorization directory lookup token.
+   - Returns: ToolResult detailing complete internal variable settings defining the card.
+   - How to call: TrelloTool.get_card(card_id="card_999_xyz")
+
+9. create_card:
+   - Purpose: Deploys a distinct action item card directly into an existing tracking column list lane.
+   - Arguments:
+     a) list_id: str - Primary parent tracker line column container reference key (required).
+     b) name: str - Summary caption title labeling the newly generated execution task card (required).
+     c) desc: str (default: "") - Descriptive documentation text reproduction logs or acceptance criteria.
+     d) due: str (default: None) - Iso-formatted calendar target date tracking constraints (YYYY-MM-DDTHH:MM:SSZ).
+     e) labels: list (default: None) - Array collection pooling target classification label ID string keys.
+     f) members: list (default: None) - Array sequence collecting assigned engineer profile tracking codes.
+     g) attachments: list (default: None) - String array listing initial resource URLs to fetch and link.
+     h) cred_key: str (default: "trello") - Security channel connection endpoint key profile tags.
+   - Returns: ToolResult tracking property responses validating card injection.
+   - How to call: TrelloTool.create_card(list_id="list_555_abc", name="Resolve API Leak", desc="Patch memory logs immediately")
+
+10. update_card:
+    - Purpose: Patches arbitrary field definitions across an existing project tracking card record.
+    - Arguments:
+      a) id: str - Unique global node tracker asset identity code string (required).
+      b) data: dict - Map definitions containing specific property parameters values to update (required).
+      c) cred_key: str (default: "trello") - Internal database authentication channel access keys profile.
+    - Returns: ToolResult packaging full return structures matching mutated variables.
+    - How to call: TrelloTool.update_card(id="card_999_xyz", data={"desc": "Updated acceptance criteria logs."})
+
+11. move_card:
+    - Purpose: Transitions a single work ticket horizontally into an alternative workspace column status lane.
+    - Arguments:
+      a) card_id: str - Core individual tracking card asset lookup sequence code (required).
+      b) list_id: str - Target destination pipeline list layout framework reference key (required).
+      c) cred_key: str (default: "trello") - Validation secure storage integration registry profile index.
+    - Returns: ToolResult tracking state override update confirmations.
+    - How to call: TrelloTool.move_card(card_id="card_999_xyz", list_id="list_777_completed")
+
+12. archive_card:
+    - Purpose: Removes an active card from project canvas pipelines without deleting raw data logs permanently.
+    - Arguments:
+      a) card_id: str - Target task global item reference verification identification string (required).
+      b) cred_key: str (default: "trello") - Vault repository security credential registry pointers.
+    - Returns: ToolResult evaluating successful transition changes.
+    - How to call: TrelloTool.archive_card(card_id="card_999_xyz")
+
+13. add_checklist:
+    - Purpose: Pins a fresh sub-tier tracking list framework container onto an explicit task module card.
+    - Arguments:
+      a) card_id: str - Destination tracking card element instance validation key sequence (required).
+      b) name: str - Section heading header classifying sub-tier checklist expectations (required).
+      c) items: list (default: None) - String array containing title texts for individual checkboxes to instantiate.
+      d) cred_key: str (default: "trello") - Corporate connection authorization workspace key profiles store indicators.
+    - Returns: ToolResult logging the generated output asset attributes tracking codes.
+    - How to call: TrelloTool.add_checklist(card_id="card_999_xyz", name="QA Verification Blocks", items=["Test Edge Cases", "Validate schema"])
+
+14. check_checklist_item:
+    - Purpose: Toggles completion states for granular checkboxes structured inside nested task checklists.
+    - Arguments:
+      a) card_id: str - Base parent node ticket verification container path code block (required).
+      b) checklist_id: str - Nested checklist framework asset grouping tracking directory lookup key (required).
+      c) item_id: str - Absolute checkbox node structural reference token sequence (required).
+      d) checked: bool (default: True) - State flag setting item status to 'complete' if True or 'incomplete' if False.
+      d) cred_key: str (default: "trello") - Verification key data location pointers configuration mapping.
+    - Returns: ToolResult mapping successful completion status logging tracks.
+    - How to call: TrelloTool.check_checklist_item(card_id="card_999_xyz", checklist_id="cl_111", item_id="item_222", checked=True)
+
+15. add_comment:
+    - Purpose: Appends dialogue remarks directly inside the asynchronous activity stream on a ticket asset card.
+    - Arguments:
+      a) card_id: str - Target dialogue logging task document container identifier node string (required).
+      b) text: str - Main textual communication note body text formatting status statements (required).
+      c) cred_key: str (default: "trello") - Secure corporate interface server authorization validation details.
+    - Returns: ToolResult confirming dialogue track mutation results schemas.
+    - How to call: TrelloTool.add_comment(card_id="card_999_xyz", text="Hotfix deployed to staging. Testing confirms fix.")
+
+16. add_attachment:
+    - Purpose: Uploads local disk binary files or attaches external hyperlink reference paths directly onto a card file asset.
+    - Arguments:
+      a) card_id: str - Target task container system structural reference identification coordinate (required).
+      b) url_or_path: str - Absolute network resource path hyperlink or local operating system disk path lookup string (required).
+      c) name: str (default: "") - Visual descriptor alias labeling the resource inside the file tray context view.
+      d) cred_key: str (default: "trello") - Active credentials profile store directory location parameters.
+    - Returns: ToolResult validating transmission logs payload metadata maps.
+    - How to call: TrelloTool.add_attachment(card_id="card_999_xyz", url_or_path="./logs/error_stack.txt", name="Crash Log Trace")
+
+17. list_members:
+    - Purpose: Queries identity maps tracking profiles validly attached onto a specific board environment setup.
+    - Arguments:
+      a) board_id: str - Base platform framework layout identifier path verification block code (required).
+      b) cred_key: str (default: "trello") - Authorization vault system index selector tracking directories.
+    - Returns: ToolResult packaging matched engineer profiles array sets data maps.
+    - How to call: TrelloTool.list_members(board_id="board_xyz_789")
+
+18. add_member:
+    - Purpose: Attaches additional team collaborators directly onto an active board canvas infrastructure ecosystem.
+    - Arguments:
+      a) board_id: str - Target design infrastructure workspace container reference key token (required).
+      b) email: str - Target corporate inbox communications identity string mapping a developer account (required).
+      c) type: str (default: "normal") - System access permission role tier settings ("admin", "normal", "observer").
+      d) cred_key: str (default: "trello") - Network endpoints validation verification access profiles mapping.
+    - Returns: ToolResult tracking membership provisioning response statuses.
+    - How to call: TrelloTool.add_member(board_id="board_xyz_789", email="engineer@company.com", type="normal")
+
+19. create_label:
+    - Purpose: Declares fresh cross-card classification chips and tags inside a board's global sorting palette.
+    - Arguments:
+      a) board_id: str - Targeted project board setup container system tracking layout identifier (required).
+      b) name: str - Text phrase distinguishing taxonomy properties labeling the new chip keyword (required).
+      c) color: str - Color name keyword identifying workspace visual layout accent lanes (e.g., "red", "blue", "orange").
+      d) cred_key: str (default: "trello") - Identity interface verification workspace repository database credentials access keys.
+    - Returns: ToolResult mapping generated label parameters metadata structures.
+    - How to call: TrelloTool.create_label(board_id="board_xyz_789", name="Blocker Risk", color="red")
+
+20. add_label_to_card:
+    - Purpose: Chains a pre-existing taxonomy sorting keyword or categorization chip label onto a running card.
+    - Arguments:
+      a) card_id: str - Destination tracking card item system locator path identifier code sequence (required).
+      b) label_id: str - Targeted cross-project triage classification asset reference code token (required).
+      c) cred_key: str (default: "trello") - Secure credentials storage vault database registry lookup values.
+    - Returns: ToolResult checking return property execution results logs.
+    - How to call: TrelloTool.add_label_to_card(card_id="card_999_xyz", label_id="label_id_000")
+""")
+       
+    @staticmethod
+    def _api(method: str, path: str, cred_key: str = "trello",
+             **kwargs) -> Any:
+        import requests
+        creds = CredStore.load(cred_key)
+        key = creds.get("api_key", "")
+        token = creds.get("token", "")
+        if not key or not token:
+            raise ValueError("No Trello credentials. Store 'api_key' and 'token' under 'trello'.")
+        url = f"https://api.trello.com/1/{path.lstrip('/')}"
+        params = kwargs.pop("params", {})
+        params.update({"key": key, "token": token})
+        fn = getattr(requests, method.lower())
+        resp = fn(url, params=params, timeout=20, **kwargs)
+        resp.raise_for_status()
+        return resp.json() if resp.content else {}
+
+    @staticmethod
+    def list_boards(member_id: str = "me",
+                    cred_key: str = "trello") -> ToolResult:
+        try:
+            boards = TrelloTool._api(
+                "get", f"members/{member_id}/boards",
+                cred_key,
+                params={"fields": "id,name,desc,url,closed"})
+            return ToolResult(True, f"✓ {len(boards)} boards", boards)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_boards failed: {e}")
+
+    @staticmethod
+    def get_board(board_id: str, cred_key: str = "trello") -> ToolResult:
+        try:
+            board = TrelloTool._api("get", f"boards/{board_id}", cred_key)
+            return ToolResult(True, "✓ Board retrieved", board)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_board failed: {e}")
+
+    @staticmethod
+    def create_board(name: str, desc: str = "",
+                     default_lists: bool = True,
+                     cred_key: str = "trello") -> ToolResult:
+        try:
+            board = TrelloTool._api(
+                "post", "boards", cred_key,
+                json={"name": name, "desc": desc,
+                      "defaultLists": default_lists})
+            return ToolResult(True, f"✓ Board created: {board.get('id')}", board)
+        except Exception as e:
+            return ToolResult(False, f"✗ create_board failed: {e}")
+
+    @staticmethod
+    def list_lists(board_id: str, cred_key: str = "trello") -> ToolResult:
+        try:
+            lists = TrelloTool._api("get", f"boards/{board_id}/lists",
+                                    cred_key)
+            return ToolResult(True, f"✓ {len(lists)} lists", lists)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_lists failed: {e}")
+
+    @staticmethod
+    def create_list(board_id: str, name: str, pos: str = "bottom",
+                    cred_key: str = "trello") -> ToolResult:
+        try:
+            lst = TrelloTool._api(
+                "post", "lists", cred_key,
+                json={"name": name, "idBoard": board_id, "pos": pos})
+            return ToolResult(True, f"✓ List created: {lst.get('id')}", lst)
+        except Exception as e:
+            return ToolResult(False, f"✗ create_list failed: {e}")
+
+    @staticmethod
+    def archive_list(list_id: str, cred_key: str = "trello") -> ToolResult:
+        try:
+            TrelloTool._api("put", f"lists/{list_id}/closed", cred_key,
+                            json={"value": True})
+            return ToolResult(True, f"✓ List archived: {list_id}")
+        except Exception as e:
+            return ToolResult(False, f"✗ archive_list failed: {e}")
+
+    @staticmethod
+    def list_cards(list_or_board_id: str, filter: str = "open",
+                   cred_key: str = "trello") -> ToolResult:
+        try:
+            # Try list first, fall back to board
+            try:
+                cards = TrelloTool._api(
+                    "get", f"lists/{list_or_board_id}/cards",
+                    cred_key, params={"filter": filter})
+            except Exception:
+                cards = TrelloTool._api(
+                    "get", f"boards/{list_or_board_id}/cards",
+                    cred_key, params={"filter": filter})
+            return ToolResult(True, f"✓ {len(cards)} cards", cards)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_cards failed: {e}")
+
+    @staticmethod
+    def get_card(card_id: str, cred_key: str = "trello") -> ToolResult:
+        try:
+            card = TrelloTool._api("get", f"cards/{card_id}", cred_key)
+            return ToolResult(True, "✓ Card retrieved", card)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_card failed: {e}")
+
+    @staticmethod
+    def create_card(list_id: str, name: str, desc: str = "",
+                    due: str = None, labels: list = None,
+                    members: list = None, attachments: list = None,
+                    cred_key: str = "trello") -> ToolResult:
+        try:
+            body: dict = {"idList": list_id, "name": name, "desc": desc}
+            if due:
+                body["due"] = due
+            if labels:
+                body["idLabels"] = labels
+            if members:
+                body["idMembers"] = members
+            card = TrelloTool._api("post", "cards", cred_key, json=body)
+            if attachments:
+                for att in attachments:
+                    TrelloTool._api(
+                        "post", f"cards/{card['id']}/attachments",
+                        cred_key, json={"url": att, "name": att})
+            return ToolResult(True, f"✓ Card created: {card.get('id')}", card)
+        except Exception as e:
+            return ToolResult(False, f"✗ create_card failed: {e}")
+
+    @staticmethod
+    def update_card(id: str, data: dict,
+                    cred_key: str = "trello") -> ToolResult:
+        try:
+            card = TrelloTool._api("put", f"cards/{id}", cred_key, json=data)
+            return ToolResult(True, "✓ Card updated", card)
+        except Exception as e:
+            return ToolResult(False, f"✗ update_card failed: {e}")
+
+    @staticmethod
+    def move_card(card_id: str, list_id: str,
+                  cred_key: str = "trello") -> ToolResult:
+        return TrelloTool.update_card(card_id, {"idList": list_id}, cred_key)
+
+    @staticmethod
+    def archive_card(card_id: str, cred_key: str = "trello") -> ToolResult:
+        return TrelloTool.update_card(card_id, {"closed": True}, cred_key)
+
+    @staticmethod
+    def add_checklist(card_id: str, name: str, items: list = None,
+                      cred_key: str = "trello") -> ToolResult:
+        try:
+            cl = TrelloTool._api(
+                "post", "checklists", cred_key,
+                json={"idCard": card_id, "name": name})
+            cl_id = cl["id"]
+            for item in (items or []):
+                TrelloTool._api(
+                    "post", f"checklists/{cl_id}/checkItems",
+                    cred_key, json={"name": item})
+            return ToolResult(True, f"✓ Checklist '{name}' added", cl)
+        except Exception as e:
+            return ToolResult(False, f"✗ add_checklist failed: {e}")
+
+    @staticmethod
+    def check_checklist_item(card_id: str, checklist_id: str,
+                              item_id: str, checked: bool = True,
+                              cred_key: str = "trello") -> ToolResult:
+        try:
+            state = "complete" if checked else "incomplete"
+            TrelloTool._api(
+                "put",
+                f"cards/{card_id}/checkItem/{item_id}",
+                cred_key, json={"state": state})
+            return ToolResult(True, f"✓ Item marked {state}")
+        except Exception as e:
+            return ToolResult(False, f"✗ check_checklist_item failed: {e}")
+
+    @staticmethod
+    def add_comment(card_id: str, text: str,
+                    cred_key: str = "trello") -> ToolResult:
+        try:
+            resp = TrelloTool._api(
+                "post", f"cards/{card_id}/actions/comments",
+                cred_key, json={"text": text})
+            return ToolResult(True, "✓ Comment added", resp)
+        except Exception as e:
+            return ToolResult(False, f"✗ add_comment failed: {e}")
+
+    @staticmethod
+    def add_attachment(card_id: str, url_or_path: str,
+                       name: str = "", cred_key: str = "trello") -> ToolResult:
+        try:
+            import requests as req
+            p = Path(url_or_path)
+            creds = CredStore.load(cred_key)
+            key = creds.get("api_key", "")
+            token_val = creds.get("token", "")
+            url = f"https://api.trello.com/1/cards/{card_id}/attachments"
+            if p.exists():
+                with open(url_or_path, "rb") as f:
+                    resp = req.post(url,
+                                    params={"key": key, "token": token_val},
+                                    files={"file": (name or p.name, f)},
+                                    timeout=30)
+            else:
+                resp = req.post(url,
+                                params={"key": key, "token": token_val},
+                                json={"url": url_or_path, "name": name},
+                                timeout=20)
+            resp.raise_for_status()
+            return ToolResult(True, "✓ Attachment added", resp.json())
+        except Exception as e:
+            return ToolResult(False, f"✗ add_attachment failed: {e}")
+
+    @staticmethod
+    def list_members(board_id: str, cred_key: str = "trello") -> ToolResult:
+        try:
+            members = TrelloTool._api(
+                "get", f"boards/{board_id}/members", cred_key)
+            return ToolResult(True, f"✓ {len(members)} members", members)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_members failed: {e}")
+
+    @staticmethod
+    def add_member(board_id: str, email: str, type: str = "normal",
+                   cred_key: str = "trello") -> ToolResult:
+        try:
+            resp = TrelloTool._api(
+                "put", f"boards/{board_id}/members", cred_key,
+                json={"email": email, "type": type})
+            return ToolResult(True, f"✓ Member {email} added", resp)
+        except Exception as e:
+            return ToolResult(False, f"✗ add_member failed: {e}")
+
+    @staticmethod
+    def create_label(board_id: str, name: str, color: str,
+                     cred_key: str = "trello") -> ToolResult:
+        try:
+            label = TrelloTool._api(
+                "post", "labels", cred_key,
+                json={"name": name, "color": color,
+                      "idBoard": board_id})
+            return ToolResult(True, f"✓ Label created: {label.get('id')}", label)
+        except Exception as e:
+            return ToolResult(False, f"✗ create_label failed: {e}")
+
+    @staticmethod
+    def add_label_to_card(card_id: str, label_id: str,
+                           cred_key: str = "trello") -> ToolResult:
+        try:
+            TrelloTool._api(
+                "post", f"cards/{card_id}/idLabels",
+                cred_key, json={"value": label_id})
+            return ToolResult(True, "✓ Label added to card")
+        except Exception as e:
+            return ToolResult(False, f"✗ add_label_to_card failed: {e}")
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# 6. ClickUpTool
+# ═════════════════════════════════════════════════════════════════════════════
+
+class ClickUpTool:
+    name = "clickup"
+    description = (
+        "ClickUp workspace management — spaces, folders, lists, tasks, "
+        "comments, checklists, time tracking, and views"
+    )
+    use = ("""
+Name of Tool: ClickUpTool
+
+Purpose of Tool:
+The ClickUpTool is a robust Python programmatic wrapper designed to interface with the ClickUp REST API (v2). 
+It encapsulates the underlying connection protocols and simplifies workspace hierarchy management by exposing 
+clean methods to interact with spaces, folders, lists, and tasks. Beyond basic CRUD operations, it provides 
+integrated productivity utilities including time-tracking mechanics, collaborative comment injection streams, 
+checklist provisioning, and layout data rendering workflows across custom views.
+
+Methods:
+- list_spaces: Pulls unarchived workplace environment spaces mapped under a target team workspace account ID.
+- list_folders: Queries and builds a list collection of directory folders organized within a single parent space.
+- list_lists: Retrieves task lists configured inside a given folder directory structure.
+- get_tasks: Queries tasks localized inside an active list, with selective server-side status and assignee sorting.
+- get_task: Fetches detailed task record attributes and field schemas mapped to a unique task token ID.
+- create_task: Deploys a brand new action ticket into a target tracking column canvas list.
+- update_task: Mutates precise key-value attributes on a target task across a specified JSON field map payload.
+- delete_task: Drops a targeted task item entry directly out of the active operational workspace.
+- set_task_status: Alters the life-cycle stage text identifier tracking the progress of an explicit task.
+- add_comment: Posts collaborative messaging items directly onto a targeted task profile's commentary trail.
+- list_comments: Gathers historical message logs from the activity string associated with a single task.
+- create_checklist: Provisions an empty checkbox structural cluster sub-group onto an active task ticket.
+- add_checklist_item: Injects precise single-line checkbox item markers into a designated parent sub-checklist.
+- track_time: Commits localized duration time-tracking blocks into the ledger metrics profile of a target task.
+- get_time_entries: Fetches explicit historical labor logs tracked and registered inside a target task identity.
+- list_views: Pulls alternative organizational interface layout views registered over an individual project list.
+- get_view_tasks: Resolves task elements currently being monitored from inside a target custom view matrix.
+
+How to use Tool Methods:
+
+1. list_spaces:
+   - Purpose: Lists all unarchived spaces available to the defined team identity profile.
+   - Arguments:
+     a) team_id: str - Unique organization workplace identifier target code (required).
+     b) cred_key: str (default: "clickup") - Target database routing entry string tracking local API tokens.
+   - Returns: ToolResult container resolving dictionaries matching live workspace environment entries.
+   - How to call: ClickUpTool.list_spaces(team_id="1234567")
+
+2. list_folders:
+   - Purpose: Retrieves all unarchived folders configured inside a targeted space.
+   - Arguments:
+     a) space_id: str - The specific target space identification reference string (required).
+     b) cred_key: str (default: "clickup") - Registry look-up parameter indexing secure access keys.
+   - Returns: ToolResult mapping active container profiles linked to the destination directory.
+   - How to call: ClickUpTool.list_folders(space_id="space_abc_999")
+
+3. list_lists:
+   - Purpose: Collects active project task columns or sub-lists running inside a folder.
+   - Arguments:
+     a) folder_id: str - Unique identification number string targeting a parent directory container (required).
+     b) cred_key: str (default: "clickup") - Secure credentials storage validation dictionary indicator.
+   - Returns: ToolResult holding structural payload details mapping out all target lists.
+   - How to call: ClickUpTool.list_lists(folder_id="folder_555666")
+
+4. get_tasks:
+   - Purpose: Polls and queries task indices out of a single collection list with selective parameter logic.
+   - Arguments:
+     a) list_id: str - Location coordinate mapping the parent list node container (required).
+     b) assignees: list (default: None) - Array collecting target user identification ID sequences.
+     c) statuses: list (default: None) - Limits retrieved records to items matching structural tier names.
+     d) due_date: str (default: None) - Boolean filter target string shifting timeline evaluations.
+     e) page: int (default: 0) - Pagination index tracking the continuous scroll layout matrix.
+     f) cred_key: str (default: "clickup") - Primary secure integration lookup pointer value string.
+   - Returns: ToolResult carrying filtered data nodes representing active task states.
+   - How to call: ClickUpTool.get_tasks(list_id="list_7890", statuses=["In Progress", "Review"])
+
+5. get_task:
+   - Purpose: Resolves exact comprehensive data attributes detailing a specific system task.
+   - Arguments:
+     a) task_id: str - Core targeted task element routing index identification value (required).
+     b) cred_key: str (default: "clickup") - Target token credentials mapping vault keys directory.
+   - Returns: ToolResult detailing standard and custom parameters attached to the task target.
+   - How to call: ClickUpTool.get_task(task_id="task_click_55a")
+
+6. create_task:
+   - Purpose: Injects an isolated task entry directly inside a specified production list path.
+   - Arguments:
+     a) list_id: str - Unique target list destination identification index code (required).
+     b) name: str - Text summary header defining the task title string value (required).
+     c) description: str (default: "") - Extended instruction detail block or markdown formatting context notes.
+     d) assignees: list (default: None) - User ID keys array mapping accounts targeted for completion.
+     e) status: str (default: None) - Context progress tier labels string token (e.g., "in progress").
+     f) priority: int (default: None) - System importance weight values grading from 1 (Urgent) through 4 (Low).
+     g) due_date: str (default: None) - ISO standard timestamp format string representing completion targets.
+     h) tags: list (default: None) - String tokens array applying organizational categorization variables.
+     i) cred_key: str (default: "clickup") - Registry configuration parameter indexing standard security keys.
+   - Returns: ToolResult evaluating creation states alongside tracking copies of the server-side generated map parameters.
+   - How to call: ClickUpTool.create_task(list_id="9001", name="Deploy API Gateway Patch", priority=1, status="To Do")
+
+7. update_task:
+   - Purpose: Commits raw property modifications across arbitrary target field keys using dictionary payloads.
+   - Arguments:
+     a) id: str - Unique system identification tracking string pointing to the target task (required).
+     b) data: dict - Structural data map organizing property alterations (required).
+     c) cred_key: str (default: "clickup") - Data vault token identification handle indicator.
+   - Returns: ToolResult enclosing server-returned updated object attributes profiles.
+   - How to call: ClickUpTool.update_task(id="task_x12", data={"description": "Updated scope guidelines"})
+
+8. delete_task:
+   - Purpose: Destroys a target task instance and drops it from the active workspace interface.
+   - Arguments:
+     a) id: str - Unique task signature code string targeting deletion (required).
+     b) cred_key: str (default: "clickup") - Authentication security reference dictionary router key.
+   - Returns: ToolResult reporting explicit execution successes or configuration failures.
+   - How to call: ClickUpTool.delete_task(id="task_z99")
+
+9. set_task_status:
+   - Purpose: Shifts a task's development lifecycle stage using an inline string shortcut wrapper.
+   - Arguments:
+     a) id: str - Target task unique string sequence signature key (required).
+     b) status: str - Destination tracking phase name token string value (required).
+     c) cred_key: str (default: "clickup") - Target core client access vault mapping indicator.
+   - Returns: ToolResult verifying completion actions alongside execution payload metadata maps.
+   - How to call: ClickUpTool.set_task_status(id="task_abc11", status="Complete")
+
+10. add_comment:
+    - Purpose: Attaches text message communication objects onto a targeted task profile.
+    - Arguments:
+      a) task_id: str - target project task identity identifier code string (required).
+      b) comment_text: str - Core written text payload forming the communication post body (required).
+      c) notify_all: bool (default: False) - Dispatches alerts targeting every watcher attached to the file.
+      d) cred_key: str (default: "clickup") - Connection routing security token profile directory indicator.
+    - Returns: ToolResult confirming messaging deployment states over the network interface.
+    - How to call: ClickUpTool.add_comment(task_id="task_j33", comment_text="PR approved, merging now.", notify_all=True)
+
+11. list_comments:
+    - Purpose: Pulls the historical text dialogue ledger belonging to a designated task profile.
+    - Arguments:
+      a) task_id: str - target workspace task reference string index tag (required).
+      b) cred_key: str (default: "clickup") - Secure token repository destination pointer registry map.
+    - Returns: ToolResult housing lists tracking individual message objects and authors.
+    - How to call: ClickUpTool.list_comments(task_id="task_y44")
+
+12. create_checklist:
+    - Purpose: Appends a standalone checkbox array tracking structural unit cluster onto an active task canvas.
+    - Arguments:
+      a) task_id: str - Destination task index location tracker code string (required).
+      b) name: str - Descriptive clear structural heading tag for the custom checkbox grouping (required).
+      c) cred_key: str (default: "clickup") - Core system authentication directory tracking lookup paths.
+    - Returns: ToolResult embedding the full parameters dictionary describing the generated checklist container.
+    - How to call: ClickUpTool.create_checklist(task_id="task_u71", name="Pre-flight Verification Steps")
+
+13. add_checklist_item:
+    - Purpose: Provisions sub-task operational single-line item points into an existing parent checklist element.
+    - Arguments:
+      a) checklist_id: str - target checklist instance parent reference key string (required).
+      b) name: str - Summary text outlining the individual actionable checklist step item (required).
+      c) assignee: str (default: None) - User signature token routing target responsibility mapping paths.
+      d) cred_key: str (default: "clickup") - Client authentication credential store destination handle.
+    - Returns: ToolResult logging deployment confirmations detailing newly created sub-item tracking vectors.
+    - How to call: ClickUpTool.add_checklist_item(checklist_id="check_9921", name="Verify SSL cert expiration")
+
+14. track_time:
+    - Purpose: Logs a precise labor time ledger event block context onto a configured task reference tracking sheet.
+    - Arguments:
+      a) task_id: str - Explicit task tracking index reference code target (required).
+      b) duration: int - Exact elapsed execution time value measured completely in millisecond blocks (required).
+      c) start: str (default: None) - ISO string representation tracking the launch milestone of the log block.
+      d) end: str (default: None) - ISO string representation tracking the close milestone of the log block.
+      d) description: str (default: "") - Commentary notation outlining specific actions taken throughout the duration period.
+      e) cred_key: str (default: "clickup") - Security authentication credential store destination routing handle.
+    - Returns: ToolResult verifying successful record persistence alongside execution confirmations.
+    - How to call: ClickUpTool.track_time(task_id="abc888", duration=7200000, description="Debugging memory leak profiles")
+
+15. get_time_entries:
+    - Purpose: Retrieves all granular recorded durations and time logs associated with a single task file.
+    - Arguments:
+      a) task_id: str - Targeted project task unique tracking identification key (required).
+      b) cred_key: str (default: "clickup") - Authentication security storage access lookup parameters map.
+    - Returns: ToolResult exposing an array layout of individual duration entries and logging timestamps.
+    - How to call: ClickUpTool.get_time_entries(task_id="task_w44")
+
+16. list_views:
+    - Purpose: Extracts metadata parameters identifying alternate layouts and project visualization formats configured inside a list.
+    - Arguments:
+      a) list_id: str - Destination project task group column list pointer string (required).
+      b) cred_key: str (default: "clickup") - Core system authentication directory tracking lookup paths.
+    - Returns: ToolResult summarizing functional viewing configurations like calendars, boards, or Gantt layouts.
+    - How to call: ClickUpTool.list_views(list_id="list_v12")
+
+17. get_view_tasks:
+    - Purpose: Isolates and collects target active task items explicitly visible inside a configured custom framework view layout.
+    - Arguments:
+      a) view_id: str - Target specific interface canvas view layout index identification code string (required).
+      b) cred_key: str (default: "clickup") - Target securely configured client access repository data path index.
+    - Returns: ToolResult returning clean data objects cataloging the specific subsets tracked inside the targeted view block.
+    - How to call: ClickUpTool.get_view_tasks(view_id="view_matrix_777")
+""")
+       
+    @staticmethod
+    def _api(method: str, path: str, cred_key: str = "clickup",
+             **kwargs) -> Any:
+        import requests
+        token = CredStore.load(cred_key).get("api_token", "")
+        if not token:
+            raise ValueError("No ClickUp token. Store under 'clickup' key.")
+        url = f"https://api.clickup.com/api/v2/{path.lstrip('/')}"
+        headers = {"Authorization": token, "Content-Type": "application/json"}
+        fn = getattr(requests, method.lower())
+        resp = fn(url, headers=headers, timeout=20, **kwargs)
+        resp.raise_for_status()
+        return resp.json() if resp.content else {}
+
+    @staticmethod
+    def list_spaces(team_id: str, cred_key: str = "clickup") -> ToolResult:
+        try:
+            data = ClickUpTool._api("get", f"team/{team_id}/space", cred_key,
+                                    params={"archived": "false"})
+            spaces = data.get("spaces", [])
+            return ToolResult(True, f"✓ {len(spaces)} spaces", spaces)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_spaces failed: {e}")
+
+    @staticmethod
+    def list_folders(space_id: str, cred_key: str = "clickup") -> ToolResult:
+        try:
+            data = ClickUpTool._api("get", f"space/{space_id}/folder",
+                                    cred_key, params={"archived": "false"})
+            folders = data.get("folders", [])
+            return ToolResult(True, f"✓ {len(folders)} folders", folders)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_folders failed: {e}")
+
+    @staticmethod
+    def list_lists(folder_id: str, cred_key: str = "clickup") -> ToolResult:
+        try:
+            data = ClickUpTool._api("get", f"folder/{folder_id}/list",
+                                    cred_key, params={"archived": "false"})
+            lists = data.get("lists", [])
+            return ToolResult(True, f"✓ {len(lists)} lists", lists)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_lists failed: {e}")
+
+    @staticmethod
+    def get_tasks(list_id: str, assignees: list = None,
+                  statuses: list = None, due_date: str = None,
+                  page: int = 0, cred_key: str = "clickup") -> ToolResult:
+        try:
+            params: dict = {"page": page}
+            if assignees:
+                params["assignees[]"] = assignees
+            if statuses:
+                params["statuses[]"] = statuses
+            if due_date:
+                params["due_date_gt"] = 0
+            data = ClickUpTool._api("get", f"list/{list_id}/task",
+                                    cred_key, params=params)
+            tasks = data.get("tasks", [])
+            return ToolResult(True, f"✓ {len(tasks)} tasks", tasks)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_tasks failed: {e}")
+
+    @staticmethod
+    def get_task(task_id: str, cred_key: str = "clickup") -> ToolResult:
+        try:
+            task = ClickUpTool._api("get", f"task/{task_id}", cred_key)
+            return ToolResult(True, "✓ Task retrieved", task)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_task failed: {e}")
+
+    @staticmethod
+    def create_task(list_id: str, name: str, description: str = "",
+                    assignees: list = None, status: str = None,
+                    priority: int = None, due_date: str = None,
+                    tags: list = None, cred_key: str = "clickup") -> ToolResult:
+        try:
+            body: dict = {"name": name, "description": description}
+            if assignees:
+                body["assignees"] = assignees
+            if status:
+                body["status"] = status
+            if priority is not None:
+                body["priority"] = priority
+            if due_date:
+                # convert ISO date to ms timestamp
+                dt = datetime.fromisoformat(due_date)
+                body["due_date"] = int(dt.timestamp() * 1000)
+            if tags:
+                body["tags"] = tags
+            task = ClickUpTool._api("post", f"list/{list_id}/task",
+                                    cred_key, json=body)
+            return ToolResult(True, f"✓ Task created: {task.get('id')}", task)
+        except Exception as e:
+            return ToolResult(False, f"✗ create_task failed: {e}")
+
+    @staticmethod
+    def update_task(id: str, data: dict,
+                    cred_key: str = "clickup") -> ToolResult:
+        try:
+            task = ClickUpTool._api("put", f"task/{id}", cred_key, json=data)
+            return ToolResult(True, "✓ Task updated", task)
+        except Exception as e:
+            return ToolResult(False, f"✗ update_task failed: {e}")
+
+    @staticmethod
+    def delete_task(id: str, cred_key: str = "clickup") -> ToolResult:
+        try:
+            ClickUpTool._api("delete", f"task/{id}", cred_key)
+            return ToolResult(True, f"✓ Task deleted: {id}")
+        except Exception as e:
+            return ToolResult(False, f"✗ delete_task failed: {e}")
+
+    @staticmethod
+    def set_task_status(id: str, status: str,
+                        cred_key: str = "clickup") -> ToolResult:
+        return ClickUpTool.update_task(id, {"status": status}, cred_key)
+
+    @staticmethod
+    def add_comment(task_id: str, comment_text: str,
+                    notify_all: bool = False,
+                    cred_key: str = "clickup") -> ToolResult:
+        try:
+            resp = ClickUpTool._api(
+                "post", f"task/{task_id}/comment", cred_key,
+                json={"comment_text": comment_text,
+                      "notify_all": notify_all})
+            return ToolResult(True, "✓ Comment added", resp)
+        except Exception as e:
+            return ToolResult(False, f"✗ add_comment failed: {e}")
+
+    @staticmethod
+    def list_comments(task_id: str, cred_key: str = "clickup") -> ToolResult:
+        try:
+            data = ClickUpTool._api("get", f"task/{task_id}/comment", cred_key)
+            comments = data.get("comments", [])
+            return ToolResult(True, f"✓ {len(comments)} comments", comments)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_comments failed: {e}")
+
+    @staticmethod
+    def create_checklist(task_id: str, name: str,
+                         cred_key: str = "clickup") -> ToolResult:
+        try:
+            resp = ClickUpTool._api(
+                "post", f"task/{task_id}/checklist",
+                cred_key, json={"name": name})
+            return ToolResult(True, f"✓ Checklist created",
+                              resp.get("checklist"))
+        except Exception as e:
+            return ToolResult(False, f"✗ create_checklist failed: {e}")
+
+    @staticmethod
+    def add_checklist_item(checklist_id: str, name: str,
+                           assignee: str = None,
+                           cred_key: str = "clickup") -> ToolResult:
+        try:
+            body: dict = {"name": name}
+            if assignee:
+                body["assignee"] = assignee
+            resp = ClickUpTool._api(
+                "post", f"checklist/{checklist_id}/checklist_item",
+                cred_key, json=body)
+            return ToolResult(True, "✓ Checklist item added", resp)
+        except Exception as e:
+            return ToolResult(False, f"✗ add_checklist_item failed: {e}")
+
+    @staticmethod
+    def track_time(task_id: str, duration: int,
+                   start: str = None, end: str = None,
+                   description: str = "",
+                   cred_key: str = "clickup") -> ToolResult:
+        try:
+            body: dict = {"duration": duration, "description": description}
+            if start:
+                dt = datetime.fromisoformat(start)
+                body["start"] = int(dt.timestamp() * 1000)
+            if end:
+                dt = datetime.fromisoformat(end)
+                body["end"] = int(dt.timestamp() * 1000)
+            resp = ClickUpTool._api(
+                "post", f"task/{task_id}/time", cred_key, json=body)
+            return ToolResult(True, "✓ Time tracked", resp)
+        except Exception as e:
+            return ToolResult(False, f"✗ track_time failed: {e}")
+
+    @staticmethod
+    def get_time_entries(task_id: str, cred_key: str = "clickup") -> ToolResult:
+        try:
+            data = ClickUpTool._api("get", f"task/{task_id}/time", cred_key)
+            entries = data.get("data", [])
+            return ToolResult(True, f"✓ {len(entries)} time entries", entries)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_time_entries failed: {e}")
+
+    @staticmethod
+    def list_views(list_id: str, cred_key: str = "clickup") -> ToolResult:
+        try:
+            data = ClickUpTool._api("get", f"list/{list_id}/view", cred_key)
+            views = data.get("views", [])
+            return ToolResult(True, f"✓ {len(views)} views", views)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_views failed: {e}")
+
+    @staticmethod
+    def get_view_tasks(view_id: str, cred_key: str = "clickup") -> ToolResult:
+        try:
+            data = ClickUpTool._api("get", f"view/{view_id}/task", cred_key)
+            tasks = data.get("tasks", [])
+            return ToolResult(True, f"✓ {len(tasks)} tasks in view", tasks)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_view_tasks failed: {e}")
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# 7. TodoistTool
+# ═════════════════════════════════════════════════════════════════════════════
+
+class TodoistTool:
+    name = "todoist"
+    description = (
+        "Todoist task and project management — projects, tasks, labels, "
+        "comments, quick-add, activity log, and productivity stats"
+    )
+    use = ("""
+Name of Tool: TodoistTool
+
+Purpose of Tool:
+The TodoistTool is a unified Python interface that interacts with the Todoist environment. 
+It utilizes a hybrid infrastructure, routing basic task and project operations through the official 
+Todoist Python SDK client, while offloading high-velocity natural language processing, system audit logging, 
+and performance metric tracking onto direct Todoist Sync API (v9) network communication routes. 
+The tool manages user workflows by handling structural project trees, task lifecycles, global context tags, 
+and task discussions inside a centralized execution frame.
+
+Methods:
+- get_projects: Extracts summary configurations and color palettes defining all active project folders.
+- add_project: Appends a completely fresh tracking container node into the user's project collection directory.
+- update_project: Dispatches property modifications across parameter targets on a configured project tracker.
+- delete_project: Purges an explicit project directory folder container along with its nested tracking lines.
+- get_tasks: Queries open task components using various filtering arrays, label flags, or urgency variables.
+- add_task: Injects an explicit action task ticket token directly into a designated target project directory.
+- update_task: Alters configuration values mapping a specific task identity record within the active queue.
+- complete_task: Resolves and closes an active task context tracking record, clearing it from active boards.
+- delete_task: Permanently drops an individual task instance record out of the active user database workspace.
+- reopen_task: Restores a previously finalized task back into the operational active project processing queue.
+- get_comments: Resolves dialogue log lines posted inside a specific task item's communication stream.
+- add_comment: Attaches fresh documentation annotations or asset objects onto an active target task.
+- get_labels: Returns a structured summary listing of all user-defined metadata classification tags.
+- add_label: Provisions a global categorization index tag equipped with a distinctive interface color marker.
+- quick_add: Decodes casual, natural language syntax inputs to instantly generate pre-configured task items.
+- get_activity_log: Tracks historical workflow mutation logs across the organization workspace.
+- get_productivity_stats: Resolves telemetry tracking data mapping user streak limits and total karma achievements.
+
+How to use Tool Methods:
+
+1. get_projects:
+   - Purpose: Fetches metadata for all active, unarchived projects within the account workspace.
+   - Arguments:
+     a) cred_key: str (default: "todoist") - System validation token lookup path key.
+   - Returns: ToolResult mapping active project names, matching IDs, and assigned interface colors.
+   - How to call: TodoistTool.get_projects()
+
+2. add_project:
+   - Purpose: Injects a brand-new target project container or nested sub-folder into the ledger matrix.
+   - Arguments:
+     a) name: str - Primary visual text header title naming the project (required).
+     b) color: str (default: "charcoal") - Interface custom aesthetic color label palette selection.
+     c) parent_id: str (default: None) - Identity pointer string used for establishing hierarchical parent-child configurations.
+     d) cred_key: str (default: "todoist") - Vault storage credential mapping target key parameter string.
+   - Returns: ToolResult detailing creation confirmation alongside the resulting unique project ID sequence.
+   - How to call: TodoistTool.add_project(name="Marketing Q3", color="ruby")
+
+3. update_project:
+   - Purpose: Commits direct property mutations over explicit attributes using a dynamic dictionary payload.
+   - Arguments:
+     a) id: str - Unique target project identity routing token index string (required).
+     b) data: dict - Map schema bundling field mutations (e.g., {"name": "New Title", "color": "blue"}) (required).
+     c) cred_key: str (default: "todoist") - Vault routing signature token profile indicator lookup paths.
+   - Returns: ToolResult logging modification tracking confirmations.
+   - How to call: TodoistTool.update_project(id="220011", data={"color": "emerald"})
+
+4. delete_project:
+   - Purpose: Destroys a targeted project directory folder block along with all associated active task line items.
+   - Arguments:
+     a) id: str - Unique identifier key of the targeted project item (required).
+     b) cred_key: str (default: "todoist") - Connection security token profile map handle lookup index.
+   - Returns: ToolResult registering successful execution actions.
+   - How to call: TodoistTool.delete_project(id="220011")
+
+5. get_tasks:
+   - Purpose: Pulls filtered arrays listing currently active task items according to parameters.
+   - Arguments:
+     a) project_id: str (default: None) - Filters results to an isolated project directory container string.
+     b) filter: str (default: None) - Advanced evaluation strings (e.g., "overdue | today", "p1 & #Work").
+     c) label: str (default: None) - Isolates item lists matching a targeted categorization tag string name.
+     d) priority: int (default: None) - Targets a precise urgency ranking system token scale tier from 1 to 4.
+     e) cred_key: str (default: "todoist") - Target connection configuration vault directory parameter indicator.
+   - Returns: ToolResult container carrying structured collections representing targeted open task records.
+   - How to call: TodoistTool.get_tasks(project_id="11223344", priority=4)
+
+6. add_task:
+   - Purpose: Provisions an isolated single work ticket task tracking token directly into a designated target directory.
+   - Arguments:
+     a) content: str - Primary headline summary text defining the task action (required).
+     b) description: str (default: "") - Extended instruction detail block or descriptive context notes data.
+     c) project_id: str (default: None) - Target parent project unique tracking reference coordinate locator key.
+     d) due_string: str (default: None) - Human-readable calendar timeline targets interpreter (e.g., "next Monday at 4pm").
+     e) priority: int (default: 1) - Numeric urgency ranking scale level extending from 1 (lowest) to 4 (highest).
+     f) labels: list (default: None) - Custom array collection assigning visual categorization tag tokens.
+     g) cred_key: str (default: "todoist") - Target database routing entry string tracking local API access tokens.
+   - Returns: ToolResult tracking creation states alongside the server-side generated object parameters map.
+   - How to call: TodoistTool.add_task(content="Renew server certificates", due_string="tomorrow at midnight", priority=3)
+
+7. update_task:
+   - Purpose: Alters specific property keys across a task target using an arbitrary data map payload.
+   - Arguments:
+     a) id: str - System unique tracking identity key sequence signature targeting the task (required).
+     b) data: dict - Key-value properties mapping operational changes (e.g., {"content": "Revised title text"}) (required).
+     c) cred_key: str (default: "todoist") - Target secure configuration lookup directory data block.
+   - Returns: ToolResult verifying completion actions alongside execution confirmation flags.
+   - How to call: TodoistTool.update_task(id="77334411", data={"priority": 2, "description": "Scope finalized."})
+
+8. complete_task:
+   - Purpose: Closes out an open action ticket item, removing it from active workflow visualizations.
+   - Arguments:
+     a) id: str - Unique target task item location reference string key (required).
+     b) cred_key: str (default: "todoist") - System validation profile configuration identifier path handle.
+   - Returns: ToolResult validating completion status operations across the service layer.
+   - How to call: TodoistTool.complete_task(id="77334411")
+
+9. delete_task:
+   - Purpose: Erases a task record comprehensively out of the production database instance ledger.
+   - Arguments:
+     a) id: str - Unique core task tracking key target matching deletion filters (required).
+     b) cred_key: str (default: "todoist") - Secure credentials vault entry system validation parameter key.
+   - Returns: ToolResult logging deployment success statuses over the server interface.
+   - How to call: TodoistTool.delete_task(id="88445522")
+
+10. reopen_task:
+    - Purpose: Restores a previously completed task record back into active list frameworks.
+    - Arguments:
+      a) id: str - Target finished task identifier reference unique string key (required).
+      b) cred_key: str (default: "todoist") - Registry configuration parameter indexing standard security keys.
+    - Returns: ToolResult confirming re-injection profiles over live workflow targets.
+    - How to call: TodoistTool.reopen_task(id="88445522")
+
+11. get_comments:
+    - Purpose: Polls historical conversation streams tracking dialogue updates directly attached to a single task item.
+    - Arguments:
+      a) task_id: str - Explicit task item identifier key target (required).
+      b) cred_key: str (default: "todoist") - Secure token repository destination pointer registry map index.
+    - Returns: ToolResult framing structured lists of text communication strings and posting dates.
+    - How to call: TodoistTool.get_comments(task_id="99556633")
+
+12. add_comment:
+    - Purpose: Appends text annotations or optional file links directly to a specific task's collaborative log stream.
+    - Arguments:
+      a) task_id: str - target project task identity identifier code string (required).
+      b) content: str - Core written text payload forming the communication post body (required).
+      c) attachment: dict (default: None) - Dictionary properties metadata mapping external files or uploaded document assets.
+      d) cred_key: str (default: "todoist") - Connection routing security token profile directory indicator.
+    - Returns: ToolResult verifying messaging deployment states over the network interface.
+    - How to call: TodoistTool.add_comment(task_id="99556633", content="Logs attached for review.")
+
+13. get_labels:
+    - Purpose: Extracts all custom metadata categorization tags available inside the user profile.
+    - Arguments:
+      a) cred_key: str (default: "todoist") - Core client configuration vault routing index tag string.
+    - Returns: ToolResult gathering data indexes matching tag identifiers and assigned label colors.
+    - How to call: TodoistTool.get_labels()
+
+14. add_label:
+    - Purpose: Provisions a brand-new semantic metadata tag indicator with an explicit display color tag.
+    - Arguments:
+      a) name: str - Target literal text tag string defining the context grouping label (required).
+      b) color: str (default: "charcoal") - Aesthetic display highlight visual classification parameter token.
+      c) cred_key: str (default: "todoist") - Secure credentials storage validation dictionary indicator.
+    - Returns: ToolResult mapping validation tracking details matching the generated tag asset node.
+    - How to call: TodoistTool.add_label(name="Blocked-External", color="magenta")
+
+15. quick_add:
+    - Purpose: Injects structured tasks instantly using conversational natural language syntax strings.
+    - Arguments:
+      a) text: str - Casual raw phrase configuring task body, deadlines, priority, and labels (required).
+      b) cred_key: str (default: "todoist") - Routing index target point mapping security token maps.
+    - Returns: ToolResult presenting the server-side parsed dictionary properties of the created task asset.
+    - How to call: TodoistTool.quick_add(text="Submit financial audits Friday at noon p1 #Accounting")
+
+16. get_activity_log:
+    - Purpose: Queries historical execution activity trails monitoring systemic operations occurring across the account workspace.
+    - Arguments:
+      a) event_type: str (default: None) - Limits output logs to a precise action category (e.g., "added", "completed", "deleted").
+      b) object_type: str (default: None) - Filters results matching system item structures (e.g., "item", "project", "note").
+      c) since: str (default: None) - ISO formatted calendar deadline date bounding the chronological lookup depth.
+      d) cred_key: str (default: "todoist") - Access validation key parameter routing string pointer maps.
+    - Returns: ToolResult collecting sequential dictionary entries mapping execution streams.
+    - How to call: TodoistTool.get_activity_log(event_type="completed", object_type="item")
+
+17. get_productivity_stats:
+    - Purpose: Extracts user account productivity tracking analytics and performance metric summaries.
+    - Arguments:
+      a) cred_key: str (default: "todoist") - System validation token folder location tracking handle.
+    - Returns: ToolResult rendering diagnostic payload records detailing daily streaks and karma histories.
+    - How to call: TodoistTool.get_productivity_stats()
+""")
+       
+    @staticmethod
+    def _api(cred_key: str = "todoist"):
+        from todoist_api_python.api import TodoistAPI
+        token = CredStore.load(cred_key).get("api_token", "")
+        if not token:
+            raise ValueError("No Todoist token. Store under 'todoist' key.")
+        return TodoistAPI(token)
+
+    @staticmethod
+    def get_projects(cred_key: str = "todoist") -> ToolResult:
+        try:
+            api = TodoistTool._api(cred_key)
+            projects = api.get_projects()
+            data = [{"id": p.id, "name": p.name,
+                     "color": p.color} for p in projects]
+            return ToolResult(True, f"✓ {len(data)} projects", data)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_projects failed: {e}")
+
+    @staticmethod
+    def add_project(name: str, color: str = "charcoal",
+                    parent_id: str = None,
+                    cred_key: str = "todoist") -> ToolResult:
+        try:
+            api = TodoistTool._api(cred_key)
+            kwargs: dict = {"name": name, "color": color}
+            if parent_id:
+                kwargs["parent_id"] = parent_id
+            proj = api.add_project(**kwargs)
+            return ToolResult(True, f"✓ Project created: {proj.id}",
+                              {"id": proj.id, "name": proj.name})
+        except Exception as e:
+            return ToolResult(False, f"✗ add_project failed: {e}")
+
+    @staticmethod
+    def update_project(id: str, data: dict,
+                       cred_key: str = "todoist") -> ToolResult:
+        try:
+            api = TodoistTool._api(cred_key)
+            ok = api.update_project(id, **data)
+            return ToolResult(ok, "✓ Project updated" if ok else "✗ Update failed")
+        except Exception as e:
+            return ToolResult(False, f"✗ update_project failed: {e}")
+
+    @staticmethod
+    def delete_project(id: str, cred_key: str = "todoist") -> ToolResult:
+        try:
+            api = TodoistTool._api(cred_key)
+            ok = api.delete_project(id)
+            return ToolResult(ok, "✓ Project deleted" if ok else "✗ Delete failed")
+        except Exception as e:
+            return ToolResult(False, f"✗ delete_project failed: {e}")
+
+    @staticmethod
+    def get_tasks(project_id: str = None, filter: str = None,
+                  label: str = None, priority: int = None,
+                  cred_key: str = "todoist") -> ToolResult:
+        try:
+            api = TodoistTool._api(cred_key)
+            kwargs: dict = {}
+            if project_id:
+                kwargs["project_id"] = project_id
+            if filter:
+                kwargs["filter"] = filter
+            if label:
+                kwargs["label"] = label
+            if priority is not None:
+                kwargs["priority"] = priority
+            tasks = api.get_tasks(**kwargs)
+            data = [{"id": t.id, "content": t.content,
+                     "due": t.due, "priority": t.priority,
+                     "project_id": t.project_id} for t in tasks]
+            return ToolResult(True, f"✓ {len(data)} tasks", data)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_tasks failed: {e}")
+
+    @staticmethod
+    def add_task(content: str, description: str = "",
+                 project_id: str = None, due_string: str = None,
+                 priority: int = 1, labels: list = None,
+                 cred_key: str = "todoist") -> ToolResult:
+        try:
+            api = TodoistTool._api(cred_key)
+            kwargs: dict = {"content": content, "description": description,
+                            "priority": priority}
+            if project_id:
+                kwargs["project_id"] = project_id
+            if due_string:
+                kwargs["due_string"] = due_string
+            if labels:
+                kwargs["labels"] = labels
+            task = api.add_task(**kwargs)
+            return ToolResult(True, f"✓ Task added: {task.id}",
+                              {"id": task.id, "content": task.content})
+        except Exception as e:
+            return ToolResult(False, f"✗ add_task failed: {e}")
+
+    @staticmethod
+    def update_task(id: str, data: dict,
+                    cred_key: str = "todoist") -> ToolResult:
+        try:
+            api = TodoistTool._api(cred_key)
+            ok = api.update_task(id, **data)
+            return ToolResult(ok, "✓ Task updated" if ok else "✗ Update failed")
+        except Exception as e:
+            return ToolResult(False, f"✗ update_task failed: {e}")
+
+    @staticmethod
+    def complete_task(id: str, cred_key: str = "todoist") -> ToolResult:
+        try:
+            api = TodoistTool._api(cred_key)
+            ok = api.close_task(id)
+            return ToolResult(ok, "✓ Task completed" if ok else "✗ Failed")
+        except Exception as e:
+            return ToolResult(False, f"✗ complete_task failed: {e}")
+
+    @staticmethod
+    def delete_task(id: str, cred_key: str = "todoist") -> ToolResult:
+        try:
+            api = TodoistTool._api(cred_key)
+            ok = api.delete_task(id)
+            return ToolResult(ok, "✓ Task deleted" if ok else "✗ Failed")
+        except Exception as e:
+            return ToolResult(False, f"✗ delete_task failed: {e}")
+
+    @staticmethod
+    def reopen_task(id: str, cred_key: str = "todoist") -> ToolResult:
+        try:
+            api = TodoistTool._api(cred_key)
+            ok = api.reopen_task(id)
+            return ToolResult(ok, "✓ Task reopened" if ok else "✗ Failed")
+        except Exception as e:
+            return ToolResult(False, f"✗ reopen_task failed: {e}")
+
+    @staticmethod
+    def get_comments(task_id: str, cred_key: str = "todoist") -> ToolResult:
+        try:
+            api = TodoistTool._api(cred_key)
+            comments = api.get_comments(task_id=task_id)
+            data = [{"id": c.id, "content": c.content,
+                     "posted_at": c.posted_at} for c in comments]
+            return ToolResult(True, f"✓ {len(data)} comments", data)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_comments failed: {e}")
+
+    @staticmethod
+    def add_comment(task_id: str, content: str,
+                    attachment: dict = None,
+                    cred_key: str = "todoist") -> ToolResult:
+        try:
+            api = TodoistTool._api(cred_key)
+            kwargs: dict = {"task_id": task_id, "content": content}
+            if attachment:
+                kwargs["attachment"] = attachment
+            comment = api.add_comment(**kwargs)
+            return ToolResult(True, f"✓ Comment added: {comment.id}",
+                              {"id": comment.id})
+        except Exception as e:
+            return ToolResult(False, f"✗ add_comment failed: {e}")
+
+    @staticmethod
+    def get_labels(cred_key: str = "todoist") -> ToolResult:
+        try:
+            api = TodoistTool._api(cred_key)
+            labels = api.get_labels()
+            data = [{"id": l.id, "name": l.name,
+                     "color": l.color} for l in labels]
+            return ToolResult(True, f"✓ {len(data)} labels", data)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_labels failed: {e}")
+
+    @staticmethod
+    def add_label(name: str, color: str = "charcoal",
+                  cred_key: str = "todoist") -> ToolResult:
+        try:
+            api = TodoistTool._api(cred_key)
+            label = api.add_label(name=name, color=color)
+            return ToolResult(True, f"✓ Label added: {label.id}",
+                              {"id": label.id, "name": label.name})
+        except Exception as e:
+            return ToolResult(False, f"✗ add_label failed: {e}")
+
+    @staticmethod
+    def quick_add(text: str, cred_key: str = "todoist") -> ToolResult:
+        """Natural language quick add, e.g. 'Buy milk tomorrow p1 #shopping'"""
+        try:
+            import requests
+            token = CredStore.load(cred_key).get("api_token", "")
+            resp = requests.post(
+                "https://api.todoist.com/sync/v9/quick/add",
+                headers={"Authorization": f"Bearer {token}"},
+                json={"text": text}, timeout=10)
+            resp.raise_for_status()
+            item = resp.json()
+            return ToolResult(True, f"✓ Quick-added: {item.get('content','')}", item)
+        except Exception as e:
+            return ToolResult(False, f"✗ quick_add failed: {e}")
+
+    @staticmethod
+    def get_activity_log(event_type: str = None, object_type: str = None,
+                         since: str = None,
+                         cred_key: str = "todoist") -> ToolResult:
+        try:
+            import requests
+            token = CredStore.load(cred_key).get("api_token", "")
+            params: dict = {"limit": 50}
+            if event_type:
+                params["event_type"] = event_type
+            if object_type:
+                params["object_type"] = object_type
+            if since:
+                params["since"] = since
+            resp = requests.get(
+                "https://api.todoist.com/sync/v9/activity/get",
+                headers={"Authorization": f"Bearer {token}"},
+                params=params, timeout=15)
+            resp.raise_for_status()
+            events = resp.json().get("events", [])
+            return ToolResult(True, f"✓ {len(events)} events", events)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_activity_log failed: {e}")
+
+    @staticmethod
+    def get_productivity_stats(cred_key: str = "todoist") -> ToolResult:
+        try:
+            import requests
+            token = CredStore.load(cred_key).get("api_token", "")
+            resp = requests.get(
+                "https://api.todoist.com/sync/v9/user/get_productivity_stats",
+                headers={"Authorization": f"Bearer {token}"},
+                timeout=15)
+            resp.raise_for_status()
+            return ToolResult(True, "✓ Stats retrieved", resp.json())
+        except Exception as e:
+            return ToolResult(False, f"✗ get_productivity_stats failed: {e}")
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# 8. ObsidianTool
+# ═════════════════════════════════════════════════════════════════════════════
+
+class ObsidianTool:
+    name = "obsidian"
+    description = (
+        "Obsidian vault operations — read/write/search notes, manage tags, "
+        "backlinks, daily notes, canvases, and sync folders to vault"
+    )
+    use = ("""
+Name of Tool: ObsidianTool
+
+Purpose of Tool:
+The ObsidianTool provides a comprehensive programmatic interface to manage local Obsidian note-taking vaults. 
+It facilitates CRUD operations on Markdown notes containing YAML frontmatter metadata structures, builds bidirectional 
+linking maps (backlinks and outlinks), implements targeted system indexing and note searching, manages semantic classification 
+tag logs, interacts with programmatic canvas components, and automates content syncing routines from external local directories.
+
+Methods:
+- read_note: Extracts structured metadata, raw strings, and body content from a target Markdown file.
+- create_note: Provisions a completely fresh Markdown note file featuring isolated YAML frontmatter data blocks.
+- update_note: Modifies text content within an existing file via substitution, appending, or prepending modes.
+- delete_note: Safely unlinks and destroys a targeted note file within the operational local workspace.
+- search_notes: Evaluates the directory tree applying content, tag, or frontmatter metadata payload filters.
+- list_notes: Recursively catalogs relative path sequences identifying notes tracking in specified directories.
+- get_backlinks: Gathers all unique source file records linking directly back to a targeted note path signature.
+- get_outlinks: Decodes regular expression patterns to isolate outgoing link names embedded inside a note file.
+- add_tag: Appends unique classification tokens directly into the tags array within the target's YAML header.
+- remove_tag: Filters out specific categorization tokens running inside the frontmatter collection.
+- create_daily_note: Provisions structured temporal logging journals pre-populated with baseline tracking headers.
+- append_to_daily_note: Hotloaded wrapper targeting rapid task injection logs on current chronological notes.
+- create_canvas: Generates native Obsidian layout elements utilizing nodes, edge indicators, and coordinate JSON blocks.
+- get_graph_data: Builds network topologies mapping node intersections across all linked files inside a vault path.
+- sync_folder_to_vault: Imports external local assets into the vault environment matching strict extension criteria.
+
+How to use Tool Methods:
+
+1. read_note:
+   - Purpose: Extracts structural segments from a target note, resolving metadata maps and content values.
+   - Arguments:
+     a) vault_path: str - Absolute file path tracking the location of the host Obsidian vault (required).
+     b) note_path: str - Relative sub-path routing targets to the precise file name (required).
+   - Returns: ToolResult presenting extracted dictionary entries mapped under frontmatter, content, and raw text.
+   - How to call: ObsidianTool.read_note(vault_path="/Users/workspace/vault", note_path="Engineering/Architecture")
+
+2. create_note:
+   - Purpose: Provisions a brand-new Markdown file complete with a clean header structure.
+   - Arguments:
+     a) vault_path: str - Base file directory coordinate string hosting the vault (required).
+     b) note_path: str - Destination folder and file name assignment targets (required).
+     c) content: str - Baseline textual body context deployed inside the new file (required).
+     d) frontmatter_data: dict (default: None) - Key-value payload schema specifying YAML metadata parameters.
+   - Returns: ToolResult logging deployment states alongside absolute system generation logs.
+   - How to call: ObsidianTool.create_note(vault_path="/vault", note_path="Ideas", content="Text", frontmatter_data={"status": "draft"})
+
+3. update_note:
+   - Purpose: Alters content payloads in-place across target entities using explicit positioning layout parameters.
+   - Arguments:
+     a) vault_path: str - Targeted repository system absolute location string (required).
+     b) note_path: str - Relative tracking file path target pointer (required).
+     c) content: str - Text sequence injected into the target workspace node (required).
+     d) merge_mode: str (default: "replace") - Positional operational flag selecting 'replace', 'append', or 'prepend'.
+   - Returns: ToolResult assessing updates or automated instantiation tracking results.
+   - How to call: ObsidianTool.update_note(vault_path="/vault", note_path="Logs", content="- New entry", merge_mode="append")
+
+4. delete_note:
+   - Purpose: Erases target markdown notes comprehensively out of local disk storage tracks.
+   - Arguments:
+     a) vault_path: str - Host structural project storage destination path (required).
+     b) note_path: str - Location file identification code targeting deletion filters (required).
+   - Returns: ToolResult evaluating system unlinking status verifications.
+   - How to call: ObsidianTool.delete_note(vault_path="/vault", note_path="TempNote")
+
+5. search_notes:
+   - Purpose: Queries and filters files matching text query sequences, text labels, or explicit metadata metrics.
+   - Arguments:
+     a) vault_path: str - Target environment directory path holding the vault structure (required).
+     b) query: str (default: "") - Literal string token evaluation match pattern targeting titles or content blocks.
+     c) tags: list (default: None) - Limits lookups to nodes matching defined custom label criteria strings.
+     d) frontmatter_filter: dict (default: None) - Structural parameters validating key-value compliance states.
+   - Returns: ToolResult containing an array layout of individual metadata summaries for matching hits.
+   - How to call: ObsidianTool.search_notes(vault_path="/vault", query="AI", tags=["research"])
+
+6. list_notes:
+   - Purpose: Builds a localized list record cataloging matching documents running inside folder matrices.
+   - Arguments:
+     a) vault_path: str - Parent target environment location code path (required).
+     b) folder: str (default: "") - Scope constraints matching a precise internal vault branch folder.
+   - Returns: ToolResult collecting sequential string entries documenting matching relative system paths.
+   - How to call: ObsidianTool.list_notes(vault_path="/vault", folder="Templates", recursive=False)
+
+7. get_backlinks:
+   - Purpose: Evaluates tracking states to locate reference files highlighting the destination file token.
+   - Arguments:
+     a) vault_path: str - Core targeted repository base path identifier (required).
+     b) note_path: str - Target coordinate node path evaluated for incoming intersections (required).
+   - Returns: ToolResult housing lists tracking individual tracking source references.
+   - How to call: ObsidianTool.get_backlinks(vault_path="/vault", note_path="Index")
+
+8. get_outlinks:
+   - Purpose: Scans internal documents to list explicit targets parsed out of native linking syntax rules.
+   - Arguments:
+     a) vault_path: str - Base file system infrastructure location sequence string (required).
+     b) note_path: str - File system note signature pointer evaluated for outward paths (required).
+   - Returns: ToolResult resolving flat string arrays of unique discovered reference names.
+   - How to call: ObsidianTool.get_outlinks(vault_path="/vault", note_path="ProjectScope")
+
+9. add_tag:
+   - Purpose: Injects structural indexing tags directly onto frontmatter array parameters without duplicating data rows.
+   - Arguments:
+     a) vault_path: str - Main host file directory coordinate pointer path (required).
+     b) note_path: str - Unique document reference key mapping target files (required).
+     c) tags: list - Collection tracking text context markers assigned for addition (required).
+   - Returns: ToolResult tracking field update confirmation states.
+   - How to call: ObsidianTool.add_tag(vault_path="/vault", note_path="Recipes/Cake", tags=["baking", "dessert"])
+
+10. remove_tag:
+    - Purpose: Strips targeted classification indicator strings from note profiles.
+    - Arguments:
+      a) vault_path: str - Root storage environment context handle tracking paths (required).
+      b) note_path: str - Relative link path target tracking the host documentation file (required).
+      c) tags: list - Isolated text markers targeted for target frontmatter removal actions (required).
+    - Returns: ToolResult logging modification tracking confirmations.
+    - How to call: ObsidianTool.remove_tag(vault_path="/vault", note_path="Recipes/Cake", tags=["experimental"])
+
+11. create_daily_note:
+    - Purpose: Standardizes logging metrics by provisioning date-based tracking logs via pre-formatted templates.
+    - Arguments:
+      a) vault_path: str - Host repository root folder mapping (required).
+      b) date: str (default: None) - ISO timestamp sequence tracking calendar names (defaults to active runtime date).
+      c) template: str (default: "") - Alternative layout context blocks parsing baseline system configurations.
+    - Returns: ToolResult mapping active creation confirmations matching generated document nodes.
+    - How to call: ObsidianTool.create_daily_note(vault_path="/vault", date="2026-06-18")
+
+12. append_to_daily_note:
+    - Purpose: Commits rapid operational records onto current chronological text tracking tracks.
+    - Arguments:
+      a) vault_path: str - Root base repository path string reference (required).
+      b) content: str - Custom data content layout strings committed to daily log streams (required).
+      c) date: str (default: None) - Selects target ledger timelines based on structural input string names.
+    - Returns: ToolResult evaluating system execution logs across underlying file operations.
+    - How to call: ObsidianTool.append_to_daily_note(vault_path="/vault", content="## Review\n- Finished tests.")
+
+13. create_canvas:
+    - Purpose: Deploys unified diagram canvas workspaces capturing topological relationship systems.
+    - Arguments:
+      a) vault_path: str - Root destination folder path sequence token (required).
+      b) canvas_path: str - Output naming coordinates mapping destination layout tracks (required).
+      c) nodes: list - Complex coordinate structural items mapping item placements (required).
+      d) edges: list (default: None) - Intersection arrays setting connection side profiles.
+    - Returns: ToolResult confirming operational structure creations across host disk layouts.
+    - How to call: ObsidianTool.create_canvas(vault_path="/vault", canvas_path="Boards/Main", nodes=[{"id":"1", "type":"text", "text":"Root"}])
+
+14. get_graph_data:
+    - Purpose: Generates global mapping metrics reflecting interconnectivity arrays tracking across all vault points.
+    - Arguments:
+      a) vault_path: str - Main vault entry routing point string parameter (required).
+    - Returns: ToolResult resolving nodes lists alongside associated relational edge configurations.
+    - How to call: ObsidianTool.get_graph_data(vault_path="/vault")
+
+15. sync_folder_to_vault:
+    - Purpose: Replicates collections matching tracking extensions from exterior endpoints to internal destinations.
+    - Arguments:
+      a) local_folder: str - Origin directory target track running files outside the system (required).
+      b) vault_path: str - Base repository vault installation destination path target (required).
+      b) subfolder: str (default: "") - Internal folder paths capturing tracking elements.
+      c) file_types: list (default: None) - Limits copy routines to defined type selectors (e.g., [".md", ".png"]).
+    - Returns: ToolResult processing operational verification logs accounting for copied tracking files.
+    - How to call: ObsidianTool.sync_folder_to_vault(local_folder="/User/Desktop/Notes", vault_path="/vault", subfolder="Inbox")
+""")
+       
+    @staticmethod
+    def _note_path(vault_path: str, note_path: str) -> Path:
+        p = Path(vault_path) / note_path
+        if not str(p).endswith(".md"):
+            p = Path(str(p) + ".md")
+        return p
+
+    @staticmethod
+    def read_note(vault_path: str, note_path: str) -> ToolResult:
+        try:
+            import frontmatter
+            p = ObsidianTool._note_path(vault_path, note_path)
+            if not p.exists():
+                return ToolResult(False, f"✗ Note not found: {p}")
+            post = frontmatter.load(str(p))
+            return ToolResult(True, f"✓ Read {p.name}",
+                              {"frontmatter": dict(post.metadata),
+                               "content": post.content,
+                               "raw": p.read_text(encoding="utf-8")})
+        except Exception as e:
+            return ToolResult(False, f"✗ read_note failed: {e}")
+
+    @staticmethod
+    def create_note(vault_path: str, note_path: str, content: str,
+                    frontmatter_data: dict = None) -> ToolResult:
+        try:
+            import frontmatter
+            p = ObsidianTool._note_path(vault_path, note_path)
+            p.parent.mkdir(parents=True, exist_ok=True)
+            if p.exists():
+                return ToolResult(False, f"✗ Note already exists: {p}")
+            post = frontmatter.Post(content,
+                                    **(frontmatter_data or {}))
+            p.write_text(frontmatter.dumps(post), encoding="utf-8")
+            return ToolResult(True, f"✓ Note created: {p}")
+        except Exception as e:
+            return ToolResult(False, f"✗ create_note failed: {e}")
+
+    @staticmethod
+    def update_note(vault_path: str, note_path: str, content: str,
+                    merge_mode: str = "replace") -> ToolResult:
+        """merge_mode: replace | append | prepend"""
+        try:
+            import frontmatter
+            p = ObsidianTool._note_path(vault_path, note_path)
+            if not p.exists():
+                return ObsidianTool.create_note(vault_path, note_path, content)
+            post = frontmatter.load(str(p))
+            if merge_mode == "append":
+                post.content = post.content + "\n" + content
+            elif merge_mode == "prepend":
+                post.content = content + "\n" + post.content
+            else:
+                post.content = content
+            p.write_text(frontmatter.dumps(post), encoding="utf-8")
+            return ToolResult(True, f"✓ Note updated ({merge_mode}): {p}")
+        except Exception as e:
+            return ToolResult(False, f"✗ update_note failed: {e}")
+
+    @staticmethod
+    def delete_note(vault_path: str, note_path: str) -> ToolResult:
+        try:
+            p = ObsidianTool._note_path(vault_path, note_path)
+            if p.exists():
+                p.unlink()
+                return ToolResult(True, f"✓ Deleted: {p}")
+            return ToolResult(False, f"✗ Not found: {p}")
+        except Exception as e:
+            return ToolResult(False, f"✗ delete_note failed: {e}")
+
+    @staticmethod
+    def search_notes(vault_path: str, query: str = "",
+                     tags: list = None,
+                     frontmatter_filter: dict = None) -> ToolResult:
+        try:
+            import frontmatter as fm
+            vault = Path(vault_path)
+            results = []
+            for md in vault.rglob("*.md"):
+                try:
+                    post = fm.load(str(md))
+                    text = post.content.lower()
+                    meta = {k.lower(): v
+                            for k, v in post.metadata.items()}
+
+                    # text query
+                    if query and query.lower() not in text:
+                        if query.lower() not in md.name.lower():
+                            continue
+
+                    # tag filter
+                    if tags:
+                        note_tags = meta.get("tags", [])
+                        if isinstance(note_tags, str):
+                            note_tags = [note_tags]
+                        if not any(t in note_tags for t in tags):
+                            continue
+
+                    # frontmatter filter
+                    if frontmatter_filter:
+                        match = all(
+                            str(meta.get(k, "")).lower() == str(v).lower()
+                            for k, v in frontmatter_filter.items()
+                        )
+                        if not match:
+                            continue
+
+                    results.append({
+                        "path": str(md.relative_to(vault)),
+                        "title": md.stem,
+                        "tags": meta.get("tags", []),
+                    })
+                except Exception:
+                    continue
+            return ToolResult(True, f"✓ {len(results)} notes found", results)
+        except Exception as e:
+            return ToolResult(False, f"✗ search_notes failed: {e}")
+
+    @staticmethod
+    def list_notes(vault_path: str, folder: str = "",
+                   recursive: bool = True) -> ToolResult:
+        try:
+            base = Path(vault_path) / folder
+            if not base.exists():
+                return ToolResult(False, f"✗ Folder not found: {base}")
+            fn = base.rglob if recursive else base.glob
+            notes = [str(p.relative_to(vault_path))
+                     for p in fn("*.md")]
+            return ToolResult(True, f"✓ {len(notes)} notes", notes)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_notes failed: {e}")
+
+    @staticmethod
+    def get_backlinks(vault_path: str, note_path: str) -> ToolResult:
+        try:
+            target = ObsidianTool._note_path(vault_path, note_path)
+            note_name = target.stem
+            vault = Path(vault_path)
+            backlinks = []
+            patterns = [f"[[{note_name}]]",
+                        f"[[{note_name}|",
+                        f"[{note_name}]"]
+            for md in vault.rglob("*.md"):
+                if md == target:
+                    continue
+                try:
+                    text = md.read_text(encoding="utf-8", errors="replace")
+                    if any(p in text for p in patterns):
+                        backlinks.append(str(md.relative_to(vault)))
+                except Exception:
+                    continue
+            return ToolResult(True, f"✓ {len(backlinks)} backlinks", backlinks)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_backlinks failed: {e}")
+
+    @staticmethod
+    def get_outlinks(vault_path: str, note_path: str) -> ToolResult:
+        try:
+            p = ObsidianTool._note_path(vault_path, note_path)
+            text = p.read_text(encoding="utf-8", errors="replace")
+            links = re.findall(r'\[\[([^\]|#]+)', text)
+            unique = list(dict.fromkeys(links))
+            return ToolResult(True, f"✓ {len(unique)} outlinks", unique)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_outlinks failed: {e}")
+
+    @staticmethod
+    def add_tag(vault_path: str, note_path: str,
+                tags: list) -> ToolResult:
+        try:
+            import frontmatter
+            p = ObsidianTool._note_path(vault_path, note_path)
+            post = frontmatter.load(str(p))
+            existing = post.metadata.get("tags", [])
+            if isinstance(existing, str):
+                existing = [existing]
+            merged = list(dict.fromkeys(existing + tags))
+            post.metadata["tags"] = merged
+            p.write_text(frontmatter.dumps(post), encoding="utf-8")
+            return ToolResult(True, f"✓ Tags added: {tags}")
+        except Exception as e:
+            return ToolResult(False, f"✗ add_tag failed: {e}")
+
+    @staticmethod
+    def remove_tag(vault_path: str, note_path: str,
+                   tags: list) -> ToolResult:
+        try:
+            import frontmatter
+            p = ObsidianTool._note_path(vault_path, note_path)
+            post = frontmatter.load(str(p))
+            existing = post.metadata.get("tags", [])
+            if isinstance(existing, str):
+                existing = [existing]
+            post.metadata["tags"] = [t for t in existing
+                                     if t not in tags]
+            p.write_text(frontmatter.dumps(post), encoding="utf-8")
+            return ToolResult(True, f"✓ Tags removed: {tags}")
+        except Exception as e:
+            return ToolResult(False, f"✗ remove_tag failed: {e}")
+
+    @staticmethod
+    def create_daily_note(vault_path: str, date: str = None,
+                          template: str = "") -> ToolResult:
+        try:
+            day = date or datetime.now().strftime("%Y-%m-%d")
+            note_path = f"Daily/{day}"
+            content = template or f"# {day}\n\n## Tasks\n\n## Notes\n"
+            return ObsidianTool.create_note(
+                vault_path, note_path, content,
+                {"date": day, "tags": ["daily"]})
+        except Exception as e:
+            return ToolResult(False, f"✗ create_daily_note failed: {e}")
+
+    @staticmethod
+    def append_to_daily_note(vault_path: str, content: str,
+                              date: str = None) -> ToolResult:
+        try:
+            day = date or datetime.now().strftime("%Y-%m-%d")
+            note_path = f"Daily/{day}"
+            p = ObsidianTool._note_path(vault_path, note_path)
+            if not p.exists():
+                ObsidianTool.create_daily_note(vault_path, day)
+            return ObsidianTool.update_note(
+                vault_path, note_path, content, merge_mode="append")
+        except Exception as e:
+            return ToolResult(False, f"✗ append_to_daily_note failed: {e}")
+
+    @staticmethod
+    def create_canvas(vault_path: str, canvas_path: str,
+                      nodes: list, edges: list = None) -> ToolResult:
+        """
+        nodes: [{"id":"1","type":"text","text":"Hello","x":0,"y":0,"width":200,"height":60}]
+        edges: [{"id":"e1","fromNode":"1","toNode":"2","fromSide":"right","toSide":"left"}]
+        """
+        try:
+            p = Path(vault_path) / canvas_path
+            if not str(p).endswith(".canvas"):
+                p = Path(str(p) + ".canvas")
+            p.parent.mkdir(parents=True, exist_ok=True)
+            canvas_data = {"nodes": nodes, "edges": edges or []}
+            p.write_text(json.dumps(canvas_data, indent=2), encoding="utf-8")
+            return ToolResult(True, f"✓ Canvas created: {p}")
+        except Exception as e:
+            return ToolResult(False, f"✗ create_canvas failed: {e}")
+
+    @staticmethod
+    def get_graph_data(vault_path: str) -> ToolResult:
+        """Returns nodes and edges for the full vault graph."""
+        try:
+            vault = Path(vault_path)
+            nodes = []
+            edges = []
+            all_notes = {p.stem: str(p.relative_to(vault))
+                         for p in vault.rglob("*.md")}
+            for md in vault.rglob("*.md"):
+                try:
+                    stem = md.stem
+                    rel = str(md.relative_to(vault))
+                    nodes.append({"id": stem, "path": rel})
+                    text = md.read_text(encoding="utf-8", errors="replace")
+                    links = re.findall(r'\[\[([^\]|#]+)', text)
+                    for lk in links:
+                        lk = lk.strip()
+                        if lk in all_notes:
+                            edges.append({"from": stem, "to": lk})
+                except Exception:
+                    continue
+            return ToolResult(True, f"✓ Graph: {len(nodes)} nodes, {len(edges)} edges",
+                              {"nodes": nodes, "edges": edges})
+        except Exception as e:
+            return ToolResult(False, f"✗ get_graph_data failed: {e}")
+
+    @staticmethod
+    def sync_folder_to_vault(local_folder: str, vault_path: str,
+                              subfolder: str = "",
+                              file_types: list = None) -> ToolResult:
+        try:
+            exts = file_types or [".md", ".txt", ".png", ".jpg", ".pdf"]
+            src = Path(local_folder)
+            dest_base = Path(vault_path) / subfolder
+            dest_base.mkdir(parents=True, exist_ok=True)
+            copied = 0
+            for ext in exts:
+                for f in src.rglob(f"*{ext}"):
+                    rel = f.relative_to(src)
+                    dest = dest_base / rel
+                    dest.parent.mkdir(parents=True, exist_ok=True)
+                    import shutil
+                    shutil.copy2(str(f), str(dest))
+                    copied += 1
+            return ToolResult(True, f"✓ Synced {copied} files to vault")
+        except Exception as e:
+            return ToolResult(False, f"✗ sync_folder_to_vault failed: {e}")
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# 9. BookmarkManagerTool
+# ═════════════════════════════════════════════════════════════════════════════
+
+class BookmarkManagerTool:
+    name = "bookmarks"
+    description = (
+        "Browser bookmark manager — import/export HTML, add/remove/search, "
+        "organize by domain, check broken links, archive pages, "
+        "generate reading lists, bulk screenshots, AI tagging, deduplication"
+    )
+    use = ("""
+Name of Tool: BookmarkManagerTool
+
+Purpose of Tool:
+The BookmarkManagerTool is a browser bookmark management suite. It processes standard Netscape-style 
+HTML bookmark files for importing and exporting, handles basic programmatic CRUD operations inside a local 
+JSON datastore, groups resources by domain mappings, audits URL accessibility to detect dead links, captures full-page 
+HTML archives and screenshots via headless browser automation, handles automatic AI meta-tagging via local LLMs, 
+and cleans up datasets using normalizer deduplication structures.
+
+Methods:
+- import_bookmarks: Extracts and parses raw bookmark dictionaries out of an uploaded browser HTML document.
+- export_bookmarks: Renders a collection of links into a standard Netscape-style bookmark HTML page structure.
+- add_bookmark: Persists a fresh link record along with custom tags and routing flags inside the local ledger file.
+- remove_bookmark: Purges saved link objects from the local JSON registry by filtering out specific URL entries.
+- search_bookmarks: Queries the link store using literal text query sequences, target directory locations, or tag labels.
+- organize_by_domain: Parses and strips URL host strings to group bookmarks into isolated domain-keyed dictionaries.
+- check_broken_links: Audits live URLs via HTTP HEAD requests to detect connection timeouts or errors (status >= 400).
+- archive_page: Launches a headless browser to capture an immutable full-page text content dump and visual layout PNG.
+- generate_reading_list: Scrapes linked page properties to output a Markdown summary file embedded with meta descriptions.
+- bulk_screenshot: Sequentially captures snapshot graphics of multiple website viewports using headless execution streams.
+- tag_with_ai: Offloads contextual tag generation tasks onto a local Ollama LLM endpoint using prompt structures.
+- deduplicate: Strips trailing characters and normalizes case strings to clean duplicate targets out of a link array.
+
+How to use Tool Methods:
+
+1. import_bookmarks:
+   - Purpose: Imports unstructured, exported browser bookmark lines into system-parsable dictionary records.
+   - Arguments:
+     a) html_file: str - Target system absolute path locating the exported source bookmark file (required).
+   - Returns: ToolResult presenting parsed dictionary entries mapped under url, title, add_date, and tags keys.
+   - How to call: BookmarkManagerTool.import_bookmarks(html_file="/Users/downloads/chrome_bookmarks.html")
+
+2. export_bookmarks:
+   - Purpose: Assembles a collection of bookmark rows into a standard Netscape-compatible web document.
+   - Arguments:
+     a) bookmarks: list - Target collection array filled with dictionary rows matching the system schema (required).
+     b) output_html: str - Absolute file system generation layout target destination track path (required).
+   - Returns: ToolResult logging deployment success validations alongside target path strings.
+   - How to call: BookmarkManagerTool.export_bookmarks(bookmarks=my_links, output_html="/backups/bookmarks.html")
+
+3. add_bookmark:
+   - Purpose: Appends a specific, separate resource node tracking record inside the user's home registry.
+   - Arguments:
+     a) url: str - Valid internet address destination locator string target (required).
+     b) title: str (default: "") - Display string name indicator used for explicit identification.
+     b) folder: str (default: "") - Parent directory location label managing target structural paths.
+     c) tags: str (default: "") - Comma-delimited descriptor strings classifying the connection record.
+     d) description: str (default: "") - Extended annotations or text notes documenting the resource node.
+   - Returns: ToolResult validating local transaction tracking states.
+   - How to call: BookmarkManagerTool.add_bookmark(url="https://arxiv.org", title="arXiv", tags="science,research")
+
+4. remove_bookmark:
+   - Purpose: Drops matching link elements out of the internal persistent JSON datastore layer.
+   - Arguments:
+     a) url: str - Targeted primary location address link key used to identify deletion records (required).
+   - Returns: ToolResult declaring total counts matching deleted link entities.
+   - How to call: BookmarkManagerTool.remove_bookmark(url="https://arxiv.org")
+
+5. search_bookmarks:
+   - Purpose: Runs lookups across deep resource lists using mixed literal text search matches.
+   - Arguments:
+     a) bookmarks: list (default: None) - Array parsed manually; defaults to reading the local store file.
+     b) query: str (default: "") - Evaluates case-insensitive content hits across URL, title, or description strings.
+     c) tags: str (default: "") - Constraints searching to paths containing the specified tag phrase.
+     d) folder: str (default: "") - Isolates outputs matching precise folder destination tags.
+   - Returns: ToolResult holding structural match arrays containing matched context fields.
+   - How to call: BookmarkManagerTool.search_bookmarks(query="machine learning", tags="python")
+
+6. organize_by_domain:
+   - Purpose: Groups links chronologically into matching web resource origin host trees.
+   - Arguments:
+     a) bookmarks: list - Collection tracking raw bookmark entries to pass to the sorter route (required).
+   - Returns: ToolResult housing dictionary mappings partitioned by isolated domain name strings.
+   - How to call: BookmarkManagerTool.organize_by_domain(bookmarks=link_dataset)
+
+7. check_broken_links:
+   - Purpose: Probes website states across live servers to track and catalog broken tracking routes.
+   - Arguments:
+     a) bookmarks: list - Array gathering target links intended for active testing checks (required).
+     b) timeout: int (default: 10) - Network response connection boundaries set in elapsed seconds.
+   - Returns: ToolResult sorting structural operational tallies against failed record objects.
+   - How to call: BookmarkManagerTool.check_broken_links(bookmarks=link_dataset, timeout=5)
+
+8. archive_page:
+   - Purpose: Generates local historical records capturing text markup alongside deep visual screenshots.
+   - Arguments:
+     a) url: str - Active network locator address target routed into the browser runner (required).
+     b) output_folder: str - File destination folder directory hosting saved data components (required).
+   - Returns: ToolResult pointing to system absolute generation points on disk layout trees.
+   - How to call: BookmarkManagerTool.archive_page(url="https://wikipedia.org", output_folder="/archives/wiki")
+
+9. generate_reading_list:
+   - Purpose: Scrapes target web document headers to structure a readable Markdown summary table on disk.
+   - Arguments:
+     a) urls: list - Plain text collection strings holding target web address links (required).
+     b) output_md: str - Document destination path tracking file layout generations (required).
+   - Returns: ToolResult logging file system output updates.
+   - How to call: BookmarkManagerTool.generate_reading_list(urls=["https://github.com"], output_md="./reading.md")
+
+10. bulk_screenshot:
+    - Purpose: Concurrently fires browser viewport capture loops across large arrays of links.
+    - Arguments:
+      a) bookmarks: list - Collection capturing raw targets to route into the browser viewport snapshot loop (required).
+      b) output_folder: str - Folder location index storing produced image formats (required).
+    - Returns: ToolResult mapping absolute numbers tracing successfully captured link views.
+    - How to call: BookmarkManagerTool.bulk_screenshot(bookmarks=my_links, output_folder="/user/images")
+
+11. tag_with_ai:
+    - Purpose: Generates context-aware categorization tokens using a local Ollama model framework.
+    - Arguments:
+      a) bookmarks: list - Input array grouping items to send to the local generation endpoint (required).
+      b) model: str (default: "mistral:7b") - Active model indicator flag loaded inside the local running daemon.
+    - Returns: ToolResult containing an updated array with generated string elements under 'ai_tags'.
+    - How to call: BookmarkManagerTool.tag_with_ai(bookmarks=unlabeled_data, model="llama3")
+
+12. deduplicate:
+    - Purpose: Scrubs tracking arrays to clear out duplicate website address link definitions.
+    - Arguments:
+      a) bookmarks: list - Core input link data records evaluated for duplicate removal (required).
+    - Returns: ToolResult mapping unique data elements while returning filtered link summaries.
+    - How to call: BookmarkManagerTool.deduplicate(bookmarks=dirty_dataset)
+""")
+       
+    # ── Helpers ───────────────────────────────────────────────────────────
+
+    @staticmethod
+    def _parse_html_bookmarks(html_file: str) -> list:
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(Path(html_file).read_text(errors="replace"),
+                             "html.parser")
+        bookmarks = []
+        for a in soup.find_all("a"):
+            href = a.get("href", "")
+            if href.startswith("http"):
+                bookmarks.append({
+                    "url": href,
+                    "title": a.get_text(strip=True),
+                    "add_date": a.get("add_date", ""),
+                    "tags": a.get("tags", ""),
+                    "folder": ""
+                })
+        return bookmarks
+
+    # ── Core methods ──────────────────────────────────────────────────────
+
+    @staticmethod
+    def import_bookmarks(html_file: str) -> ToolResult:
+        try:
+            bookmarks = BookmarkManagerTool._parse_html_bookmarks(html_file)
+            return ToolResult(True, f"✓ Imported {len(bookmarks)} bookmarks",
+                              bookmarks)
+        except Exception as e:
+            return ToolResult(False, f"✗ import_bookmarks failed: {e}")
+
+    @staticmethod
+    def export_bookmarks(bookmarks: list, output_html: str) -> ToolResult:
+        try:
+            lines = [
+                "<!DOCTYPE NETSCAPE-Bookmark-file-1>",
+                '<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">',
+                "<TITLE>Bookmarks</TITLE>",
+                "<H1>Bookmarks</H1>",
+                "<DL><p>"
+            ]
+            for bm in bookmarks:
+                title = bm.get("title", bm.get("url", ""))
+                url = bm.get("url", "")
+                tags = bm.get("tags", "")
+                lines.append(
+                    f'    <DT><A HREF="{url}" TAGS="{tags}">{title}</A>')
+            lines.append("</DL><p>")
+            Path(output_html).write_text("\n".join(lines), encoding="utf-8")
+            return ToolResult(True, f"✓ Exported {len(bookmarks)} bookmarks to {output_html}")
+        except Exception as e:
+            return ToolResult(False, f"✗ export_bookmarks failed: {e}")
+
+    @staticmethod
+    def add_bookmark(url: str, title: str = "", folder: str = "",
+                     tags: str = "", description: str = "") -> ToolResult:
+        try:
+            store_path = Path.home() / ".npmai_agent" / "bookmarks.json"
+            store_path.parent.mkdir(exist_ok=True)
+            bms = json.loads(store_path.read_text()) if store_path.exists() else []
+            bms.append({
+                "url": url, "title": title or url,
+                "folder": folder, "tags": tags,
+                "description": description,
+                "added": datetime.now().isoformat()
+            })
+            store_path.write_text(json.dumps(bms, indent=2))
+            return ToolResult(True, f"✓ Bookmark added: {url}")
+        except Exception as e:
+            return ToolResult(False, f"✗ add_bookmark failed: {e}")
+
+    @staticmethod
+    def remove_bookmark(url: str) -> ToolResult:
+        try:
+            store_path = Path.home() / ".npmai_agent" / "bookmarks.json"
+            if not store_path.exists():
+                return ToolResult(False, "No bookmark store found.")
+            bms = json.loads(store_path.read_text())
+            before = len(bms)
+            bms = [b for b in bms if b.get("url") != url]
+            store_path.write_text(json.dumps(bms, indent=2))
+            return ToolResult(True, f"✓ Removed {before - len(bms)} bookmark(s)")
+        except Exception as e:
+            return ToolResult(False, f"✗ remove_bookmark failed: {e}")
+
+    @staticmethod
+    def search_bookmarks(bookmarks: list = None, query: str = "",
+                         tags: str = "", folder: str = "") -> ToolResult:
+        try:
+            if bookmarks is None:
+                store_path = Path.home() / ".npmai_agent" / "bookmarks.json"
+                bookmarks = (json.loads(store_path.read_text())
+                             if store_path.exists() else [])
+            results = []
+            for bm in bookmarks:
+                if (query.lower() in bm.get("url", "").lower() or
+                        query.lower() in bm.get("title", "").lower() or
+                        query.lower() in bm.get("description", "").lower()):
+                    if tags and tags not in bm.get("tags", ""):
+                        continue
+                    if folder and folder not in bm.get("folder", ""):
+                        continue
+                    results.append(bm)
+            return ToolResult(True, f"✓ {len(results)} matches", results)
+        except Exception as e:
+            return ToolResult(False, f"✗ search_bookmarks failed: {e}")
+
+    @staticmethod
+    def organize_by_domain(bookmarks: list) -> ToolResult:
+        try:
+            from urllib.parse import urlparse
+            organized: dict = {}
+            for bm in bookmarks:
+                try:
+                    domain = urlparse(bm.get("url", "")).netloc
+                    domain = domain.replace("www.", "")
+                    organized.setdefault(domain, []).append(bm)
+                except Exception:
+                    organized.setdefault("other", []).append(bm)
+            return ToolResult(True,
+                              f"✓ Organized into {len(organized)} domains",
+                              organized)
+        except Exception as e:
+            return ToolResult(False, f"✗ organize_by_domain failed: {e}")
+
+    @staticmethod
+    def check_broken_links(bookmarks: list, timeout: int = 10) -> ToolResult:
+        try:
+            import requests
+            broken = []
+            ok_count = 0
+            for bm in bookmarks:
+                url = bm.get("url", "")
+                try:
+                    resp = requests.head(url, timeout=timeout,
+                                        allow_redirects=True,
+                                        headers={"User-Agent": "Mozilla/5.0"})
+                    if resp.status_code >= 400:
+                        broken.append({**bm,
+                                       "status": resp.status_code})
+                    else:
+                        ok_count += 1
+                except Exception as ex:
+                    broken.append({**bm, "error": str(ex)})
+            return ToolResult(True,
+                              f"✓ {ok_count} OK, {len(broken)} broken",
+                              broken)
+        except Exception as e:
+            return ToolResult(False, f"✗ check_broken_links failed: {e}")
+
+    @staticmethod
+    def archive_page(url: str, output_folder: str) -> ToolResult:
+        try:
+            from playwright.sync_api import sync_playwright
+            out = Path(output_folder)
+            out.mkdir(parents=True, exist_ok=True)
+            safe_name = re.sub(r'[^a-zA-Z0-9_-]', '_', url)[:80]
+            html_path = out / f"{safe_name}.html"
+            with sync_playwright() as pw:
+                b = pw.chromium.launch(headless=True)
+                pg = b.new_page()
+                pg.goto(url, timeout=30000,
+                        wait_until="networkidle")
+                html_path.write_text(pg.content(), encoding="utf-8")
+                pg.screenshot(path=str(out / f"{safe_name}.png"),
+                              full_page=True)
+                b.close()
+            return ToolResult(True, f"✓ Archived to {html_path}")
+        except Exception as e:
+            return ToolResult(False, f"✗ archive_page failed: {e}")
+
+    @staticmethod
+    def generate_reading_list(urls: list, output_md: str) -> ToolResult:
+        try:
+            import requests
+            from bs4 import BeautifulSoup
+            lines = ["# Reading List\n",
+                     f"_Generated: {datetime.now().strftime('%Y-%m-%d')}_\n"]
+            for i, url in enumerate(urls, 1):
+                try:
+                    resp = requests.get(url,
+                                        headers={"User-Agent": "Mozilla/5.0"},
+                                        timeout=10)
+                    soup = BeautifulSoup(resp.text, "html.parser")
+                    title = soup.title.string.strip() if soup.title else url
+                    desc_tag = soup.find("meta", attrs={"name": "description"})
+                    desc = (desc_tag.get("content", "")[:200]
+                            if desc_tag else "")
+                    lines.append(f"\n## {i}. [{title}]({url})\n")
+                    if desc:
+                        lines.append(f"> {desc}\n")
+                except Exception:
+                    lines.append(f"\n## {i}. [{url}]({url})\n")
+            Path(output_md).write_text("\n".join(lines), encoding="utf-8")
+            return ToolResult(True, f"✓ Reading list saved to {output_md}")
+        except Exception as e:
+            return ToolResult(False, f"✗ generate_reading_list failed: {e}")
+
+    @staticmethod
+    def bulk_screenshot(bookmarks: list, output_folder: str) -> ToolResult:
+        try:
+            from playwright.sync_api import sync_playwright
+            out = Path(output_folder)
+            out.mkdir(parents=True, exist_ok=True)
+            saved = 0
+            with sync_playwright() as pw:
+                b = pw.chromium.launch(headless=True)
+                pg = b.new_page()
+                for bm in bookmarks:
+                    url = bm.get("url", "")
+                    if not url:
+                        continue
+                    safe = re.sub(r'[^a-zA-Z0-9_-]', '_', url)[:60]
+                    try:
+                        pg.goto(url, timeout=15000,
+                                wait_until="domcontentloaded")
+                        pg.screenshot(path=str(out / f"{safe}.png"),
+                                      full_page=False)
+                        saved += 1
+                    except Exception:
+                        pass
+                b.close()
+            return ToolResult(True, f"✓ Saved {saved} screenshots to {output_folder}")
+        except Exception as e:
+            return ToolResult(False, f"✗ bulk_screenshot failed: {e}")
+
+    @staticmethod
+    def tag_with_ai(bookmarks: list, model: str = "mistral:7b") -> ToolResult:
+        """Use local Ollama to auto-tag bookmarks based on title+URL."""
+        try:
+            import requests
+            tagged = []
+            for bm in bookmarks:
+                url = bm.get("url", "")
+                title = bm.get("title", url)
+                try:
+                    resp = requests.post(
+                        "http://localhost:11434/api/generate",
+                        json={
+                            "model": model,
+                            "prompt": (
+                                f"Suggest 3-5 short tags for this bookmark. "
+                                f"Reply ONLY with comma-separated tags, nothing else.\n"
+                                f"Title: {title}\nURL: {url}"
+                            ),
+                            "stream": False
+                        },
+                        timeout=30
+                    )
+                    tags = resp.json().get("response", "").strip()
+                    tagged.append({**bm, "ai_tags": tags})
+                except Exception:
+                    tagged.append(bm)
+            return ToolResult(True, f"✓ Tagged {len(tagged)} bookmarks", tagged)
+        except Exception as e:
+            return ToolResult(False, f"✗ tag_with_ai failed: {e}")
+
+    @staticmethod
+    def deduplicate(bookmarks: list) -> ToolResult:
+        try:
+            seen: dict = {}
+            dupes = 0
+            for bm in bookmarks:
+                url = bm.get("url", "").rstrip("/").lower()
+                if url not in seen:
+                    seen[url] = bm
+                else:
+                    dupes += 1
+            unique = list(seen.values())
+            return ToolResult(True,
+                              f"✓ {len(unique)} unique, {dupes} removed",
+                              unique)
+        except Exception as e:
+            return ToolResult(False, f"✗ deduplicate failed: {e}")
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# 10. TimeTrackingTool
+# ═════════════════════════════════════════════════════════════════════════════
+
+class TimeTrackingTool:
+    name = "time_tracking"
+    description = (
+        "Time and productivity tracking — local SQLite timer, Toggl + Clockify "
+        "integration, timesheets, billing, and invoice export"
+    )
+    use = ("""
+Name of Tool: TimeTrackingTool
+
+Purpose of Tool:
+The TimeTrackingTool provides a comprehensive solution for managing time logs, calculating client billing, 
+generating markdown timesheets or structured invoices, and integrating with third-party tracking services 
+like Toggl and Clockify. It maintains a local SQLite database configuration containing relational architectures 
+tracking historical work items and active in-flight running timers.
+
+Methods:
+- start_timer: Resets active state tracking entries inside the registry to record a brand-new live work event.
+- stop_timer: Commits active running properties to permanent ledger tables by evaluating calculated session duration flags.
+- pause_timer: Dynamically pauses an ongoing timing task or modifies its starting offset during resume triggers.
+- get_current_timer: Returns status calculations defining elapsed runtime attributes for an open running transaction.
+- list_time_entries: Performs conditional relational operations extracting historical tracking rows across criteria filters.
+- add_manual_entry: Directly injects a retroactively closed historical logging record onto target transaction scopes.
+- delete_entry: Purges explicit session entries using specific database integer row index target assignments.
+- generate_timesheet: Groups and rolls up multi-row tracking metadata into a presentable, sorted Markdown ledger output.
+- get_project_summary: Provides a numeric overview of logged hours, task weights, and execution allocations per project.
+- calculate_billing: Computes decimal financial amounts due from tracked time arrays using a baseline numeric multiplier rate.
+- export_to_invoice: Generates an formatted Markdown document summarizing billing tallies and transactional deep-dives.
+- connect_toggl: Caches API authorization credentials safely on local disk systems for Toggl platform contexts.
+- toggl_list_projects: Queries workspace configurations out of remote Toggl API systems using cached credentials.
+- toggl_start_timer: Dispatches synchronous creation structures onto active remote Toggl work project channels.
+- connect_clockify: Authenticates secure credential state maps targeted at Clockify API operational loops.
+- clockify_list_projects: Fetches functional tracking group records from remote Clockify workspace index patterns.
+- clockify_time_entry: Registers a completed historical event item using explicit Clockify API request signatures.
+
+How to use Tool Methods:
+
+1. start_timer:
+   - Purpose: Initializes a new tracking state record in the local ephemeral database tracker.
+   - Arguments:
+     a) project: str - Project domain category identifier targeted for the new tracker instance (required).
+     b) task: str (default: "") - Specific assignment segment context name tracking the actual effort item.
+     c) description: str (default: "") - Detailed supplemental logs defining the current scope items.
+   - Returns: ToolResult mapping validation notes alongside generation timestamp metadata profiles.
+   - How to call: TimeTrackingTool.start_timer(project="Internal Auth API", task="Bugfix", description="Fixing JWT validation leaks")
+
+2. stop_timer:
+   - Purpose: Computes final elapsed durations and moves active timer data flags into permanent entry arrays.
+   - Arguments: None.
+   - Returns: ToolResult holding precision transaction maps indicating duration properties calculated in minutes and seconds.
+   - How to call: TimeTrackingTool.stop_timer()
+
+3. pause_timer:
+   - Purpose: Freezes tracking sequences without losing tracking progress, or normalizes starts during subsequent resume requests.
+   - Arguments: None.
+   - Returns: ToolResult flagging current mutation states ("Timer paused" vs "Timer resumed").
+   - How to call: TimeTrackingTool.pause_timer()
+
+4. get_current_timer:
+   - Purpose: Inspects state machines to return active tracking context properties alongside computed operational values.
+   - Arguments: None.
+   - Returns: ToolResult indicating missing items or an payload dictionary reflecting runtime metadata details.
+   - How to call: TimeTrackingTool.get_current_timer()
+
+5. list_time_entries:
+   - Purpose: Scans background datastore targets to retrieve a timeline of tracking records.
+   - Arguments:
+     a) date_from: str (default: None) - Lower ISO date threshold parsing matching logs.
+     b) date_to: str (default: None) - Upper boundary date parameter checking tracking lists.
+     c) project: str (default: None) - Substring lookup literal filtering targeted project labels.
+   - Returns: ToolResult delivering an array containing structured tracking item dict details.
+   - How to call: TimeTrackingTool.list_time_entries(date_from="2026-06-01", project="Auth")
+
+6. add_manual_entry:
+   - Purpose: Manually appends explicit retrospective record models directly onto database backend sheets.
+   - Arguments:
+     a) project: str - Core category tag indicating the parent task boundary node (required).
+     b) task: str - Named tracking key for the targeted work item (required).
+     c) description: str - Annotations contextualizing retrospective actions (required).
+     d) start: str - ISO formatted initial boundary timestamp marker string (required).
+     e) end: str - ISO formatted concluding boundary timestamp marker string (required).
+   - Returns: ToolResult displaying operational statuses alongside calculated length metrics.
+   - How to call: TimeTrackingTool.add_manual_entry(project="Docs", task="Wiki", description="Updated readme", start="2026-06-18T10:00:00", end="2026-06-18T11:30:00")
+
+7. delete_entry:
+   - Purpose: Permanently eliminates a transactional entry instance matching a specific integer record index.
+   - Arguments:
+     a) entry_id: int - Primary database row ID locating target data entities slated for extraction (required).
+   - Returns: ToolResult asserting structural clearing transformations.
+   - How to call: TimeTrackingTool.delete_entry(entry_id=42)
+
+8. generate_timesheet:
+   - Purpose: Collates historical row fields to output standard readable ledger layouts.
+   - Arguments:
+     a) date_from: str - Start criteria date threshold checking targeted items (required).
+     b) date_to: str - End criteria date threshold mapping historical logs (required).
+     c) group_by: str (default: "project") - Object structural item property sorting aggregated logs ("project" or "task").
+     d) output: str (default: None) - Optional absolute system route path exporting raw text layouts onto disk storage.
+   - Returns: ToolResult carrying compiled string configurations alongside master aggregate calculation properties.
+   - How to call: TimeTrackingTool.generate_timesheet(date_from="2026-06-10", date_to="2026-06-17", output="./timesheet.md")
+
+9. get_project_summary:
+   - Purpose: Tallies high-level performance metrics broken down across task dimensions inside specified scopes.
+   - Arguments:
+     a) project: str - Target project label analyzed by database summary functions (required).
+     b) date_range: tuple (default: None) - An optional 2-element tuple mapping string ISO bounds (start, end).
+   - Returns: ToolResult enclosing structural dictionaries reflecting comprehensive duration metrics and numeric work rates.
+   - How to call: TimeTrackingTool.get_project_summary(project="Auth API", date_range=("2026-01-01", "2026-06-18"))
+
+10. calculate_billing:
+    - Purpose: Performs conversion mathematics mapping tracked work quantities to financial numbers.
+    - Arguments:
+      a) date_from: str - Initial range threshold bounding the lookup (required).
+      b) date_to: str - Terminating range threshold bounding the lookup (required).
+      c) hourly_rate: float - Financial value constant factored against fractional hour counters (required).
+      d) project: str (default: None) - Isolates lookup ranges to match specific project keys.
+    - Returns: ToolResult indicating overall hours worked and monetary conclusions.
+    - How to call: TimeTrackingTool.calculate_billing(date_from="2026-06-01", date_to="2026-06-15", hourly_rate=125.0, project="Auth")
+
+11. export_to_invoice:
+    - Purpose: Merges time logs and balance parameters into a formatted markdown receipt file.
+    - Arguments:
+      a) date_from: str - Start range window defining raw logging constraints (required).
+      b) date_to: str - End range window defining raw logging constraints (required).
+      c) client: str - Display identifier detailing the client entity receiving the document (required).
+      d) rate: float - Monetary compensation value per calculated tracking hour units (required).
+      e) output: str - Targeted absolute storage track path writing out generated markdown file configurations (required).
+    - Returns: ToolResult showing transaction deployment records alongside calculated summary outputs.
+    - How to call: TimeTrackingTool.export_to_invoice(date_from="2026-05-01", date_to="2026-05-31", client="Acme Corp", rate=150.0, output="invoice_may.md")
+
+12. connect_toggl:
+    - Purpose: Saves authorization credentials safely inside local system storage managers.
+    - Arguments:
+      a) api_token: str - Client authentication key provided by Toggl profile dashboards (required).
+    - Returns: ToolResult confirming safe record persistence.
+    - How to call: TimeTrackingTool.connect_toggl(api_token="t0ggl_sec_api_tok_xyz")
+
+13. toggl_list_projects:
+    - Purpose: Connects with remote network entities to retrieve configured project entities.
+    - Arguments:
+      a) cred_key: str (default: "toggl") - Configuration identifier used to retrieve local disk storage paths.
+    - Returns: ToolResult providing arrays containing raw JSON payloads direct from Toggl channels.
+    - How to call: TimeTrackingTool.toggl_list_projects()
+
+14. toggl_start_timer:
+    - Purpose: Invokes active network timers on target web infrastructure layers via remote execution pathways.
+    - Arguments:
+      a) project_id: int - Platform explicit ID used to bind the remote creation query (required).
+      b) description: str (default: "") - Informational annotation passed down to distant server endpoints.
+      c) cred_key: str (default: "toggl") - Storage key context identifying active API assets.
+    - Returns: ToolResult showing generated server asset references.
+    - How to call: TimeTrackingTool.toggl_start_timer(project_id=987654, description="Refactoring UI")
+
+15. connect_clockify:
+    - Purpose: Registers integration authentication keys tailored to Clockify dashboard backends.
+    - Arguments:
+      a) api_token: str - Authentication code mapping secure API client targets (required).
+    - Returns: ToolResult showing creation metrics.
+    - How to call: TimeTrackingTool.connect_clockify(api_token="cl0ck1fy_tok_abc")
+
+16. clockify_list_projects:
+    - Purpose: Reads available project indexes out of Clockify enterprise storage views.
+    - Arguments:
+      a) workspace_id: str (default: None) - Platform identifier tracking target boundaries; drops down to default nodes if omitted.
+      b) cred_key: str (default: "clockify") - Key pointing to correct configuration credentials.
+    - Returns: ToolResult containing multi-project payload tracking structures.
+    - How to call: TimeTrackingTool.clockify_list_projects(workspace_id="wsp_abc123")
+
+17. clockify_time_entry:
+    - Purpose: Writes a explicit completed time item block onto external Clockify workspace ledgers.
+    - Arguments:
+      a) workspace_id: str - target destination account directory identifier (required).
+      b) project_id: str - Project identity node tracing the tracking resource target (required).
+      c) description: str - Notes contextually validating current log targets (required).
+      d) start: str - ISO initialization time tracking bounds string (required).
+      e) end: str - ISO termination time tracking bounds string (required).
+      b) cred_key: str (default: "clockify") - Profile identifier managing authorization credentials.
+    - Returns: ToolResult wrapping downstream verification data maps returned from server systems.
+    - How to call: TimeTrackingTool.clockify_time_entry(workspace_id="w1", project_id="p1", description="Review", start="2026-06-18T14:00:00", end="2026-06-18T15:00:00")
+""")
+       
+    _DB = Path.home() / ".npmai_agent" / "time_tracker.db"
+
+    # ── Database init ─────────────────────────────────────────────────────
+
+    @staticmethod
+    def _conn() -> sqlite3.Connection:
+        TimeTrackingTool._DB.parent.mkdir(exist_ok=True)
+        conn = sqlite3.connect(str(TimeTrackingTool._DB))
+        conn.row_factory = sqlite3.Row
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS entries (
+                id       INTEGER PRIMARY KEY AUTOINCREMENT,
+                project  TEXT NOT NULL,
+                task     TEXT,
+                description TEXT,
+                start    TEXT NOT NULL,
+                end      TEXT,
+                duration INTEGER,
+                source   TEXT DEFAULT 'local'
+            )
+        """)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS current_timer (
+                id      INTEGER PRIMARY KEY,
+                project TEXT,
+                task    TEXT,
+                description TEXT,
+                start   TEXT,
+                paused  INTEGER DEFAULT 0,
+                pause_start TEXT
+            )
+        """)
+        conn.commit()
+        return conn
+
+    # ── Local timer ───────────────────────────────────────────────────────
+
+    @staticmethod
+    def start_timer(project: str, task: str = "",
+                    description: str = "") -> ToolResult:
+        try:
+            conn = TimeTrackingTool._conn()
+            conn.execute("DELETE FROM current_timer")
+            now = datetime.now().isoformat()
+            conn.execute(
+                "INSERT INTO current_timer(project,task,description,start) "
+                "VALUES(?,?,?,?)",
+                (project, task, description, now))
+            conn.commit()
+            return ToolResult(True,
+                              f"✓ Timer started: {project}/{task} at {now}")
+        except Exception as e:
+            return ToolResult(False, f"✗ start_timer failed: {e}")
+
+    @staticmethod
+    def stop_timer() -> ToolResult:
+        try:
+            conn = TimeTrackingTool._conn()
+            row = conn.execute(
+                "SELECT * FROM current_timer LIMIT 1").fetchone()
+            if not row:
+                return ToolResult(False, "No active timer.")
+            now = datetime.now()
+            start = datetime.fromisoformat(row["start"])
+            duration_secs = int((now - start).total_seconds())
+            conn.execute(
+                "INSERT INTO entries(project,task,description,start,end,duration) "
+                "VALUES(?,?,?,?,?,?)",
+                (row["project"], row["task"], row["description"],
+                 row["start"], now.isoformat(), duration_secs))
+            conn.execute("DELETE FROM current_timer")
+            conn.commit()
+            mins = duration_secs // 60
+            return ToolResult(True,
+                              f"✓ Timer stopped: {row['project']} — {mins} min",
+                              {"duration_seconds": duration_secs,
+                               "duration_minutes": mins})
+        except Exception as e:
+            return ToolResult(False, f"✗ stop_timer failed: {e}")
+
+    @staticmethod
+    def pause_timer() -> ToolResult:
+        try:
+            conn = TimeTrackingTool._conn()
+            row = conn.execute(
+                "SELECT * FROM current_timer LIMIT 1").fetchone()
+            if not row:
+                return ToolResult(False, "No active timer.")
+            if row["paused"]:
+                # resume
+                paused_secs = int(
+                    (datetime.now() -
+                     datetime.fromisoformat(row["pause_start"])
+                     ).total_seconds())
+                # extend start by paused duration to not count it
+                new_start = (datetime.fromisoformat(row["start"]) +
+                             timedelta(seconds=paused_secs)).isoformat()
+                conn.execute(
+                    "UPDATE current_timer SET paused=0, pause_start=NULL, start=?",
+                    (new_start,))
+                conn.commit()
+                return ToolResult(True, "✓ Timer resumed")
+            else:
+                conn.execute(
+                    "UPDATE current_timer SET paused=1, pause_start=?",
+                    (datetime.now().isoformat(),))
+                conn.commit()
+                return ToolResult(True, "✓ Timer paused")
+        except Exception as e:
+            return ToolResult(False, f"✗ pause_timer failed: {e}")
+
+    @staticmethod
+    def get_current_timer() -> ToolResult:
+        try:
+            conn = TimeTrackingTool._conn()
+            row = conn.execute(
+                "SELECT * FROM current_timer LIMIT 1").fetchone()
+            if not row:
+                return ToolResult(True, "No active timer", None)
+            elapsed = int(
+                (datetime.now() -
+                 datetime.fromisoformat(row["start"])).total_seconds())
+            data = {k: row[k] for k in row.keys()}
+            data["elapsed_seconds"] = elapsed
+            data["elapsed_minutes"] = elapsed // 60
+            return ToolResult(True,
+                              f"✓ Running: {row['project']} — {elapsed//60} min",
+                              data)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_current_timer failed: {e}")
+
+    @staticmethod
+    def list_time_entries(date_from: str = None, date_to: str = None,
+                          project: str = None) -> ToolResult:
+        try:
+            conn = TimeTrackingTool._conn()
+            q = "SELECT * FROM entries WHERE 1=1"
+            params: list = []
+            if date_from:
+                q += " AND start >= ?"
+                params.append(date_from)
+            if date_to:
+                q += " AND start <= ?"
+                params.append(date_to + "T23:59:59")
+            if project:
+                q += " AND project LIKE ?"
+                params.append(f"%{project}%")
+            q += " ORDER BY start DESC"
+            rows = conn.execute(q, params).fetchall()
+            entries = [dict(r) for r in rows]
+            return ToolResult(True, f"✓ {len(entries)} entries", entries)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_time_entries failed: {e}")
+
+    @staticmethod
+    def add_manual_entry(project: str, task: str, description: str,
+                         start: str, end: str) -> ToolResult:
+        try:
+            conn = TimeTrackingTool._conn()
+            s = datetime.fromisoformat(start)
+            e = datetime.fromisoformat(end)
+            duration = int((e - s).total_seconds())
+            conn.execute(
+                "INSERT INTO entries(project,task,description,start,end,duration) "
+                "VALUES(?,?,?,?,?,?)",
+                (project, task, description, start, end, duration))
+            conn.commit()
+            return ToolResult(True,
+                              f"✓ Entry added: {project} {duration//60} min")
+        except Exception as e:
+            return ToolResult(False, f"✗ add_manual_entry failed: {e}")
+
+    @staticmethod
+    def delete_entry(entry_id: int) -> ToolResult:
+        try:
+            conn = TimeTrackingTool._conn()
+            conn.execute("DELETE FROM entries WHERE id=?", (entry_id,))
+            conn.commit()
+            return ToolResult(True, f"✓ Entry {entry_id} deleted")
+        except Exception as e:
+            return ToolResult(False, f"✗ delete_entry failed: {e}")
+
+    @staticmethod
+    def generate_timesheet(date_from: str, date_to: str,
+                           group_by: str = "project",
+                           output: str = None) -> ToolResult:
+        try:
+            result = TimeTrackingTool.list_time_entries(date_from, date_to)
+            if not result.success:
+                return result
+            entries = result.data or []
+            # group
+            groups: dict = {}
+            for e in entries:
+                key = e.get(group_by, "unknown")
+                groups.setdefault(key, []).append(e)
+
+            lines = [f"# Timesheet: {date_from} → {date_to}\n"]
+            total_secs = 0
+            for key, grp in sorted(groups.items()):
+                secs = sum(e.get("duration", 0) for e in grp)
+                total_secs += secs
+                h, m = secs // 3600, (secs % 3600) // 60
+                lines.append(f"\n## {key}  ({h}h {m}m)")
+                for e in grp:
+                    d = e.get("duration", 0)
+                    lines.append(
+                        f"  - {e.get('start','')[:16]}  "
+                        f"{e.get('task','')} — {d//60} min  "
+                        f"{e.get('description','')}")
+
+            th, tm = total_secs // 3600, (total_secs % 3600) // 60
+            lines.append(f"\n**Total: {th}h {tm}m**")
+            text = "\n".join(lines)
+            if output:
+                Path(output).write_text(text, encoding="utf-8")
+            return ToolResult(True,
+                              f"✓ Timesheet: {th}h {tm}m total",
+                              {"text": text,
+                               "total_seconds": total_secs})
+        except Exception as e:
+            return ToolResult(False, f"✗ generate_timesheet failed: {e}")
+
+    @staticmethod
+    def get_project_summary(project: str,
+                            date_range: tuple = None) -> ToolResult:
+        try:
+            df = date_range[0] if date_range else None
+            dt = date_range[1] if date_range else None
+            result = TimeTrackingTool.list_time_entries(df, dt, project)
+            if not result.success:
+                return result
+            entries = result.data or []
+            total = sum(e.get("duration", 0) for e in entries)
+            tasks: dict = {}
+            for e in entries:
+                t = e.get("task", "general")
+                tasks[t] = tasks.get(t, 0) + e.get("duration", 0)
+            summary = {
+                "project": project,
+                "total_seconds": total,
+                "total_hours": round(total / 3600, 2),
+                "entry_count": len(entries),
+                "by_task": {k: {"seconds": v,
+                                "hours": round(v / 3600, 2)}
+                            for k, v in tasks.items()}
+            }
+            return ToolResult(True,
+                              f"✓ {project}: {round(total/3600,2)}h",
+                              summary)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_project_summary failed: {e}")
+
+    @staticmethod
+    def calculate_billing(date_from: str, date_to: str,
+                          hourly_rate: float, project: str = None) -> ToolResult:
+        try:
+            result = TimeTrackingTool.list_time_entries(
+                date_from, date_to, project)
+            if not result.success:
+                return result
+            entries = result.data or []
+            total_secs = sum(e.get("duration", 0) for e in entries)
+            hours = total_secs / 3600
+            amount = round(hours * hourly_rate, 2)
+            return ToolResult(True,
+                              f"✓ {round(hours,2)}h × ${hourly_rate}/h = ${amount}",
+                              {"hours": round(hours, 2),
+                               "rate": hourly_rate,
+                               "amount": amount,
+                               "currency": "USD"})
+        except Exception as e:
+            return ToolResult(False, f"✗ calculate_billing failed: {e}")
+
+    @staticmethod
+    def export_to_invoice(date_from: str, date_to: str, client: str,
+                          rate: float, output: str) -> ToolResult:
+        try:
+            billing = TimeTrackingTool.calculate_billing(
+                date_from, date_to, rate)
+            if not billing.success:
+                return billing
+            bd = billing.data
+            timesheet = TimeTrackingTool.generate_timesheet(date_from, date_to)
+            ts_text = timesheet.data.get("text", "") if timesheet.data else ""
+            invoice = f"""# INVOICE
+
+**To:** {client}
+**Date:** {datetime.now().strftime('%Y-%m-%d')}
+**Period:** {date_from} — {date_to}
+
+---
+
+## Summary
+
+| Hours | Rate | Amount |
+|-------|------|--------|
+| {bd['hours']}h | ${bd['rate']}/h | ${bd['amount']} |
+
+---
+
+## Detail
+
+{ts_text}
+
+---
+
+**TOTAL DUE: ${bd['amount']} USD**
+"""
+            Path(output).write_text(invoice, encoding="utf-8")
+            return ToolResult(True,
+                              f"✓ Invoice saved to {output} — ${bd['amount']}",
+                              bd)
+        except Exception as e:
+            return ToolResult(False, f"✗ export_to_invoice failed: {e}")
+
+    # ── Toggl ─────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def connect_toggl(api_token: str) -> ToolResult:
+        try:
+            CredStore.save("toggl", {"api_token": api_token})
+            return ToolResult(True, "✓ Toggl API token saved")
+        except Exception as e:
+            return ToolResult(False, f"✗ connect_toggl failed: {e}")
+
+    @staticmethod
+    def toggl_list_projects(cred_key: str = "toggl") -> ToolResult:
+        try:
+            import requests
+            token = CredStore.load(cred_key).get("api_token", "")
+            if not token:
+                return ToolResult(False, "No Toggl token.")
+            # get workspace id first
+            me = requests.get(
+                "https://api.track.toggl.com/api/v9/me",
+                auth=(token, "api_token"), timeout=10).json()
+            wid = me.get("default_workspace_id")
+            resp = requests.get(
+                f"https://api.track.toggl.com/api/v9/workspaces/{wid}/projects",
+                auth=(token, "api_token"), timeout=10)
+            resp.raise_for_status()
+            projects = resp.json()
+            return ToolResult(True, f"✓ {len(projects)} Toggl projects",
+                              projects)
+        except Exception as e:
+            return ToolResult(False, f"✗ toggl_list_projects failed: {e}")
+
+    @staticmethod
+    def toggl_start_timer(project_id: int, description: str = "",
+                          cred_key: str = "toggl") -> ToolResult:
+        try:
+            import requests
+            token = CredStore.load(cred_key).get("api_token", "")
+            me = requests.get(
+                "https://api.track.toggl.com/api/v9/me",
+                auth=(token, "api_token"), timeout=10).json()
+            wid = me.get("default_workspace_id")
+            now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+            body = {
+                "created_with": "npmai-agent",
+                "description": description,
+                "project_id": project_id,
+                "start": now,
+                "duration": -1,
+                "workspace_id": wid
+            }
+            resp = requests.post(
+                f"https://api.track.toggl.com/api/v9/workspaces/{wid}/time_entries",
+                auth=(token, "api_token"), json=body, timeout=10)
+            resp.raise_for_status()
+            entry = resp.json()
+            return ToolResult(True, f"✓ Toggl timer started: {entry.get('id')}", entry)
+        except Exception as e:
+            return ToolResult(False, f"✗ toggl_start_timer failed: {e}")
+
+    # ── Clockify ──────────────────────────────────────────────────────────
+
+    @staticmethod
+    def connect_clockify(api_token: str) -> ToolResult:
+        try:
+            CredStore.save("clockify", {"api_token": api_token})
+            return ToolResult(True, "✓ Clockify API token saved")
+        except Exception as e:
+            return ToolResult(False, f"✗ connect_clockify failed: {e}")
+
+    @staticmethod
+    def clockify_list_projects(workspace_id: str = None,
+                                cred_key: str = "clockify") -> ToolResult:
+        try:
+            import requests
+            token = CredStore.load(cred_key).get("api_token", "")
+            if not token:
+                return ToolResult(False, "No Clockify token.")
+            headers = {"X-Api-Key": token}
+            if not workspace_id:
+                user = requests.get(
+                    "https://api.clockify.me/api/v1/user",
+                    headers=headers, timeout=10).json()
+                workspace_id = user.get("defaultWorkspace", "")
+            resp = requests.get(
+                f"https://api.clockify.me/api/v1/workspaces/{workspace_id}/projects",
+                headers=headers, timeout=10)
+            resp.raise_for_status()
+            projects = resp.json()
+            return ToolResult(True, f"✓ {len(projects)} Clockify projects",
+                              projects)
+        except Exception as e:
+            return ToolResult(False, f"✗ clockify_list_projects failed: {e}")
+
+    @staticmethod
+    def clockify_time_entry(workspace_id: str, project_id: str,
+                             description: str,
+                             start: str, end: str,
+                             cred_key: str = "clockify") -> ToolResult:
+        try:
+            import requests
+            token = CredStore.load(cred_key).get("api_token", "")
+            headers = {"X-Api-Key": token,
+                       "Content-Type": "application/json"}
+
+            def _fmt(dt_str: str) -> str:
+                return (datetime.fromisoformat(dt_str)
+                        .strftime("%Y-%m-%dT%H:%M:%SZ"))
+
+            body = {
+                "start": _fmt(start),
+                "end": _fmt(end),
+                "description": description,
+                "projectId": project_id
+            }
+            resp = requests.post(
+                f"https://api.clockify.me/api/v1/workspaces/{workspace_id}/time-entries",
+                headers=headers, json=body, timeout=10)
+            resp.raise_for_status()
+            entry = resp.json()
+            return ToolResult(True,
+                              f"✓ Clockify entry logged: {entry.get('id')}",
+                              entry)
+        except Exception as e:
+            return ToolResult(False, f"✗ clockify_time_entry failed: {e}")
+
+
+######################################################################################################################################
+"""Security TOOLS"""
+#####################################################################################################################################
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 1. SecurityScannerTool
+# ═══════════════════════════════════════════════════════════════════════════
+class SecurityScannerTool:
+    name = "security_scanner"
+    description = (
+        "Ethical security scanning: VirusTotal, Shodan, HaveIBeenPwned, "
+        "nmap, port scan, WHOIS, SSL, DNS leak, URL safety, threat intel"
+    )
+    use = ("""
+Name of Tool: SecurityScannerTool
+
+Purpose of Tool:
+The SecurityScannerTool provides a suite for ethical security analysis, surface reconnaissance, and threat intelligence. It aggregates open-source and premium external security intelligence platforms (VirusTotal, Shodan, HaveIBeenPwned, AlienVault OTX, Google Safe Browsing, AbuseIPDB) alongside localized scanning mechanisms (nmap subprocesses, fast multi-threaded socket-based connection testing, SSL evaluation, and custom comparative DNS leak tests) to determine exposure levels, data breaches, protocol validity, and malware flags across structural assets.
+
+Methods:
+- check_virustotal: Evaluates existing static analysis scores for structural hashes, network locations, or domains.
+- scan_file_virustotal: Calculates localized content hashes and uploads new unanalyzed assets to execution sandboxes.
+- shodan_search: Issues deep contextual queries to locate exposed internet-facing network hardware nodes.
+- shodan_host: Extracts infrastructure details, software targets, operating systems, and vulnerabilities from a static IP address.
+- check_haveibeenpwned: Scans public corporate credential data breach collections to audit compromised user emails.
+- check_password_breach: Evaluates raw client passwords using a structurally anonymous k-anonymity SHA-1 lookup model.
+- nmap_scan: Performs a formal network mapping routine using automated system scanner modules.
+- port_scan_common: Rapidly evaluates network application layer boundaries using multi-threaded local TCP socket arrays.
+- whois_lookup: Resolves operational entity boundaries and administrative ownership registries for external domains.
+- check_ssl_grade: Performs local certificate checks on port 443 to gauge domain lifecycle status and configuration errors.
+- check_dns_leak: Detects system translation masking failures by measuring consistency across name resolution queries.
+- scan_url_safe_browsing: Audits resource locators against Google's dynamic dangerous-domain classification catalogs.
+- check_reputation: Looks up dynamic IP histories to measure trust scores and evaluate past spam or scanning infractions.
+- get_threat_intel: Harvests comprehensive indicator attributes across global distributed security pulses.
+
+How to use Tool Methods:
+
+1. check_virustotal:
+   - Purpose: Fetches historical community engine detection stats for a known internet asset indicator.
+   - Arguments:
+     a) hash_or_url_or_ip: str - Target hash signature string, domain name, asset URL, or IP indicator (required).
+     b) type: str (default: "hash") - Categorization string directing target parsing ("hash", "url", "ip", "domain").
+     c) cred_key: str (default: "virustotal") - Reference handle pointing to local credential stores.
+   - Returns: ToolResult holding detection ratios, reputation scores, and context tags.
+   - How to call: SecurityScannerTool.check_virustotal(hash_or_url_or_ip="8.8.8.8", type="ip")
+
+2. scan_file_virustotal:
+   - Purpose: Generates a file hash to check for an existing report, or pushes the physical object to remote analysis queues.
+   - Arguments:
+     a) file_path: str - Absolute file pathway targeted for extraction and structural evaluation (required).
+     b) cred_key: str (default: "virustotal") - Internal key map mapping the system storage credentials.
+   - Returns: ToolResult mapping evaluation responses or active polling exit states.
+   - How to call: SecurityScannerTool.scan_file_virustotal(file_path="/home/user/downloads/patch.exe")
+
+3. shodan_search:
+   - Purpose: Queries the Shodan system index for internet-facing installations matching a query pattern.
+   - Arguments:
+     a) query: str - Search string checking open metadata banners (required).
+     b) facets: str (default: None) - Optional comma-delimited strings summarizing structural metadata properties.
+     c) page: int (default: 1) - Page number indicating offset counters for pagination.
+     d) cred_key: str (default: "shodan") - Identifies the active credential configuration profile.
+   - Returns: ToolResult containing cumulative totals alongside truncated matching system summaries.
+   - How to call: SecurityScannerTool.shodan_search(query="port:21 product:vsftpd", page=1)
+
+4. shodan_host:
+   - Purpose: Queries a single external IP layout profile to map exposed transport surfaces and software versions.
+   - Arguments:
+     a) ip: str - Public IPv4 network target location examined by remote data records (required).
+     b) cred_key: str (default: "shodan") - Storage key handle containing required platform authentication parameters.
+   - Returns: ToolResult unpacking operating systems, running services, and known vulnerability tags.
+   - How to call: SecurityScannerTool.shodan_host(ip="192.0.2.1")
+
+5. check_haveibeenpwned:
+   - Purpose: Assesses public leak history catalogs to see if an email has been exposed in a data breach.
+   - Arguments:
+     a) email: str - User email communication string queried across database indices (required).
+     b) cred_key: str (default: "hibp") - Profile tracking system reference used to fetch structural headers.
+   - Returns: ToolResult identifying safe validation profiles or structured lists detailing breached corporate systems.
+   - How to call: SecurityScannerTool.check_haveibeenpwned(email="test@example.com")
+
+6. check_password_breach:
+   - Purpose: Securely checks if a password password has been leaked by sending only the first 5 characters of its SHA-1 hash.
+   - Arguments:
+     a) password: str - Plaintext password input parameter assessed by local structural hash routines (required).
+   - Returns: ToolResult logging matched frequency hits inside dictionary storage definitions.
+   - How to call: SecurityScannerTool.check_password_breach(password="P@ssword123")
+
+7. nmap_scan:
+   - Purpose: Deploys heavy network port mapping engines against remote infrastructures.
+   - Arguments:
+     a) target: str - Endpoint host identifier name, domain handle, or CIDR network block (required).
+     b) arguments: str (default: "-sV -O") - Custom operational scanner parameters passed down to the nmap binary.
+     c) output_format: str (default: "dict") - Text representation formatting ("dict" vs "json").
+   - Returns: ToolResult conveying structural connection tracking records and endpoint state details.
+   - How to call: SecurityScannerTool.nmap_scan(target="127.0.0.1", arguments="-p 22,80,443")
+
+8. port_scan_common:
+   - Purpose: Conducts rapid multi-threaded connection checks across 18 well-known ports without binary dependencies.
+   - Arguments:
+     a) host: str - System address string or target domain evaluated by connection loops (required).
+   - Returns: ToolResult mapping discovered open applications alongside raw closed counters.
+   - How to call: SecurityScannerTool.port_scan_common(host="localhost")
+
+9. whois_lookup:
+   - Purpose: Extracts structural domain registration records, lifecycle dates, and hosting organizations.
+   - Arguments:
+     a) domain_or_ip: str - Target resource pointer string passed directly to WHOIS registration routers (required).
+   - Returns: ToolResult storing structured identity maps containing registry parameters.
+   - How to call: SecurityScannerTool.whois_lookup(domain_or_ip="google.com")
+
+10. check_ssl_grade:
+    - Purpose: Initiates secure handshakes to evaluate certificate expiration dates and configuration grades.
+    - Arguments:
+      a) domain: str - Domain endpoint address checked over port 443 (required).
+    - Returns: ToolResult grading domain status and returning remaining valid lifecycle day counts.
+    - How to call: SecurityScannerTool.check_ssl_grade(domain="github.com")
+
+11. check_dns_leak:
+    - Purpose: Detects path-resolution exposure by checking domain mappings across distinct resolver points.
+    - Arguments:
+      a) servers: list (default: None) - Array of nameserver targets; defaults to standard public resolvers if omitted.
+    - Returns: ToolResult detailing query outputs and flagging potential path translation leaks.
+    - How to call: SecurityScannerTool.check_dns_leak(servers=["8.8.8.8", "1.1.1.1"])
+
+12. scan_url_safe_browsing:
+    - Purpose: Audits application links against malicious distribution, social engineering, and unwanted software catalogs.
+    - Arguments:
+      a) url: str - Full asset indicator link string processed for structural risk analysis (required).
+      b) api_key: str (default: None) - Explicit platform token; drops back to heuristic pattern matching if omitted.
+    - Returns: ToolResult highlighting safety statuses or matching threat classifications.
+    - How to call: SecurityScannerTool.scan_url_safe_browsing(url="http://malicious-example.com/login.html")
+
+13. check_reputation:
+    - Purpose: Checks AbuseIPDB reputation histories to determine trust metrics and blocklist placements.
+    - Arguments:
+      a) ip_or_domain: str - Targeted network identifier evaluated across public reputation servers (required).
+    - Returns: ToolResult yielding confidence metrics scaled on a standard 0-100 score threshold.
+    - How to call: SecurityScannerTool.check_reputation(ip_or_domain="203.0.113.5")
+
+14. get_threat_intel:
+    - Purpose: Gathers public open-source threat feeds to find references to an active indicator across global security campaigns.
+    - Arguments:
+      a) indicator: str - String pattern evaluated across open system feeds (required).
+      b) type: str (default: "ip") - Defines the indicator shape context type ("ip", "domain", "url", "hash").
+    - Returns: ToolResult aggregating discovered platform pulse records and security tag maps.
+    - How to call: SecurityScannerTool.get_threat_intel(indicator="44d88612fea8a8f36de82e1278abb02f", type="hash")
+""")
+          
+    @staticmethod
+    def check_virustotal(hash_or_url_or_ip: str, type: str = "hash",
+                         cred_key: str = "virustotal") -> ToolResult:
+        """type: hash | url | ip | domain"""
+        try:
+            import requests
+            api_key = CredStore.load(cred_key).get("api_key", "")
+            if not api_key:
+                return ToolResult(False, "No VirusTotal API key. Save under 'virustotal' → {'api_key':'...'}")
+            headers = {"x-apikey": api_key}
+            endpoint_map = {
+                "hash":   f"https://www.virustotal.com/api/v3/files/{hash_or_url_or_ip}",
+                "ip":     f"https://www.virustotal.com/api/v3/ip_addresses/{hash_or_url_or_ip}",
+                "domain": f"https://www.virustotal.com/api/v3/domains/{hash_or_url_or_ip}",
+                "url":    None,
+            }
+            if type == "url":
+                # Submit URL for scanning
+                encoded = base64.urlsafe_b64encode(hash_or_url_or_ip.encode()).rstrip(b"=").decode()
+                r = requests.get(f"https://www.virustotal.com/api/v3/urls/{encoded}",
+                                 headers=headers, timeout=15)
+            else:
+                url = endpoint_map.get(type, endpoint_map["hash"])
+                r = requests.get(url, headers=headers, timeout=15)
+            r.raise_for_status()
+            data = r.json().get("data", {})
+            attrs = data.get("attributes", {})
+            stats = attrs.get("last_analysis_stats", {})
+            malicious = stats.get("malicious", 0)
+            total = sum(stats.values()) if stats else 0
+            return ToolResult(True, f"✓ VT: {malicious}/{total} malicious",
+                              {"indicator": hash_or_url_or_ip, "type": type,
+                               "stats": stats, "reputation": attrs.get("reputation", 0),
+                               "tags": attrs.get("tags", [])})
+        except Exception as e:
+            return ToolResult(False, f"✗ check_virustotal failed: {e}")
+
+    @staticmethod
+    def scan_file_virustotal(file_path: str, cred_key: str = "virustotal") -> ToolResult:
+        try:
+            import requests
+            api_key = CredStore.load(cred_key).get("api_key", "")
+            if not api_key:
+                return ToolResult(False, "No VirusTotal API key.")
+            # Compute SHA-256 first and check existing report
+            with open(file_path, "rb") as f:
+                sha256 = hashlib.sha256(f.read()).hexdigest()
+            # Check existing report
+            existing = SecurityScannerTool.check_virustotal(sha256, "hash", cred_key)
+            if existing.success:
+                return existing
+            # Upload file
+            with open(file_path, "rb") as f:
+                r = requests.post("https://www.virustotal.com/api/v3/files",
+                                  headers={"x-apikey": api_key},
+                                  files={"file": (Path(file_path).name, f)}, timeout=60)
+            r.raise_for_status()
+            analysis_id = r.json().get("data", {}).get("id", "")
+            # Poll for result
+            for _ in range(10):
+                time.sleep(3)
+                rp = requests.get(f"https://www.virustotal.com/api/v3/analyses/{analysis_id}",
+                                  headers={"x-apikey": api_key}, timeout=15)
+                rp.raise_for_status()
+                status = rp.json().get("data", {}).get("attributes", {}).get("status", "")
+                if status == "completed":
+                    stats = rp.json()["data"]["attributes"]["stats"]
+                    malicious = stats.get("malicious", 0)
+                    total = sum(stats.values())
+                    return ToolResult(True, f"✓ File scan: {malicious}/{total} malicious",
+                                      {"sha256": sha256, "stats": stats})
+            return ToolResult(False, "✗ File scan timed out waiting for results")
+        except Exception as e:
+            return ToolResult(False, f"✗ scan_file_virustotal failed: {e}")
+
+    @staticmethod
+    def shodan_search(query: str, facets: str = None, page: int = 1,
+                      cred_key: str = "shodan") -> ToolResult:
+        try:
+            import requests
+            api_key = CredStore.load(cred_key).get("api_key", "")
+            if not api_key:
+                return ToolResult(False, "No Shodan API key. Save under 'shodan' → {'api_key':'...'}")
+            params = {"key": api_key, "query": query, "page": page}
+            if facets:
+                params["facets"] = facets
+            r = requests.get("https://api.shodan.io/shodan/host/search",
+                             params=params, timeout=20)
+            r.raise_for_status()
+            data = r.json()
+            return ToolResult(True, f"✓ Shodan: {data.get('total', 0)} results",
+                              {"total": data.get("total", 0), "matches": data.get("matches", [])[:10],
+                               "facets": data.get("facets", {})})
+        except Exception as e:
+            return ToolResult(False, f"✗ shodan_search failed: {e}")
+
+    @staticmethod
+    def shodan_host(ip: str, cred_key: str = "shodan") -> ToolResult:
+        try:
+            import requests
+            api_key = CredStore.load(cred_key).get("api_key", "")
+            if not api_key:
+                return ToolResult(False, "No Shodan API key.")
+            r = requests.get(f"https://api.shodan.io/shodan/host/{ip}",
+                             params={"key": api_key}, timeout=15)
+            r.raise_for_status()
+            data = r.json()
+            return ToolResult(True, f"✓ Shodan host: {ip}", {
+                "ip": ip, "org": data.get("org"), "country": data.get("country_name"),
+                "ports": data.get("ports", []), "vulns": list(data.get("vulns", {}).keys()),
+                "hostnames": data.get("hostnames", []), "os": data.get("os")
+            })
+        except Exception as e:
+            return ToolResult(False, f"✗ shodan_host failed: {e}")
+
+    @staticmethod
+    def check_haveibeenpwned(email: str, cred_key: str = "hibp") -> ToolResult:
+        try:
+            import requests
+            api_key = CredStore.load(cred_key).get("api_key", "")
+            headers = {"hibp-api-key": api_key, "User-Agent": "NPM-Agent-HIBP-Check"} if api_key else \
+                      {"User-Agent": "NPM-Agent-HIBP-Check"}
+            r = requests.get(f"https://haveibeenpwned.com/api/v3/breachedaccount/{email}",
+                             headers=headers, timeout=15)
+            if r.status_code == 404:
+                return ToolResult(True, f"✓ {email} — NOT found in any breach", {"breaches": []})
+            r.raise_for_status()
+            breaches = r.json()
+            names = [b.get("Name", "") for b in breaches]
+            return ToolResult(True, f"⚠ {email} found in {len(breaches)} breaches: {', '.join(names[:5])}",
+                              {"breaches": breaches, "count": len(breaches)})
+        except Exception as e:
+            return ToolResult(False, f"✗ check_haveibeenpwned failed: {e}")
+
+    @staticmethod
+    def check_password_breach(password: str) -> ToolResult:
+        """k-Anonymity model — only first 5 chars of SHA1 hash are sent to API."""
+        try:
+            import requests
+            sha1 = hashlib.sha1(password.encode()).hexdigest().upper()
+            prefix, suffix = sha1[:5], sha1[5:]
+            r = requests.get(f"https://api.pwnedpasswords.com/range/{prefix}",
+                             headers={"User-Agent": "NPM-Agent"}, timeout=10)
+            r.raise_for_status()
+            hashes = {line.split(":")[0]: int(line.split(":")[1]) for line in r.text.splitlines()}
+            count = hashes.get(suffix, 0)
+            if count > 0:
+                return ToolResult(True, f"⚠ Password found {count:,} times in breach data",
+                                  {"breached": True, "count": count})
+            return ToolResult(True, "✓ Password NOT found in breach data",
+                              {"breached": False, "count": 0})
+        except Exception as e:
+            return ToolResult(False, f"✗ check_password_breach failed: {e}")
+
+    @staticmethod
+    def nmap_scan(target: str, arguments: str = "-sV -O", output_format: str = "dict") -> ToolResult:
+        try:
+            import nmap
+            nm = nmap.PortScanner()
+            nm.scan(hosts=target, arguments=arguments)
+            results = {}
+            for host in nm.all_hosts():
+                results[host] = {
+                    "state": nm[host].state(),
+                    "hostname": nm[host].hostname(),
+                    "protocols": {}
+                }
+                for proto in nm[host].all_protocols():
+                    results[host]["protocols"][proto] = {}
+                    for port in nm[host][proto].keys():
+                        results[host]["protocols"][proto][port] = nm[host][proto][port]
+            if output_format == "json":
+                return ToolResult(True, f"✓ nmap scan complete: {len(results)} hosts",
+                                  json.dumps(results, indent=2))
+            return ToolResult(True, f"✓ nmap scan complete: {len(results)} hosts", results)
+        except ImportError:
+            # Fall back to subprocess nmap
+            try:
+                r = subprocess.run(["nmap", arguments, target], capture_output=True,
+                                   text=True, timeout=120)
+                return ToolResult(r.returncode == 0, r.stdout or r.stderr, r.stdout)
+            except FileNotFoundError:
+                return ToolResult(False, "✗ nmap not installed. Run: pip install python-nmap and install nmap binary.")
+        except Exception as e:
+            return ToolResult(False, f"✗ nmap_scan failed: {e}")
+
+    @staticmethod
+    def port_scan_common(host: str) -> ToolResult:
+        """Fast scan of common ports using socket (no nmap required)."""
+        try:
+            common_ports = {
+                21: "FTP", 22: "SSH", 23: "Telnet", 25: "SMTP", 53: "DNS",
+                80: "HTTP", 110: "POP3", 143: "IMAP", 443: "HTTPS", 445: "SMB",
+                3306: "MySQL", 3389: "RDP", 5432: "PostgreSQL", 5900: "VNC",
+                6379: "Redis", 8080: "HTTP-Alt", 8443: "HTTPS-Alt", 27017: "MongoDB"
+            }
+            open_ports = []
+            closed_ports = []
+
+            def check(port):
+                try:
+                    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    s.settimeout(1.0)
+                    result = s.connect_ex((host, port))
+                    s.close()
+                    if result == 0:
+                        open_ports.append({"port": port, "service": common_ports.get(port, "Unknown")})
+                    else:
+                        closed_ports.append(port)
+                except Exception:
+                    closed_ports.append(port)
+
+            threads = [threading.Thread(target=check, args=(p,)) for p in common_ports]
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join(timeout=5)
+
+            return ToolResult(True, f"✓ {len(open_ports)} open ports on {host}",
+                              {"host": host, "open": open_ports, "closed_count": len(closed_ports)})
+        except Exception as e:
+            return ToolResult(False, f"✗ port_scan_common failed: {e}")
+
+    @staticmethod
+    def whois_lookup(domain_or_ip: str) -> ToolResult:
+        try:
+            import whois
+            w = whois.whois(domain_or_ip)
+            data = {
+                "domain": str(w.domain_name or domain_or_ip),
+                "registrar": str(w.registrar or ""),
+                "creation_date": str(w.creation_date or ""),
+                "expiration_date": str(w.expiration_date or ""),
+                "name_servers": [str(ns) for ns in (w.name_servers or [])],
+                "org": str(w.org or ""),
+                "country": str(w.country or ""),
+                "emails": [str(e) for e in (w.emails if isinstance(w.emails, list)
+                           else [w.emails] if w.emails else [])]
+            }
+            return ToolResult(True, f"✓ WHOIS for {domain_or_ip}", data)
+        except Exception as e:
+            return ToolResult(False, f"✗ whois_lookup failed: {e}")
+
+    @staticmethod
+    def check_ssl_grade(domain: str) -> ToolResult:
+        """Check SSL certificate details directly."""
+        try:
+            import ssl
+            import socket
+            ctx = ssl.create_default_context()
+            with ctx.wrap_socket(socket.socket(), server_hostname=domain) as s:
+                s.settimeout(10)
+                s.connect((domain, 443))
+                cert = s.getpeercert()
+            expiry = datetime.strptime(cert["notAfter"], "%b %d %H:%M:%S %Y %Z")
+            days_left = (expiry - datetime.utcnow()).days
+            subject = dict(x[0] for x in cert.get("subject", []))
+            issuer = dict(x[0] for x in cert.get("issuer", []))
+            sans = [v for t, v in cert.get("subjectAltName", []) if t == "DNS"]
+            grade = "A" if days_left > 30 else ("B" if days_left > 7 else "F")
+            return ToolResult(True, f"✓ SSL grade: {grade} — expires in {days_left} days",
+                              {"domain": domain, "grade": grade, "days_until_expiry": days_left,
+                               "expiry": expiry.isoformat(), "subject": subject,
+                               "issuer": issuer, "san": sans})
+        except ssl.SSLCertVerificationError as e:
+            return ToolResult(True, f"⚠ SSL verification failed: {e}",
+                              {"domain": domain, "grade": "F", "error": str(e)})
+        except Exception as e:
+            return ToolResult(False, f"✗ check_ssl_grade failed: {e}")
+
+    @staticmethod
+    def check_dns_leak(servers: list = None) -> ToolResult:
+        """Compare DNS resolution to detect potential leaks."""
+        try:
+            import dns.resolver
+            test_domain = "whoami.akamai.net"
+            resolvers = servers or ["8.8.8.8", "1.1.1.1", "9.9.9.9"]
+            results = {}
+            for server in resolvers:
+                try:
+                    res = dns.resolver.Resolver()
+                    res.nameservers = [server]
+                    res.timeout = 3
+                    answers = res.resolve(test_domain, "A")
+                    results[server] = [str(r) for r in answers]
+                except Exception as ex:
+                    results[server] = [f"Error: {ex}"]
+            all_ips = set(ip for ips in results.values() for ip in ips if not ip.startswith("Error"))
+            leak_detected = len(all_ips) > 2
+            return ToolResult(True, f"{'⚠ Potential DNS leak' if leak_detected else '✓ DNS looks consistent'}",
+                              {"results": results, "unique_ips": list(all_ips),
+                               "leak_detected": leak_detected})
+        except Exception as e:
+            return ToolResult(False, f"✗ check_dns_leak failed: {e}")
+
+    @staticmethod
+    def scan_url_safe_browsing(url: str, api_key: str = None) -> ToolResult:
+        """Google Safe Browsing API check."""
+        try:
+            import requests
+            key = api_key or CredStore.load("google_safe_browsing").get("api_key", "")
+            if not key:
+                # Fall back to heuristic check
+                suspicious_patterns = [".exe", ".zip", "login", "bank", "paypal", "verify",
+                                       "account", "update", "secure", "confirm"]
+                score = sum(1 for p in suspicious_patterns if p in url.lower())
+                return ToolResult(True, f"✓ Heuristic check: {score} suspicious patterns",
+                                  {"url": url, "suspicious_score": score, "method": "heuristic"})
+            payload = {
+                "client": {"clientId": "npm-agent", "clientVersion": "1.0"},
+                "threatInfo": {
+                    "threatTypes": ["MALWARE", "SOCIAL_ENGINEERING", "UNWANTED_SOFTWARE",
+                                    "POTENTIALLY_HARMFUL_APPLICATION"],
+                    "platformTypes": ["ANY_PLATFORM"],
+                    "threatEntryTypes": ["URL"],
+                    "threatEntries": [{"url": url}]
+                }
+            }
+            r = requests.post(
+                f"https://safebrowsing.googleapis.com/v4/threatMatches:find?key={key}",
+                json=payload, timeout=10
+            )
+            r.raise_for_status()
+            matches = r.json().get("matches", [])
+            return ToolResult(True,
+                              f"⚠ URL flagged: {len(matches)} threats" if matches else "✓ URL appears safe",
+                              {"url": url, "threats": matches, "safe": len(matches) == 0})
+        except Exception as e:
+            return ToolResult(False, f"✗ scan_url_safe_browsing failed: {e}")
+
+    @staticmethod
+    def check_reputation(ip_or_domain: str) -> ToolResult:
+        """AbuseIPDB check for IP reputation."""
+        try:
+            import requests
+            api_key = CredStore.load("abuseipdb").get("api_key", "")
+            if not api_key:
+                # Fallback: basic DNS blacklist check
+                try:
+                    reversed_ip = ".".join(reversed(ip_or_domain.split(".")))
+                    socket.gethostbyname(f"{reversed_ip}.zen.spamhaus.org")
+                    return ToolResult(True, f"⚠ {ip_or_domain} found in Spamhaus blocklist",
+                                      {"blacklisted": True, "source": "spamhaus"})
+                except socket.gaierror:
+                    return ToolResult(True, f"✓ {ip_or_domain} not in basic blocklists",
+                                      {"blacklisted": False})
+            r = requests.get("https://api.abuseipdb.com/api/v2/check",
+                             headers={"Key": api_key, "Accept": "application/json"},
+                             params={"ipAddress": ip_or_domain, "maxAgeInDays": 90}, timeout=10)
+            r.raise_for_status()
+            data = r.json().get("data", {})
+            score = data.get("abuseConfidenceScore", 0)
+            return ToolResult(True, f"{'⚠' if score > 25 else '✓'} Abuse score: {score}/100", data)
+        except Exception as e:
+            return ToolResult(False, f"✗ check_reputation failed: {e}")
+
+    @staticmethod
+    def get_threat_intel(indicator: str, type: str = "ip") -> ToolResult:
+        """Aggregate threat intel from multiple free sources."""
+        try:
+            import requests
+            results = {}
+            # AlienVault OTX (free, no key required for basic lookups)
+            endpoint_map = {
+                "ip": f"https://otx.alienvault.com/api/v1/indicators/IPv4/{indicator}/general",
+                "domain": f"https://otx.alienvault.com/api/v1/indicators/domain/{indicator}/general",
+                "url": f"https://otx.alienvault.com/api/v1/indicators/url/{indicator}/general",
+                "hash": f"https://otx.alienvault.com/api/v1/indicators/file/{indicator}/general",
+            }
+            url = endpoint_map.get(type, endpoint_map["ip"])
+            r = requests.get(url, headers={"User-Agent": "NPM-Agent"}, timeout=15)
+            if r.ok:
+                data = r.json()
+                results["otx"] = {
+                    "pulse_count": data.get("pulse_info", {}).get("count", 0),
+                    "reputation": data.get("reputation", 0),
+                    "indicator": indicator,
+                    "type": type,
+                    "tags": data.get("tags", [])
+                }
+            pulse_count = results.get("otx", {}).get("pulse_count", 0)
+            return ToolResult(True,
+                              f"{'⚠ Found in ' + str(pulse_count) + ' threat pulses' if pulse_count else '✓ No major threats found'}",
+                              results)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_threat_intel failed: {e}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 2. CryptographyTool
+# ═══════════════════════════════════════════════════════════════════════════
+class CryptographyTool:
+    name = "cryptography"
+    description = (
+        "RSA key pairs, AES encryption, password hashing, TOTP, "
+        "SSL cert generation, digital signatures, PGP encrypt/decrypt"
+    )
+    use = ("""
+Name of Tool: CryptographyTool
+
+Purpose of Tool:
+The CryptographyTool provides a localized, secure cryptographic pipeline for symmetric/asymmetric encryption, data integrity verification, password hashing lifecycle management, and dynamic multi-factor authentication (TOTP). It abstracts operations using the Python `cryptography`, `bcrypt`, `pyotp`, and `gnupg` ecosystems, allowing the programmatic generation of production-ready RSA key pairs, secure X.509 self-signed certificates, high-entropy password salts, and armored PGP messages.
+
+Methods:
+- generate_rsa_keypair: Compiles securely restricted 2048-bit or higher asymmetric RSA keys to disk.
+- encrypt_with_public_key: Locks sensitive target payloads via optimal asymmetric encryption padding (OAEP) configurations.
+- decrypt_with_private_key: Restores encrypted RSA ciphertexts back to plain text payloads using private structural keys.
+- sign_data: Affixes probabilistic signature scheme (PSS) verification parameters onto raw files or parameters.
+- verify_signature: Validates public cryptographic signatures against expected input hashes to test non-repudiation.
+- aes_encrypt: Performs authenticated symmetric encryption loops via authenticated standard AES-256-GCM configurations.
+- aes_decrypt: Checks PBKDF2 parameters and validates the GCM payload authentication tag to decrypt data streams safely.
+- generate_random_password: Generates complex cryptographically secure string combinations via operating system noise.
+- hash_password: Sets up strong one-way string transformations using high-round adaptive hashing algorithms (bcrypt/SHA).
+- verify_password: Dynamically compares password strings against historical algorithmic hash patterns.
+- generate_totp_secret: Computes standardized seed keys and generates provisioning URIs for authenticator applications.
+- verify_totp: Measures current authentication codes against localized windows to grant multi-factor access.
+- create_ssl_certificate / create_self_signed_cert: Generates local X.509 transport layer certificates for development environments.
+- pgp_encrypt: Imports target armored strings and outputs encrypted OpenPGP specification records.
+- pgp_decrypt: Opens encrypted messages via matching imported keys and access passphrases.
+
+How to use Tool Methods:
+
+1. generate_rsa_keypair:
+   - Purpose: Generates an RSA private and public key pair, saving them securely to the designated path.
+   - Arguments:
+     a) bits: int (default: 2048) - Bit strength indicating key size complexity.
+     b) output_folder: str (default: ".") - Relative or absolute storage folder targeted for PEM generation.
+   - Returns: ToolResult logging the destination paths of both private and public components.
+   - How to call: CryptographyTool.generate_rsa_keypair(bits=4096, output_folder="./keys")
+
+2. encrypt_with_public_key:
+   - Purpose: Asymmetrically encrypts a string payload with a recipient's public key.
+   - Arguments:
+     a) data: str - Plaintext data targeted for mathematical encryption (required).
+     b) public_key_path: str - Path location pointing to the public key file structure (required).
+   - Returns: ToolResult containing a base64-encoded ciphertext string wrapper.
+   - How to call: CryptographyTool.encrypt_with_public_key(data="Secret Message", public_key_path="./keys/public_key.pem")
+
+3. decrypt_with_private_key:
+   - Purpose: Decrypts an OAEP-padded base64 ciphertext back into plain text using a localized private key.
+   - Arguments:
+     a) data: str - Base64 encoded ciphertext string requiring mathematical decryption (required).
+     b) private_key_path: str - Local destination point tracking the corresponding private key (required).
+   - Returns: ToolResult exposing the decoded plaintext key value mapping.
+   - How to call: CryptographyTool.decrypt_with_private_key(data="abc123XYZ...", private_key_path="./keys/private_key.pem")
+
+4. sign_data:
+   - Purpose: Computes a digital signature over arbitrary data text using a private key to prove authorship.
+   - Arguments:
+     a) data: str - Raw context string requiring proof validation (required).
+     b) private_key_path: str - Private key target path utilized to generate signatures (required).
+   - Returns: ToolResult conveying a base64-encoded signature block.
+   - How to call: CryptographyTool.sign_data(data="Verify me", private_key_path="./keys/private_key.pem")
+
+5. verify_signature:
+   - Purpose: Decodes a signature file and checks it against an input data string to guarantee origin authenticity.
+   - Arguments:
+     a) data: str - Original plain data checked for structural changes or corruption (required).
+     b) signature: str - Base64 structural verification block tested for data integrity (required).
+     c) public_key_path: str - Location pointing to the sender's public validation parameters (required).
+   - Returns: ToolResult stating verification pass-fail status.
+   - How to call: CryptographyTool.verify_signature(data="Verify me", signature="sig==...", public_key_path="./keys/public_key.pem")
+
+6. aes_encrypt:
+   - Purpose: Implements symmetric password-based AES-GCM data encryption alongside high-iteration PBKDF2.
+   - Arguments:
+     a) data: str - Plain data targeted for quick symmetric translation locks (required).
+     b) password: str - Symmetric user passphrase used as the derivation source for key generation (required).
+     c) algorithm: str (default: "AES-256-GCM") - Cipher algorithm string pattern configuration.
+   - Returns: ToolResult wrapping derived salt, unique initialization nonce, and base64 text payloads.
+   - How to call: CryptographyTool.aes_encrypt(data="Sensitive Data", password="SuperPassword123")
+
+7. aes_decrypt:
+   - Purpose: Extracts verification blocks from a base64 packet to reverse password-based AES encryption maps.
+   - Arguments:
+     a) data: str - Composed base64 storage blocks containing salt, nonce, and ciphertext payload (required).
+     b) password: str - Symmetric decryption passphrase tested against payload generation keys (required).
+     c) algorithm: str (default: "AES-256-GCM") - Targeted cipher mode parameters matching initial setup.
+   - Returns: ToolResult yielding original clear-text strings.
+   - How to call: CryptographyTool.aes_decrypt(data="salt+nonce+cipher...", password="SuperPassword123")
+
+8. generate_random_password:
+   - Purpose: Generates high-entropy password strings using cryptographically secure random selection tools.
+   - Arguments:
+     a) length: int (default: 20) - Count determining the final index length of character strings.
+     b) complexity: str (default: "high") - Structural settings including punctuation layers ("high", "medium", "low").
+   - Returns: ToolResult displaying generated strings alongside contextual score percentages.
+   - How to call: CryptographyTool.generate_random_password(length=32, complexity="high")
+
+9. hash_password:
+   - Purpose: One-way cryptographically hashes passwords using adaptive work factors to protect against database leaks.
+   - Arguments:
+     a) password: str - Raw candidate text target locked for security tracking (required).
+     b) algorithm: str (default: "bcrypt") - Work factor logic configuration selectors ("bcrypt", "sha256", "sha512").
+     c) salt: str (default: None) - Hex string overriding system salt generations (applicable for SHA models).
+   - Returns: ToolResult capturing compiled secure hash outputs.
+   - How to call: CryptographyTool.hash_password(password="UserPass!", algorithm="bcrypt")
+
+10. verify_password:
+    - Purpose: Compares candidate text with stored secure bcrypt hashes to determine match status.
+    - Arguments:
+      a) password: str - Plaintext configuration parameter verified for access rights (required).
+      b) hash: str - Historic reference identifier mapping valid system keys (required).
+    - Returns: ToolResult capturing validation truth flags.
+    - How to call: CryptographyTool.verify_password(password="UserPass!", hash="$2b$12$...")
+
+11. generate_totp_secret:
+    - Purpose: Generates random base32 seeds and standard application endpoints for time-based one-time password flows.
+    - Arguments: None.
+    - Returns: ToolResult tracking active secrets, provisioning parameters, and initial token arrays.
+    - How to call: CryptographyTool.generate_totp_secret()
+
+12. verify_totp:
+    - Purpose: Assesses user validation submission inputs relative to valid TOTP token tracking structures.
+    - Arguments:
+      a) secret: str - Core base32 seed token defining user account properties (required).
+      b) token: str - Code string provided by the token device (required).
+    - Returns: ToolResult logging multi-factor verification success metrics.
+    - How to call: CryptographyTool.verify_totp(secret="KVKVE...", token="123456")
+
+13. create_ssl_certificate / create_self_signed_cert:
+    - Purpose: Assembles self-signed X.509 domain transport certificates to secure development instances.
+    - Arguments:
+      a) domain / cn: str - Core host URL string attached to the certificate layout profile (required).
+      b) output_folder: str - File system directory target collecting the generated PEM data (required).
+      c) days: int (default: 365) - Day offset values indicating operational certificate lifespan boundaries.
+    - Returns: ToolResult presenting key file storage target pathways.
+    - How to call: CryptographyTool.create_self_signed_cert(cn="localhost", output_folder="./certs", days=30)
+
+14. pgp_encrypt:
+    - Purpose: Automatically routes clear text messages through imported public PGP certificates to lock operational assets.
+    - Arguments:
+      a) message: str - Raw payload context string requiring secure encryption (required).
+      b) recipient_key: str - Pathway pointing to an armored asset block or key string structure (required).
+    - Returns: ToolResult displaying complete armored PGP text blocks alongside identifier fingerprints.
+    - How to call: CryptographyTool.pgp_encrypt(message="PGP text", recipient_key="./gpg/recipient.asc")
+
+15. pgp_decrypt:
+    - Purpose: Applies passphrases over imported private key materials to unlock encrypted PGP blocks.
+    - Arguments:
+      a) encrypted: str - Raw armored encrypted text layout requiring processing (required).
+      b) private_key: str - Target pathway location mapping the key holder private components (required).
+      c) passphrase: str (default: "") - Operational secret required to unlock access bounds on the private key file.
+    - Returns: ToolResult exposing clear text output results upon completion.
+    - How to call: CryptographyTool.pgp_decrypt(encrypted="-----BEGIN PGP...", private_key="./gpg/private.asc", passphrase="key_unlock_pass")
+""")
+
+    @staticmethod
+    def generate_rsa_keypair(bits: int = 2048, output_folder: str = ".") -> ToolResult:
+        try:
+            from cryptography.hazmat.primitives.asymmetric import rsa
+            from cryptography.hazmat.primitives import serialization
+            key = rsa.generate_private_key(public_exponent=65537, key_size=bits)
+            priv_pem = key.private_bytes(
+                serialization.Encoding.PEM, serialization.PrivateFormat.TraditionalOpenSSL,
+                serialization.NoEncryption()
+            )
+            pub_pem = key.public_key().public_bytes(
+                serialization.Encoding.PEM, serialization.PublicFormat.SubjectPublicKeyInfo
+            )
+            out = Path(output_folder)
+            out.mkdir(parents=True, exist_ok=True)
+            (out / "private_key.pem").write_bytes(priv_pem)
+            (out / "public_key.pem").write_bytes(pub_pem)
+            (out / "private_key.pem").chmod(0o600)
+            return ToolResult(True, f"✓ RSA {bits}-bit keypair generated in {output_folder}",
+                              {"private_key": str(out / "private_key.pem"),
+                               "public_key": str(out / "public_key.pem")})
+        except Exception as e:
+            return ToolResult(False, f"✗ generate_rsa_keypair failed: {e}")
+
+    @staticmethod
+    def encrypt_with_public_key(data: str, public_key_path: str) -> ToolResult:
+        try:
+            from cryptography.hazmat.primitives import serialization, hashes
+            from cryptography.hazmat.primitives.asymmetric import padding
+            pub_key = serialization.load_pem_public_key(Path(public_key_path).read_bytes())
+            ciphertext = pub_key.encrypt(
+                data.encode(),
+                padding.OAEP(mgf=padding.MGF1(hashes.SHA256()), algorithm=hashes.SHA256(), label=None)
+            )
+            return ToolResult(True, "✓ Data encrypted",
+                              {"ciphertext": base64.b64encode(ciphertext).decode()})
+        except Exception as e:
+            return ToolResult(False, f"✗ encrypt_with_public_key failed: {e}")
+
+    @staticmethod
+    def decrypt_with_private_key(data: str, private_key_path: str) -> ToolResult:
+        """data: base64-encoded ciphertext"""
+        try:
+            from cryptography.hazmat.primitives import serialization, hashes
+            from cryptography.hazmat.primitives.asymmetric import padding
+            priv_key = serialization.load_pem_private_key(Path(private_key_path).read_bytes(), password=None)
+            ciphertext = base64.b64decode(data)
+            plaintext = priv_key.decrypt(
+                ciphertext,
+                padding.OAEP(mgf=padding.MGF1(hashes.SHA256()), algorithm=hashes.SHA256(), label=None)
+            )
+            return ToolResult(True, "✓ Data decrypted", {"plaintext": plaintext.decode()})
+        except Exception as e:
+            return ToolResult(False, f"✗ decrypt_with_private_key failed: {e}")
+
+    @staticmethod
+    def sign_data(data: str, private_key_path: str) -> ToolResult:
+        try:
+            from cryptography.hazmat.primitives import serialization, hashes
+            from cryptography.hazmat.primitives.asymmetric import padding
+            priv_key = serialization.load_pem_private_key(Path(private_key_path).read_bytes(), password=None)
+            sig = priv_key.sign(data.encode(),
+                                padding.PSS(mgf=padding.MGF1(hashes.SHA256()),
+                                            salt_length=padding.PSS.MAX_LENGTH),
+                                hashes.SHA256())
+            return ToolResult(True, "✓ Data signed",
+                              {"signature": base64.b64encode(sig).decode()})
+        except Exception as e:
+            return ToolResult(False, f"✗ sign_data failed: {e}")
+
+    @staticmethod
+    def verify_signature(data: str, signature: str, public_key_path: str) -> ToolResult:
+        """signature: base64-encoded"""
+        try:
+            from cryptography.hazmat.primitives import serialization, hashes
+            from cryptography.hazmat.primitives.asymmetric import padding
+            from cryptography.exceptions import InvalidSignature
+            pub_key = serialization.load_pem_public_key(Path(public_key_path).read_bytes())
+            sig = base64.b64decode(signature)
+            pub_key.verify(sig, data.encode(),
+                           padding.PSS(mgf=padding.MGF1(hashes.SHA256()),
+                                       salt_length=padding.PSS.MAX_LENGTH),
+                           hashes.SHA256())
+            return ToolResult(True, "✓ Signature valid", {"valid": True})
+        except Exception as e:
+            valid = "InvalidSignature" not in type(e).__name__
+            return ToolResult(not valid, f"✗ Signature invalid: {e}", {"valid": False})
+
+    @staticmethod
+    def aes_encrypt(data: str, password: str, algorithm: str = "AES-256-GCM") -> ToolResult:
+        try:
+            from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+            from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+            from cryptography.hazmat.primitives import hashes
+            salt = os.urandom(16)
+            kdf = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=salt, iterations=390000)
+            key = kdf.derive(password.encode())
+            nonce = os.urandom(12)
+            aesgcm = AESGCM(key)
+            ciphertext = aesgcm.encrypt(nonce, data.encode(), None)
+            payload = base64.b64encode(salt + nonce + ciphertext).decode()
+            return ToolResult(True, "✓ Data AES encrypted", {"ciphertext": payload, "algorithm": algorithm})
+        except Exception as e:
+            return ToolResult(False, f"✗ aes_encrypt failed: {e}")
+
+    @staticmethod
+    def aes_decrypt(data: str, password: str, algorithm: str = "AES-256-GCM") -> ToolResult:
+        try:
+            from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+            from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+            from cryptography.hazmat.primitives import hashes
+            raw = base64.b64decode(data)
+            salt, nonce, ciphertext = raw[:16], raw[16:28], raw[28:]
+            kdf = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=salt, iterations=390000)
+            key = kdf.derive(password.encode())
+            aesgcm = AESGCM(key)
+            plaintext = aesgcm.decrypt(nonce, ciphertext, None)
+            return ToolResult(True, "✓ Data AES decrypted", {"plaintext": plaintext.decode()})
+        except Exception as e:
+            return ToolResult(False, f"✗ aes_decrypt failed: {e}")
+
+    @staticmethod
+    def generate_random_password(length: int = 20, complexity: str = "high") -> ToolResult:
+        try:
+            import secrets, string
+            chars = string.ascii_letters + string.digits
+            if complexity in ("high", "medium"):
+                chars += string.punctuation
+            password = "".join(secrets.choice(chars) for _ in range(length))
+            strength_score = (
+                sum([any(c.isupper() for c in password),
+                     any(c.islower() for c in password),
+                     any(c.isdigit() for c in password),
+                     any(c in string.punctuation for c in password)]) * 25
+            )
+            return ToolResult(True, f"✓ Password generated (strength: {strength_score}%)",
+                              {"password": password, "length": length, "strength": strength_score})
+        except Exception as e:
+            return ToolResult(False, f"✗ generate_random_password failed: {e}")
+
+    @staticmethod
+    def hash_password(password: str, algorithm: str = "bcrypt", salt: str = None) -> ToolResult:
+        try:
+            if algorithm == "bcrypt":
+                import bcrypt
+                hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt(rounds=12))
+                return ToolResult(True, "✓ Password hashed (bcrypt)",
+                                  {"hash": hashed.decode(), "algorithm": "bcrypt"})
+            elif algorithm in ("sha256", "sha512"):
+                s = (salt or os.urandom(32).hex()).encode()
+                h = hashlib.new(algorithm, s + password.encode()).hexdigest()
+                return ToolResult(True, f"✓ Password hashed ({algorithm})",
+                                  {"hash": h, "salt": s.decode(), "algorithm": algorithm})
+            else:
+                return ToolResult(False, f"✗ Unknown algorithm: {algorithm}. Use bcrypt/sha256/sha512")
+        except Exception as e:
+            return ToolResult(False, f"✗ hash_password failed: {e}")
+
+    @staticmethod
+    def verify_password(password: str, hash: str) -> ToolResult:
+        try:
+            # Detect algorithm
+            if hash.startswith("$2b$") or hash.startswith("$2a$"):
+                import bcrypt
+                valid = bcrypt.checkpw(password.encode(), hash.encode())
+            else:
+                # SHA-based — cannot verify without stored salt separately
+                return ToolResult(False, "✗ Cannot verify non-bcrypt hash without salt. Use bcrypt.")
+            return ToolResult(True, f"✓ Password {'valid' if valid else 'invalid'}",
+                              {"valid": valid})
+        except Exception as e:
+            return ToolResult(False, f"✗ verify_password failed: {e}")
+
+    @staticmethod
+    def generate_totp_secret() -> ToolResult:
+        try:
+            import pyotp
+            secret = pyotp.random_base32()
+            totp = pyotp.TOTP(secret)
+            uri = totp.provisioning_uri(name="NPM Agent", issuer_name="NPMAI")
+            return ToolResult(True, "✓ TOTP secret generated",
+                              {"secret": secret, "provisioning_uri": uri,
+                               "current_token": totp.now()})
+        except Exception as e:
+            return ToolResult(False, f"✗ generate_totp_secret failed: {e}")
+
+    @staticmethod
+    def verify_totp(secret: str, token: str) -> ToolResult:
+        try:
+            import pyotp
+            totp = pyotp.TOTP(secret)
+            valid = totp.verify(token, valid_window=1)
+            return ToolResult(True, f"✓ TOTP token {'valid' if valid else 'invalid'}",
+                              {"valid": valid, "expected": totp.now()})
+        except Exception as e:
+            return ToolResult(False, f"✗ verify_totp failed: {e}")
+
+    @staticmethod
+    def create_ssl_certificate(domain: str, output_folder: str, days: int = 365) -> ToolResult:
+        """Generate a self-signed cert (for dev/internal use)."""
+        return CryptographyTool.create_self_signed_cert(domain, output_folder, days)
+
+    @staticmethod
+    def create_self_signed_cert(cn: str, output_folder: str, days: int = 365) -> ToolResult:
+        try:
+            from cryptography import x509
+            from cryptography.x509.oid import NameOID
+            from cryptography.hazmat.primitives import hashes, serialization
+            from cryptography.hazmat.primitives.asymmetric import rsa
+            key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+            subject = issuer = x509.Name([
+                x509.NameAttribute(NameOID.COUNTRY_NAME, "US"),
+                x509.NameAttribute(NameOID.ORGANIZATION_NAME, "NPM Agent"),
+                x509.NameAttribute(NameOID.COMMON_NAME, cn),
+            ])
+            cert = (x509.CertificateBuilder()
+                    .subject_name(subject).issuer_name(issuer)
+                    .public_key(key.public_key())
+                    .serial_number(x509.random_serial_number())
+                    .not_valid_before(datetime.utcnow())
+                    .not_valid_after(datetime.utcnow() + timedelta(days=days))
+                    .add_extension(x509.SubjectAlternativeName([x509.DNSName(cn)]), critical=False)
+                    .sign(key, hashes.SHA256()))
+            out = Path(output_folder)
+            out.mkdir(parents=True, exist_ok=True)
+            (out / "cert.pem").write_bytes(cert.public_bytes(serialization.Encoding.PEM))
+            (out / "key.pem").write_bytes(
+                key.private_bytes(serialization.Encoding.PEM,
+                                  serialization.PrivateFormat.TraditionalOpenSSL,
+                                  serialization.NoEncryption()))
+            return ToolResult(True, f"✓ Self-signed cert for '{cn}' ({days} days)",
+                              {"cert": str(out / "cert.pem"), "key": str(out / "key.pem")})
+        except Exception as e:
+            return ToolResult(False, f"✗ create_self_signed_cert failed: {e}")
+
+    @staticmethod
+    def pgp_encrypt(message: str, recipient_key: str) -> ToolResult:
+        """recipient_key: path to armored public key file or key string."""
+        try:
+            import gnupg
+            gpg = gnupg.GPG()
+            # Import key if path
+            if Path(recipient_key).exists():
+                import_result = gpg.import_keys(Path(recipient_key).read_text())
+                fingerprint = import_result.fingerprints[0] if import_result.fingerprints else None
+            else:
+                import_result = gpg.import_keys(recipient_key)
+                fingerprint = import_result.fingerprints[0] if import_result.fingerprints else None
+            if not fingerprint:
+                return ToolResult(False, "✗ Could not import PGP key")
+            encrypted = gpg.encrypt(message, fingerprint, always_trust=True)
+            return ToolResult(str(encrypted).startswith("-----"), "✓ PGP encrypted",
+                              {"encrypted": str(encrypted), "fingerprint": fingerprint})
+        except ImportError:
+            return ToolResult(False, "✗ python-gnupg not installed. Run: pip install python-gnupg")
+        except Exception as e:
+            return ToolResult(False, f"✗ pgp_encrypt failed: {e}")
+
+    @staticmethod
+    def pgp_decrypt(encrypted: str, private_key: str, passphrase: str = "") -> ToolResult:
+        try:
+            import gnupg
+            gpg = gnupg.GPG()
+            if Path(private_key).exists():
+                gpg.import_keys(Path(private_key).read_text())
+            else:
+                gpg.import_keys(private_key)
+            decrypted = gpg.decrypt(encrypted, passphrase=passphrase)
+            if decrypted.ok:
+                return ToolResult(True, "✓ PGP decrypted", {"plaintext": str(decrypted)})
+            return ToolResult(False, f"✗ PGP decrypt failed: {decrypted.status}")
+        except ImportError:
+            return ToolResult(False, "✗ python-gnupg not installed.")
+        except Exception as e:
+            return ToolResult(False, f"✗ pgp_decrypt failed: {e}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 3. PenetrationTestingTool
+# ═══════════════════════════════════════════════════════════════════════════
+class PenetrationTestingTool:
+    """
+    ╔══════════════════════════════════════════════════════════════════════╗
+    ║  FOR AUTHORIZED TESTING ONLY                                        ║
+    ║  Always obtain written permission from the system owner before      ║
+    ║  running any of these tests. Unauthorized use is illegal and        ║
+    ║  unethical. NPM Agent and NPMAI Ecosystem are not responsible for   ║
+    ║  any misuse of these tools.                                         ║
+    ╚══════════════════════════════════════════════════════════════════════╝
+    """
+    name = "penetration_testing"
+    description = (
+        "AUTHORIZED TESTING ONLY: subdomain enum, dir bruteforce, "
+        "vuln checks, HTTP headers, CORS, SQLi/XSS tests, SSL vulns, "
+        "security reports, pentest checklists"
+    )
+    use = ("""
+Name of Tool: PenetrationTestingTool
+
+Purpose of Tool:
+The PenetrationTestingTool serves as an automated verification suite designed to perform web application security assessments, passive configuration discovery, and endpoint validation. It encapsulates common auditing techniques such as multi-threaded subdomain mapping, path enumeration, security header analysis, CORS misconfiguration validation, and signature/error-based logic testing (SQLi/XSS). This class helps security professionals and developers systematically audit exposed attack surfaces and generate structured compliance checklists or remediation summaries.
+
+Methods:
+- subdomain_enumeration: Concurrently queries common hostname prefixes against a root domain to detect active web assets.
+- directory_bruteforce: Evaluates server response codes against a list of common file paths and extensions to identify exposed endpoints.
+- check_common_vulnerabilities: Validates target configurations for missing protection headers, technology banners, and sensitive exposed text files.
+- check_http_headers: Evaluates modern HTTP defense parameters to calculate a standardized security posture grade.
+- check_cors: Tests cross-origin resource sharing policies against malicious headers to detect permissive data-access exposures.
+- sql_injection_test: Fuzzes key parameters with common syntax characters to monitor for database error leaks.
+- xss_test: Validates inputs to check if special characters reflect cleanly back within the raw response body.
+- check_ssl_vulnerabilities: Tests negotiation capabilities against legacy TLS versions and measures certificate lifetimes.
+- check_outdated_software: Extracts application version identifiers from system banners, meta tags, and content paths.
+- generate_security_report: Compiles raw vulnerability findings into an organized, risk-prioritized Markdown assessment report.
+- create_pentest_checklist: Produces target-specific security assessment checklists across web, network, or API profiles.
+
+How to use Tool Methods:
+
+1. subdomain_enumeration:
+   - Purpose: Maps out the external attack surface of a root domain via parallel DNS resolution.
+   - Arguments:
+     a) domain: str - The parent domain name under review (required).
+     b) wordlist: str (default: None) - Optional path to a custom text file containing subdomain prefixes.
+     c) threads: int (default: 20) - Execution concurrency limit.
+   - Returns: ToolResult listing found subdomains paired with resolved IP mappings.
+   - How to call: PenetrationTestingTool.subdomain_enumeration(domain="example.com", threads=10)
+
+2. directory_bruteforce:
+   - Purpose: Discovers unlinked files, backup structures, and administrative endpoints.
+   - Arguments:
+     a) url: str - Base target address path (required).
+     b) wordlist: str (default: None) - Optional location matching custom resource paths.
+     c) extensions: list (default: None) - Suffix types appended during active path generation loops.
+     d) threads: int (default: 10) - Total concurrent connection threads.
+   - Returns: ToolResult documenting reachable paths alongside returned HTTP status codes.
+   - How to call: PenetrationTestingTool.directory_bruteforce(url="https://example.com", extensions=[".html", ".txt"])
+
+3. check_common_vulnerabilities:
+   - Purpose: Audits target web servers for standard passive validation failures and exposed structural settings.
+   - Arguments:
+     a) url: str - Fully qualified remote address targeted for scanning (required).
+   - Returns: ToolResult carrying categorised threat details and a consolidated severity count summary.
+   - How to call: PenetrationTestingTool.check_common_vulnerabilities(url="https://example.com")
+
+4. check_http_headers:
+   - Purpose: Gauges the defensive capabilities of target applications based on header configurations.
+   - Arguments:
+     a) url: str - The target application endpoint to audit (required).
+   - Returns: ToolResult showing missing headers alongside an overall score letter grade from A+ to F.
+   - How to call: PenetrationTestingTool.check_http_headers(url="https://example.com")
+
+5. check_cors:
+   - Purpose: Evaluates Cross-Origin Resource Sharing settings to protect against unauthorized multi-domain access.
+   - Arguments:
+     a) url: str - Target application endpoint or API route under review (required).
+   - Returns: ToolResult specifying origin acceptance behavior and marking critical access states.
+   - How to call: PenetrationTestingTool.check_cors(url="https://api.example.com")
+
+6. sql_injection_test:
+   - Purpose: Evaluates parameter sanitization against basic error-based database anomalies.
+   - Arguments:
+     a) url: str - Active endpoint path to receive requests (required).
+     b) params: dict - Key-value structure matching active application parameters (required).
+     c) method: str (default: "GET") - HTTP request protocol method (GET or POST).
+   - Returns: ToolResult logging the injection point details and returned indicator strings.
+   - How to call: PenetrationTestingTool.sql_injection_test(url="https://example.com/search", params={"q": "test"})
+
+7. xss_test:
+   - Purpose: Checks whether parameter values reflect directly into response bodies without appropriate context encoding.
+   - Arguments:
+     a) url: str - Target application processing path (required).
+     b) params: dict - Active fields evaluated during reflection sequences (required).
+     c) method: str (default: "GET") - Web transmission method selection.
+   - Returns: ToolResult pinpointing elements where script patterns mirror directly inside page contexts.
+   - How to call: PenetrationTestingTool.xss_test(url="https://example.com/view", params={"id": "1"})
+
+8. check_ssl_vulnerabilities:
+   - Purpose: Assesses transport layer security configurations for outmoded protocols or expiring certificates.
+   - Arguments:
+     a) domain: str - Host domain name evaluated during connection handshake routines (required).
+     b) port: int (default: 443) - Structural network port tracking secure communication routes.
+   - Returns: ToolResult capturing protocol validation statuses and certificate lifetime margins.
+   - How to call: PenetrationTestingTool.check_ssl_vulnerabilities(domain="example.com")
+
+9. check_outdated_software:
+   - Purpose: Identifies component details through response signatures to detect potential unpatched environments.
+   - Arguments:
+     a) url: str - Remote endpoint location under analysis (required).
+   - Returns: ToolResult aggregating discovered platform identifiers, meta attributes, or structural application tags.
+   - How to call: PenetrationTestingTool.check_outdated_software(url="https://example.com")
+
+10. generate_security_report:
+    - Purpose: Aggregates arbitrary finding logs into formatted corporate-ready technical summary documents.
+    - Arguments:
+      a) target: str - Label tracking the system or environment under review (required).
+      b) scan_results: list - Collection array containing tool execution results (required).
+      c) output: str - Target output path file location collecting report text (required).
+    - Returns: ToolResult stating path confirmation summaries alongside overall risk statistics.
+    - How to call: PenetrationTestingTool.generate_security_report(target="example.com", scan_results=[res1, res2], output="report.md")
+
+11. create_pentest_checklist:
+    - Purpose: Provisions industry standard structured verification frameworks to systematically run target assessments.
+    - Arguments:
+      a) target_type: str (default: "web") - Operational category choice ("web", "api", "network").
+      b) output: str (default: "pentest_checklist.md") - Destination path collecting the finished file.
+    - Returns: ToolResult logging local file storage outcomes.
+    - How to call: PenetrationTestingTool.create_pentest_checklist(target_type="api", output="api_audit.md")
+""")
+
+    @staticmethod
+    def subdomain_enumeration(domain: str, wordlist: str = None, threads: int = 20) -> ToolResult:
+        """FOR AUTHORIZED TESTING ONLY."""
+        try:
+            import requests
+            common_subs = (Path(wordlist).read_text().splitlines() if wordlist and Path(wordlist).exists()
+                           else ["www", "mail", "ftp", "admin", "api", "dev", "staging", "test",
+                                 "app", "blog", "shop", "vpn", "remote", "portal", "smtp", "imap",
+                                 "ns1", "ns2", "mx", "cdn", "static", "assets", "auth", "login"])
+            found = []
+            lock = threading.Lock()
+
+            def check_sub(sub):
+                target = f"{sub}.{domain}"
+                try:
+                    ip = socket.gethostbyname(target)
+                    with lock:
+                        found.append({"subdomain": target, "ip": ip})
+                except socket.gaierror:
+                    pass
+
+            batch = [threading.Thread(target=check_sub, args=(s,)) for s in common_subs]
+            for t in batch:
+                t.start()
+            for t in batch:
+                t.join(timeout=5)
+
+            return ToolResult(True, f"✓ Found {len(found)} subdomains for {domain}", found)
+        except Exception as e:
+            return ToolResult(False, f"✗ subdomain_enumeration failed: {e}")
+
+    @staticmethod
+    def directory_bruteforce(url: str, wordlist: str = None, extensions: list = None,
+                             threads: int = 10) -> ToolResult:
+        """FOR AUTHORIZED TESTING ONLY."""
+        try:
+            import requests
+            paths = (Path(wordlist).read_text().splitlines() if wordlist and Path(wordlist).exists()
+                     else ["admin", "login", "dashboard", "api", "config", "backup", "test",
+                           "upload", "uploads", "static", "assets", "phpinfo.php", "wp-admin",
+                           ".git", ".env", "robots.txt", "sitemap.xml", "README.md"])
+            exts = extensions or ["", ".php", ".html", ".asp", ".aspx", ".bak"]
+            found = []
+            lock = threading.Lock()
+            session = requests.Session()
+            session.headers = {"User-Agent": "Mozilla/5.0 (Security Test)"}
+
+            def check_path(path_ext):
+                target = url.rstrip("/") + "/" + path_ext
+                try:
+                    r = session.get(target, timeout=5, allow_redirects=False)
+                    if r.status_code not in (404, 410):
+                        with lock:
+                            found.append({"url": target, "status": r.status_code,
+                                          "size": len(r.content)})
+                except Exception:
+                    pass
+
+            all_paths = [p + e for p in paths for e in exts if p and not p.endswith(e.lstrip("."))]
+            batch_size = threads
+            for i in range(0, len(all_paths), batch_size):
+                batch = [threading.Thread(target=check_path, args=(p,)) for p in all_paths[i:i+batch_size]]
+                for t in batch:
+                    t.start()
+                for t in batch:
+                    t.join(timeout=10)
+
+            return ToolResult(True, f"✓ Found {len(found)} accessible paths", found)
+        except Exception as e:
+            return ToolResult(False, f"✗ directory_bruteforce failed: {e}")
+
+    @staticmethod
+    def check_common_vulnerabilities(url: str) -> ToolResult:
+        """FOR AUTHORIZED TESTING ONLY. Passive checks only."""
+        try:
+            import requests
+            findings = []
+            r = requests.get(url, timeout=10, verify=False)
+            headers = {k.lower(): v for k, v in r.headers.items()}
+            # Check missing security headers
+            for h in ["x-frame-options", "x-content-type-options", "x-xss-protection",
+                      "strict-transport-security", "content-security-policy"]:
+                if h not in headers:
+                    findings.append({"type": "missing_header", "header": h, "severity": "medium"})
+            # Check server disclosure
+            if "server" in headers:
+                findings.append({"type": "server_disclosure", "value": headers["server"],
+                                 "severity": "low"})
+            # Check version disclosure in X-Powered-By
+            if "x-powered-by" in headers:
+                findings.append({"type": "tech_disclosure", "value": headers["x-powered-by"],
+                                 "severity": "low"})
+            # Check for HTTP (not HTTPS)
+            if url.startswith("http://"):
+                findings.append({"type": "no_https", "severity": "high"})
+            # Check for directory listing indicators
+            if "<title>Index of" in r.text:
+                findings.append({"type": "directory_listing", "severity": "high"})
+            # Check for common exposed files
+            for path in ["/robots.txt", "/.git/config", "/.env", "/wp-config.php.bak"]:
+                try:
+                    rp = requests.get(url.rstrip("/") + path, timeout=5)
+                    if rp.status_code == 200 and len(rp.text) > 10:
+                        findings.append({"type": "exposed_file", "path": path, "severity": "high"})
+                except Exception:
+                    pass
+            severity_counts = {"high": 0, "medium": 0, "low": 0}
+            for f in findings:
+                severity_counts[f.get("severity", "low")] += 1
+            return ToolResult(True,
+                              f"✓ {len(findings)} issues: {severity_counts['high']}H {severity_counts['medium']}M {severity_counts['low']}L",
+                              {"findings": findings, "severity_summary": severity_counts})
+        except Exception as e:
+            return ToolResult(False, f"✗ check_common_vulnerabilities failed: {e}")
+
+    @staticmethod
+    def check_http_headers(url: str) -> ToolResult:
+        """FOR AUTHORIZED TESTING ONLY."""
+        try:
+            import requests
+            r = requests.get(url, timeout=10)
+            security_headers = {
+                "Strict-Transport-Security": r.headers.get("Strict-Transport-Security", "MISSING"),
+                "Content-Security-Policy": r.headers.get("Content-Security-Policy", "MISSING"),
+                "X-Frame-Options": r.headers.get("X-Frame-Options", "MISSING"),
+                "X-Content-Type-Options": r.headers.get("X-Content-Type-Options", "MISSING"),
+                "X-XSS-Protection": r.headers.get("X-XSS-Protection", "MISSING"),
+                "Referrer-Policy": r.headers.get("Referrer-Policy", "MISSING"),
+                "Permissions-Policy": r.headers.get("Permissions-Policy", "MISSING"),
+            }
+            score = sum(1 for v in security_headers.values() if v != "MISSING")
+            grade = ["F", "D", "C", "C+", "B", "B+", "A", "A+"][min(score, 7)]
+            return ToolResult(True, f"✓ Security headers grade: {grade} ({score}/7)",
+                              {"url": url, "grade": grade, "score": f"{score}/7",
+                               "headers": security_headers, "all_headers": dict(r.headers)})
+        except Exception as e:
+            return ToolResult(False, f"✗ check_http_headers failed: {e}")
+
+    @staticmethod
+    def check_cors(url: str) -> ToolResult:
+        """FOR AUTHORIZED TESTING ONLY."""
+        try:
+            import requests
+            test_origins = ["https://evil.com", "null", "https://attacker.example.com"]
+            results = []
+            for origin in test_origins:
+                r = requests.get(url, headers={"Origin": origin}, timeout=10)
+                acao = r.headers.get("Access-Control-Allow-Origin", "")
+                acac = r.headers.get("Access-Control-Allow-Credentials", "")
+                vulnerable = (acao == origin or acao == "*")
+                critical = vulnerable and acac.lower() == "true"
+                results.append({
+                    "origin_tested": origin, "acao": acao, "credentials": acac,
+                    "vulnerable": vulnerable, "critical": critical
+                })
+            any_vuln = any(r["vulnerable"] for r in results)
+            any_crit = any(r["critical"] for r in results)
+            return ToolResult(True,
+                              f"{'🚨 Critical CORS' if any_crit else ('⚠ CORS vulnerable' if any_vuln else '✓ CORS OK')}",
+                              {"results": results, "vulnerable": any_vuln, "critical": any_crit})
+        except Exception as e:
+            return ToolResult(False, f"✗ check_cors failed: {e}")
+
+    @staticmethod
+    def sql_injection_test(url: str, params: dict, method: str = "GET") -> ToolResult:
+        """FOR AUTHORIZED TESTING ONLY. Error-based SQLi detection only."""
+        try:
+            import requests
+            payloads = ["'", "''", "';--", "1' OR '1'='1", "1; SELECT 1--",
+                        "' OR 1=1--", "admin'--", "' UNION SELECT NULL--"]
+            sql_errors = ["sql syntax", "mysql_fetch", "unclosed quotation", "ORA-01756",
+                          "SQLSyntaxErrorException", "syntax error", "unterminated string",
+                          "pg_query", "Microsoft OLE DB", "ODBC SQL Server Driver"]
+            findings = []
+            for param, original_val in params.items():
+                for payload in payloads:
+                    test_params = dict(params)
+                    test_params[param] = payload
+                    try:
+                        if method.upper() == "GET":
+                            r = requests.get(url, params=test_params, timeout=8)
+                        else:
+                            r = requests.post(url, data=test_params, timeout=8)
+                        resp_lower = r.text.lower()
+                        for err in sql_errors:
+                            if err.lower() in resp_lower:
+                                findings.append({
+                                    "param": param, "payload": payload,
+                                    "error_indicator": err, "severity": "critical"
+                                })
+                                break
+                    except Exception:
+                        pass
+            return ToolResult(True,
+                              f"{'🚨 SQLi indicators found: ' + str(len(findings)) if findings else '✓ No SQLi indicators detected'}",
+                              {"findings": findings, "payloads_tested": len(payloads) * len(params)})
+        except Exception as e:
+            return ToolResult(False, f"✗ sql_injection_test failed: {e}")
+
+    @staticmethod
+    def xss_test(url: str, params: dict, method: str = "GET") -> ToolResult:
+        """FOR AUTHORIZED TESTING ONLY. Reflected XSS detection."""
+        try:
+            import requests
+            payloads = [
+                "<script>alert(1)</script>",
+                '"><script>alert(1)</script>',
+                "'><img src=x onerror=alert(1)>",
+                "<svg onload=alert(1)>",
+                "javascript:alert(1)",
+            ]
+            findings = []
+            for param, _ in params.items():
+                for payload in payloads:
+                    test_params = dict(params)
+                    test_params[param] = payload
+                    try:
+                        if method.upper() == "GET":
+                            r = requests.get(url, params=test_params, timeout=8)
+                        else:
+                            r = requests.post(url, data=test_params, timeout=8)
+                        if payload in r.text:
+                            findings.append({
+                                "param": param, "payload": payload,
+                                "type": "reflected_xss", "severity": "high"
+                            })
+                    except Exception:
+                        pass
+            return ToolResult(True,
+                              f"{'⚠ XSS indicators: ' + str(len(findings)) if findings else '✓ No reflected XSS detected'}",
+                              {"findings": findings})
+        except Exception as e:
+            return ToolResult(False, f"✗ xss_test failed: {e}")
+
+    @staticmethod
+    def check_ssl_vulnerabilities(domain: str, port: int = 443) -> ToolResult:
+        """FOR AUTHORIZED TESTING ONLY."""
+        try:
+            import ssl
+            import socket
+            findings = []
+            # Check legacy protocols
+            for proto_name, proto in [("SSLv2", None), ("SSLv3", None), ("TLSv1.0", ssl.TLSVersion.TLSv1),
+                                       ("TLSv1.1", ssl.TLSVersion.TLSv1_1)]:
+                try:
+                    ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                    ctx.check_hostname = False
+                    ctx.verify_mode = ssl.CERT_NONE
+                    if proto:
+                        ctx.maximum_version = proto
+                        ctx.minimum_version = proto
+                    with ctx.wrap_socket(socket.socket(), server_hostname=domain) as s:
+                        s.settimeout(5)
+                        s.connect((domain, port))
+                        findings.append({"type": "legacy_protocol", "protocol": proto_name,
+                                         "severity": "high"})
+                except Exception:
+                    pass  # Protocol rejected = good
+            # Check cert
+            ssl_result = SecurityScannerTool.check_ssl_grade(domain)
+            if ssl_result.success and ssl_result.data:
+                days = ssl_result.data.get("days_until_expiry", 999)
+                if days < 30:
+                    findings.append({"type": "expiring_cert", "days_left": days, "severity": "medium"})
+            return ToolResult(True,
+                              f"{'⚠ ' + str(len(findings)) + ' SSL issues found' if findings else '✓ No critical SSL issues'}",
+                              {"domain": domain, "findings": findings, "ssl_info": ssl_result.data})
+        except Exception as e:
+            return ToolResult(False, f"✗ check_ssl_vulnerabilities failed: {e}")
+
+    @staticmethod
+    def check_outdated_software(url: str) -> ToolResult:
+        """FOR AUTHORIZED TESTING ONLY. Detect version info from headers and HTML."""
+        try:
+            import requests
+            r = requests.get(url, timeout=10)
+            findings = []
+            # Header-based detection
+            server = r.headers.get("Server", "")
+            if server:
+                findings.append({"type": "server_banner", "value": server})
+            powered = r.headers.get("X-Powered-By", "")
+            if powered:
+                findings.append({"type": "powered_by", "value": powered})
+            # HTML meta generator
+            gen_match = re.search(r'<meta[^>]+name=["\']generator["\'][^>]+content=["\']([^"\']+)["\']',
+                                  r.text, re.IGNORECASE)
+            if gen_match:
+                findings.append({"type": "generator", "value": gen_match.group(1)})
+            # WordPress detection
+            if "/wp-content/" in r.text:
+                findings.append({"type": "cms", "value": "WordPress detected"})
+            return ToolResult(True, f"✓ {len(findings)} software indicators found", findings)
+        except Exception as e:
+            return ToolResult(False, f"✗ check_outdated_software failed: {e}")
+
+    @staticmethod
+    def generate_security_report(target: str, scan_results: list, output: str) -> ToolResult:
+        """Generate a markdown security assessment report."""
+        try:
+            all_findings = []
+            for result in scan_results:
+                if isinstance(result, dict):
+                    findings = result.get("findings", result.get("results", [result]))
+                    if isinstance(findings, list):
+                        all_findings.extend(findings)
+            severity_counts = {"critical": 0, "high": 0, "medium": 0, "low": 0, "info": 0}
+            for f in all_findings:
+                sev = f.get("severity", "info").lower()
+                severity_counts[sev] = severity_counts.get(sev, 0) + 1
+            lines = [
+                f"# Security Assessment Report",
+                f"\n**Target:** {target}",
+                f"**Date:** {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+                f"**Generated by:** NPM Agent / NPMAI Ecosystem\n",
+                "---\n",
+                "## Executive Summary\n",
+                "| Severity | Count |",
+                "|----------|-------|",
+            ]
+            for sev, count in severity_counts.items():
+                lines.append(f"| {sev.capitalize()} | {count} |")
+            lines += ["\n---\n", "## Findings\n"]
+            for i, f in enumerate(all_findings, 1):
+                sev = f.get("severity", "info").upper()
+                lines.append(f"### Finding {i}: [{sev}] {f.get('type', 'Issue')}")
+                for k, v in f.items():
+                    if k != "type":
+                        lines.append(f"- **{k.replace('_', ' ').title()}:** {v}")
+                lines.append("")
+            lines += ["\n---\n", "## Disclaimer\n",
+                      "_This report was generated for authorized security testing only. "
+                      "All findings should be remediated according to risk priority._"]
+            Path(output).write_text("\n".join(lines), encoding="utf-8")
+            return ToolResult(True, f"✓ Security report saved to {output}",
+                              {"findings": len(all_findings), "output": output,
+                               "severity_summary": severity_counts})
+        except Exception as e:
+            return ToolResult(False, f"✗ generate_security_report failed: {e}")
+
+    @staticmethod
+    def create_pentest_checklist(target_type: str = "web", output: str = "pentest_checklist.md") -> ToolResult:
+        """target_type: web | api | network | mobile"""
+        try:
+            checklists = {
+                "web": [
+                    ("Reconnaissance", ["WHOIS lookup", "DNS enumeration", "Subdomain discovery",
+                                        "Technology fingerprinting", "Google dorking"]),
+                    ("Authentication", ["Default credentials", "Brute force protection", "MFA bypass",
+                                        "Password complexity", "Account lockout"]),
+                    ("Authorization", ["Horizontal privilege escalation", "Vertical privilege escalation",
+                                       "IDOR testing", "Path traversal"]),
+                    ("Injection", ["SQL injection", "Command injection", "LDAP injection",
+                                   "XPath injection", "Template injection"]),
+                    ("XSS", ["Reflected XSS", "Stored XSS", "DOM XSS", "CSP evaluation"]),
+                    ("Business Logic", ["Parameter tampering", "Race conditions", "Workflow bypass"]),
+                    ("Configuration", ["HTTP security headers", "CORS policy", "SSL/TLS config",
+                                       "Error message disclosure", "Directory listing"]),
+                ],
+                "api": [
+                    ("Discovery", ["API endpoint enumeration", "Swagger/OpenAPI exposure",
+                                   "Version disclosure", "HTTP method fuzzing"]),
+                    ("Authentication", ["API key exposure", "JWT vulnerabilities", "OAuth flaws"]),
+                    ("Authorization", ["BOLA/IDOR", "Function-level auth", "Object property exposure"]),
+                    ("Input Validation", ["Mass assignment", "Injection via API params",
+                                          "File upload abuse"]),
+                ],
+                "network": [
+                    ("Discovery", ["Host discovery", "Port scanning", "Service fingerprinting"]),
+                    ("Vulnerabilities", ["Known CVEs", "Default credentials", "Unpatched services"]),
+                    ("Encryption", ["Cleartext protocols", "Weak cipher suites", "Certificate validity"]),
+                ],
+            }
+            items = checklists.get(target_type, checklists["web"])
+            lines = [
+                f"# Penetration Testing Checklist — {target_type.upper()}",
+                f"\n**Target Type:** {target_type}",
+                f"**Date:** {datetime.now().strftime('%Y-%m-%d')}",
+                "\n> ⚠️ FOR AUTHORIZED TESTING ONLY\n",
+                "---\n"
+            ]
+            for section, checks in items:
+                lines.append(f"\n## {section}\n")
+                for check in checks:
+                    lines.append(f"- [ ] {check}")
+            Path(output).write_text("\n".join(lines), encoding="utf-8")
+            return ToolResult(True, f"✓ Pentest checklist saved to {output}")
+        except Exception as e:
+            return ToolResult(False, f"✗ create_pentest_checklist failed: {e}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 4. AIImageGenerationTool
+# ═══════════════════════════════════════════════════════════════════════════
+class AIImageGenerationTool:
+    name = "ai_image_generation"
+    description = (
+        "AI image generation: Stability AI, DALL-E, local Stable Diffusion, "
+        "inpainting, img2img, upscaling, background removal, variations"
+    )
+    use = ("""
+Name of Tool: AIImageGenerationTool
+
+Purpose of Tool:
+The AIImageGenerationTool serves as a comprehensive wrapper class designed to interface with various artificial intelligence image generation and manipulation systems. It consolidates interactions with popular cloud-based commercial APIs (such as Stability AI and OpenAI's DALL-E) alongside local execution architectures using Hugging Face's diffusers framework. Beyond standard text-to-image generation, the tool encapsulates routine image post-processing workflows, including masking-based reconstruction (inpainting), structural variations based on source visuals (img2img), resolution enhancement, and foreground segmentation (background removal).
+
+Methods:
+- generate_image_stability: Connects to the Stability AI Core API endpoint to synthesize high-quality images from structural text prompts.
+- generate_image_dalle: Dispatches payload structures to OpenAI's DALL-E 3 engine to produce vivid, compositionally dense images.
+- generate_image_local_sd: Initializes an on-premise pipeline using PyTorch and Hugging Face diffusers to process text prompts natively on GPU or CPU hardware.
+- inpaint_image: Modifies targeted sub-regions of an existing graphic file by applying an alpha layer alignment mask alongside contextual text prompts.
+- img_to_img: Transmutes an original image asset into an alternative stylistic composition guided by a text prompt and an adherence threshold factor.
+- upscale_image_ai: Amplifies dimensions of an image file locally by mapping pixels using high-fidelity interpolation algorithms (Lanczos).
+- remove_background_ai: Segments out subjects and drops distracting pixels using local specialized models or a remote API fallback mechanism.
+- create_image_variations: Communicates with OpenAI variations endpoints to construct visual counterparts and alternative drafts of an uploaded source file.
+
+How to use Tool Methods:
+
+1. generate_image_stability:
+   - Purpose: Generates images via the Stability AI Core endpoint with highly detailed generation configurations.
+   - Arguments:
+     a) prompt: str - The text string describing what to draw (required).
+     b) negative_prompt: str (default: "") - Explicit details or artifact behaviors to exclude from the visual layout.
+     c) width: int (default: 1024) - X-axis bounds dimension value.
+     d) height: int (default: 1024) - Y-axis bounds dimension value.
+     e) steps: int (default: 30) - Number of denoising iterations.
+     f) cfg: float (default: 7.0) - Adherence weight balancing text alignment strictness against creative variance.
+     g) output: str (default: "output.png") - Path to write the output image file.
+     h) cred_key: str (default: "stability") - Key to look up the API token.
+   - Returns: ToolResult indicating file creation success alongside local disk data sizing statistics.
+   - How to call: AIImageGenerationTool.generate_image_stability(prompt="A futuristic cityscape in synthwave style", steps=40)
+
+2. generate_image_dalle:
+   - Purpose: Leverages OpenAI's DALL-E 3 architecture to synthesize complex illustrative scenes.
+   - Arguments:
+     a) prompt: str - Dense descriptive prompt detailing subjects, scenery, and art style rules (required).
+     b) n: int (default: 1) - Total counts request (capped at 1 for DALL-E 3).
+     c) size: str (default: "1024x1024") - Geometry profile choices ("1024x1024", "1024x1792", etc.).
+     d) quality: str (default: "standard") - Render fidelity options ("standard" or "hd").
+     e) style: str (default: "vivid") - Coloration framework options ("vivid" or "natural").
+     f) output: str (default: "dalle_output.png") - Target path location to stream the image binary.
+     g) cred_key: str (default: "openai") - Key mapping credentials storage records.
+   - Returns: ToolResult presenting the output path, source URL link, and the system revised prompt metadata.
+   - How to call: AIImageGenerationTool.generate_image_dalle(prompt="Oil painting of an astronaut playing guitar on Mars", quality="hd")
+
+3. generate_image_local_sd:
+   - Purpose: Leverages on-device hardware computing arrays to compute local generation jobs.
+   - Arguments:
+     a) prompt: str - Conceptual textual target matrix (required).
+     b) negative_prompt: str (default: "") - Attributes explicitly disallowed from compilation.
+     c) model: str (default: "runwayml/stable-diffusion-v1-5") - Hugging Face model identifier string.
+     d) width: int (default: 512) - Base block render width.
+     e) height: int (default: 512) - Base block render height.
+     f) steps: int (default: 20) - Direct inference step configurations.
+     g) output: str (default: "sd_output.png") - Storage path.
+   - Returns: ToolResult showing active execution platform designations ("cuda" vs "cpu") and source weights applied.
+   - How to call: AIImageGenerationTool.generate_image_local_sd(prompt="Cute fluffy kitten cartoon", steps=25)
+
+4. inpaint_image:
+   - Purpose: Replaces or updates specific sub-regions inside an image canvas based on an image mask.
+   - Arguments:
+     a) image_path: str - Path to the original base image (required).
+     b) mask_path: str - Path to the black-and-white mask file outlining the replacement zone (required).
+     c) prompt: str - Instructions describing what to introduce inside the masked section (required).
+     d) output: str (default: "inpainted.png") - Storage path for the edited output file.
+     e) cred_key: str (default: "stability") - Target cloud security credentials identifier lookup key.
+   - Returns: ToolResult logging status information and confirmation of the file output path.
+   - How to call: AIImageGenerationTool.inpaint_image(image_path="photo.png", mask_path="mask.png", prompt="a red vintage sports car")
+
+5. img_to_img:
+   - Purpose: Utilizes existing graphical layouts as foundation templates to create structural variants.
+   - Arguments:
+     a) image_path: str - Location referencing foundational source graphic templates (required).
+     b) prompt: str - Styling adaptation description string (required).
+     c) strength: float (default: 0.75) - Noise introduction index control layer (0.0 keeps the image identical, 1.0 overwrites it completely).
+     d) output: str (default: "img2img_output.png") - Storage file path destination.
+     e) cred_key: str (default: "stability") - Authorization storage key identifier.
+   - Returns: ToolResult validating transmission completion and storage metrics.
+   - How to call: AIImageGenerationTool.img_to_img(image_path="sketch.png", prompt="Photorealistic detailed 3D render", strength=0.6)
+
+6. upscale_image_ai:
+   - Purpose: Doubles or triples pixel structures using interpolation routines to provide scaling upgrades.
+   - Arguments:
+     a) image_path: str - Path to the low-resolution target file asset (required).
+     b) scale: int (default: 2) - Multiplier tracking transformation factor metrics.
+     c) output: str (default: None) - Optional path string overrides; defaults to suffix updates.
+   - Returns: ToolResult demonstrating finalized resolution output calculations.
+   - How to call: AIImageGenerationTool.upscale_image_ai(image_path="thumbnail.png", scale=4)
+
+7. remove_background_ai:
+   - Purpose: Isolates a primary subject by removing background layers and generating transparent backdrops.
+   - Arguments:
+     a) image_path: str - File system location addressing target resource item (required).
+     b) output: str (default: None) - Output destination file string layout location.
+   - Returns: ToolResult documenting successful extraction and alpha channel application.
+   - How to call: AIImageGenerationTool.remove_background_ai(image_path="product.jpg")
+
+8. create_image_variations:
+   - Purpose: Crafts structural alternatives and shifts elements while keeping the core thematic layout of an image.
+   - Arguments:
+     a) image_path: str - Path to the square source PNG file asset (required).
+     b) n: int (default: 3) - Quantities profile defining variations stack limits (max 10).
+     c) output: str (default: "variations") - Directory path string collecting matching alternative drafts.
+     d) cred_key: str (default: "openai") - Authorization registry index link key.
+   - Returns: ToolResult presenting file list collection groupings mapping all successfully extracted variations.
+   - How to call: AIImageGenerationTool.create_image_variations(image_path="logo.png", n=4)
+""")
+
+    @staticmethod
+    def generate_image_stability(prompt: str, negative_prompt: str = "", width: int = 1024,
+                                  height: int = 1024, steps: int = 30, cfg: float = 7.0,
+                                  output: str = "output.png", cred_key: str = "stability") -> ToolResult:
+        try:
+            import requests
+            api_key = CredStore.load(cred_key).get("api_key", "")
+            if not api_key:
+                return ToolResult(False, "No Stability API key. Save under 'stability' → {'api_key':'...'}")
+            r = requests.post(
+                "https://api.stability.ai/v2beta/stable-image/generate/core",
+                headers={"authorization": f"Bearer {api_key}", "accept": "image/*"},
+                files={"none": ""},
+                data={"prompt": prompt, "negative_prompt": negative_prompt,
+                      "width": width, "height": height, "steps": steps,
+                      "cfg_scale": cfg, "output_format": "png"},
+                timeout=60
+            )
+            r.raise_for_status()
+            Path(output).write_bytes(r.content)
+            return ToolResult(True, f"✓ Image generated: {output}", {"output": output, "size": len(r.content)})
+        except Exception as e:
+            return ToolResult(False, f"✗ generate_image_stability failed: {e}")
+
+    @staticmethod
+    def generate_image_dalle(prompt: str, n: int = 1, size: str = "1024x1024",
+                              quality: str = "standard", style: str = "vivid",
+                              output: str = "dalle_output.png", cred_key: str = "openai") -> ToolResult:
+        try:
+            import requests
+            api_key = CredStore.load(cred_key).get("api_key", "")
+            if not api_key:
+                return ToolResult(False, "No OpenAI API key. Save under 'openai' → {'api_key':'...'}")
+            r = requests.post(
+                "https://api.openai.com/v1/images/generations",
+                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                json={"model": "dall-e-3", "prompt": prompt, "n": min(n, 1),
+                      "size": size, "quality": quality, "style": style},
+                timeout=60
+            )
+            r.raise_for_status()
+            url = r.json()["data"][0]["url"]
+            img_r = requests.get(url, timeout=30)
+            output_dir = Path(output).parent
+            output_dir.mkdir(parents=True, exist_ok=True)
+            Path(output).write_bytes(img_r.content)
+            return ToolResult(True, f"✓ DALL-E image saved: {output}",
+                              {"output": output, "url": url, "revised_prompt": r.json()["data"][0].get("revised_prompt", "")})
+        except Exception as e:
+            return ToolResult(False, f"✗ generate_image_dalle failed: {e}")
+
+    @staticmethod
+    def generate_image_local_sd(prompt: str, negative_prompt: str = "", model: str = "runwayml/stable-diffusion-v1-5",
+                                 width: int = 512, height: int = 512, steps: int = 20,
+                                 output: str = "sd_output.png") -> ToolResult:
+        try:
+            _ensure("diffusers", "diffusers")
+            _ensure("torch", "torch")
+            from diffusers import StableDiffusionPipeline
+            import torch
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+            dtype = torch.float16 if device == "cuda" else torch.float32
+            pipe = StableDiffusionPipeline.from_pretrained(model, torch_dtype=dtype)
+            pipe = pipe.to(device)
+            image = pipe(prompt, negative_prompt=negative_prompt, width=width,
+                         height=height, num_inference_steps=steps).images[0]
+            Path(output).parent.mkdir(parents=True, exist_ok=True)
+            image.save(output)
+            return ToolResult(True, f"✓ SD image generated: {output}",
+                              {"output": output, "device": device, "model": model})
+        except Exception as e:
+            return ToolResult(False, f"✗ generate_image_local_sd failed: {e}")
+
+    @staticmethod
+    def inpaint_image(image_path: str, mask_path: str, prompt: str, output: str = "inpainted.png",
+                      cred_key: str = "stability") -> ToolResult:
+        try:
+            import requests
+            api_key = CredStore.load(cred_key).get("api_key", "")
+            if not api_key:
+                return ToolResult(False, "No Stability API key.")
+            with open(image_path, "rb") as img, open(mask_path, "rb") as mask:
+                r = requests.post(
+                    "https://api.stability.ai/v2beta/stable-image/edit/inpaint",
+                    headers={"authorization": f"Bearer {api_key}", "accept": "image/*"},
+                    files={"image": img, "mask": mask},
+                    data={"prompt": prompt, "output_format": "png"},
+                    timeout=60
+                )
+            r.raise_for_status()
+            Path(output).write_bytes(r.content)
+            return ToolResult(True, f"✓ Inpainted image saved: {output}")
+        except Exception as e:
+            return ToolResult(False, f"✗ inpaint_image failed: {e}")
+
+    @staticmethod
+    def img_to_img(image_path: str, prompt: str, strength: float = 0.75,
+                   output: str = "img2img_output.png", cred_key: str = "stability") -> ToolResult:
+        try:
+            import requests
+            api_key = CredStore.load(cred_key).get("api_key", "")
+            if not api_key:
+                return ToolResult(False, "No Stability API key.")
+            with open(image_path, "rb") as img:
+                r = requests.post(
+                    "https://api.stability.ai/v2beta/stable-image/generate/sd3",
+                    headers={"authorization": f"Bearer {api_key}", "accept": "image/*"},
+                    files={"image": img},
+                    data={"prompt": prompt, "strength": strength,
+                          "mode": "image-to-image", "output_format": "png"},
+                    timeout=60
+                )
+            r.raise_for_status()
+            Path(output).write_bytes(r.content)
+            return ToolResult(True, f"✓ img2img output saved: {output}")
+        except Exception as e:
+            return ToolResult(False, f"✗ img_to_img failed: {e}")
+
+    @staticmethod
+    def upscale_image_ai(image_path: str, scale: int = 2, output: str = None) -> ToolResult:
+        try:
+            from PIL import Image
+            img = Image.open(image_path)
+            new_w, new_h = img.width * scale, img.height * scale
+            upscaled = img.resize((new_w, new_h), Image.LANCZOS)
+            out = output or str(Path(image_path).with_stem(Path(image_path).stem + f"_x{scale}"))
+            upscaled.save(out)
+            return ToolResult(True, f"✓ Upscaled {scale}x: {out} ({new_w}×{new_h})")
+        except Exception as e:
+            return ToolResult(False, f"✗ upscale_image_ai failed: {e}")
+
+    @staticmethod
+    def remove_background_ai(image_path: str, output: str = None) -> ToolResult:
+        try:
+            _ensure("rembg", "rembg")
+            from rembg import remove
+            from PIL import Image
+            import io
+            img = Image.open(image_path)
+            result = remove(img)
+            out = output or str(Path(image_path).with_stem(Path(image_path).stem + "_nobg").with_suffix(".png"))
+            result.save(out)
+            return ToolResult(True, f"✓ Background removed: {out}")
+        except ImportError:
+            # Fallback: use Stability AI background removal
+            try:
+                import requests
+                api_key = CredStore.load("stability").get("api_key", "")
+                if not api_key:
+                    return ToolResult(False, "rembg not installed and no Stability key. pip install rembg")
+                with open(image_path, "rb") as f:
+                    r = requests.post(
+                        "https://api.stability.ai/v2beta/stable-image/edit/remove-background",
+                        headers={"authorization": f"Bearer {api_key}", "accept": "image/*"},
+                        files={"image": f}, data={"output_format": "png"}, timeout=30
+                    )
+                r.raise_for_status()
+                out = output or str(Path(image_path).with_stem(Path(image_path).stem + "_nobg").with_suffix(".png"))
+                Path(out).write_bytes(r.content)
+                return ToolResult(True, f"✓ Background removed (Stability): {out}")
+            except Exception as e:
+                return ToolResult(False, f"✗ remove_background_ai failed: {e}")
+        except Exception as e:
+            return ToolResult(False, f"✗ remove_background_ai failed: {e}")
+
+    @staticmethod
+    def create_image_variations(image_path: str, n: int = 3, output: str = "variations",
+                                cred_key: str = "openai") -> ToolResult:
+        try:
+            import requests
+            api_key = CredStore.load(cred_key).get("api_key", "")
+            if not api_key:
+                return ToolResult(False, "No OpenAI API key.")
+            with open(image_path, "rb") as f:
+                r = requests.post(
+                    "https://api.openai.com/v1/images/variations",
+                    headers={"Authorization": f"Bearer {api_key}"},
+                    files={"image": f},
+                    data={"n": min(n, 10), "size": "1024x1024"},
+                    timeout=60
+                )
+            r.raise_for_status()
+            out_dir = Path(output)
+            out_dir.mkdir(parents=True, exist_ok=True)
+            saved = []
+            for i, item in enumerate(r.json()["data"]):
+                img_r = requests.get(item["url"], timeout=30)
+                out_path = out_dir / f"variation_{i+1}.png"
+                out_path.write_bytes(img_r.content)
+                saved.append(str(out_path))
+            return ToolResult(True, f"✓ {len(saved)} variations saved to {output}", saved)
+        except Exception as e:
+            return ToolResult(False, f"✗ create_image_variations failed: {e}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 5. AITextGenerationAdvancedTool
+# ═══════════════════════════════════════════════════════════════════════════
+class AITextGenerationAdvancedTool:
+    name = "ai_text_advanced"
+    description = (
+        "Advanced LLM: chain prompts, few-shot, structured JSON, debate, "
+        "brainstorm, critique, code gen/explain/test/refactor, translate, summarize"
+    )
+    use = ("""
+Name of Tool: AITextGenerationAdvancedTool
+
+Purpose of Tool:
+The AITextGenerationAdvancedTool is an advanced Large Language Model (LLM) orchestration wrapper designed to execute complex, multi-turn, and targeted text engineering tasks. It interfaces directly with locally served models (such as Llama 3.2 and Mistral) via an underlying Ollama agent framework. The tool abstracts advanced prompt engineering design patterns—including multi-stage chain execution, few-shot contextual optimization, structured JSON output validation, autonomous comparative debate generation, iterative self-critique workflows, multi-tier code syntax operations, stylistic localization, and map-reduce style large-document chunk summarization.
+
+Methods:
+- chain_prompts: Progressively threads responses down a sequential series of prompts to construct complex reasoning logic.
+- few_shot_generate: Conditions an LLM using few-shot exemplar patterns before computing the main target generation response.
+- generate_structured_json: Forces exact schema compliance, stripping layout artifacts and handling structural fallbacks via regex mapping.
+- debate_topic: Generates a multi-perspective discourse transcript by alternating underlying models between supporting and opposing stances.
+- brainstorm: Provisions creative ideation loops filtered through specialized target frames or viewpoints.
+- critique_and_improve: Executes multi-pass refinement loops by identifying structural issues and rewriting text based on its own critiques.
+- generate_code: Generates production-ready code blocks tailored to explicit functional languages, embedded inline documentation, and test criteria.
+- explain_code: Decodes intricate source patterns into digestible architectural overviews targeted to specialized developer proficiency levels.
+- generate_test_cases: Builds comprehensive functional boundary tests and target edge cases inside code testing frameworks (e.g., pytest).
+- refactor_code: Streamlines logic layers to enforce optimization goals such as code performance, readability, or DRY compliance.
+- translate_text: Transforms input text layers into target languages modulated through explicit stylistic variants.
+- summarize_long_document: Processes files or deep PDF page-trees using size-bounded chunking and hierarchical text aggregation.
+
+How to use Tool Methods:
+
+1. chain_prompts:
+   - Purpose: Chains multiple text prompts sequentially, passing context from one step to the next.
+   - Arguments:
+     a) prompts: list - An ordered collection of instructions to process sequentially (required).
+     b) models: list (default: None) - Array of model designations aligned to each prompt element.
+     c) pass_previous: bool (default: True) - Appends previous outputs to the ongoing step block context.
+     d) temperature: float (default: 0.7) - Model output variation constraint.
+   - Returns: ToolResult presenting full arrays tracing each processing step execution log.
+   - How to call: AITextGenerationAdvancedTool.chain_prompts(prompts=["Write an outline for a horror story.", "Draft the first chapter based on this outline."])
+
+2. few_shot_generate:
+   - Purpose: Trains the engine locally using an input-output learning structure before final compilation.
+   - Arguments:
+     a) examples: list - Example mappings structured as [{'input': '...', 'output': '...'}] (required).
+     b) task: str - The specific target execution task string (required).
+     c) model: str (default: "llama3.2:3b") - Local execution model identifier.
+     d) temperature: float (default: 0.5) - Generation deterministic factor weighting.
+     e) n_shots: int (default: 3) - Maximum boundary filter tracking how many examples are passed.
+   - Returns: ToolResult including the compiled shot count metadata tracking final generation outcomes.
+   - How to call: AITextGenerationAdvancedTool.few_shot_generate(examples=[{"input": "bad", "output": "good"}], task="terrible")
+
+3. generate_structured_json:
+   - Purpose: Directs prompt outputs to match a designated dictionary schema pattern.
+   - Arguments:
+     a) prompt: str - Task instructions detailing the data extraction target parameters (required).
+     b) schema: dict - Structural object specification defining expected object fields (required).
+     c) model: str (default: "llama3.2:3b") - LLM engine instance string.
+     d) temperature: float (default: 0.3) - Set low to keep formatting structured.
+     e) retries: int (default: 3) - Re-execution count limits to handle parsing errors.
+   - Returns: ToolResult exposing sanitized, verified Python dictionary contents.
+   - How to call: AITextGenerationAdvancedTool.generate_structured_json("Extract user details", schema={"name": "string", "age": "number"})
+
+4. debate_topic:
+   - Purpose: Orchestrates multi-model agent loops to evaluate topics through comparative arguments.
+   - Arguments:
+     a) topic: str - Main proposition topic or inquiry context (required).
+     b) models: list (default: None) - Model assignment values representing opposing positions.
+     c) rounds: int (default: 2) - Round metrics determining overall debate duration.
+     d) output_format: str (default: "text") - Renders formatted markdown layout descriptions or raw logs.
+   - Returns: ToolResult holding complete round-by-round point-counterpoint conversation flows.
+   - How to call: AITextGenerationAdvancedTool.debate_topic(topic="AI will replace humans", rounds=3)
+
+5. brainstorm:
+   - Purpose: Aggregates list blocks of concepts derived from explicit vantage perspectives.
+   - Arguments:
+     a) topic: str - Target conceptual territory or strategic question (required).
+     b) n_ideas: int (default: 10) - Target list density limits.
+     c) perspective: str (default: "general") - Niche persona parameters limiting conceptual scope.
+     d) model: str (default: "llama3.2:3b") - Selected engine registry string.
+   - Returns: ToolResult containing a sanitized array of individual idea lines.
+   - How to call: AITextGenerationAdvancedTool.brainstorm(topic="Marketing campaign ideas", perspective="futuristic")
+
+6. critique_and_improve:
+   - Purpose: Performs internal peer review on target content blocks across multi-pass refinement intervals.
+   - Arguments:
+     a) text: str - Original draft block (required).
+     b) focus: str (default: "clarity") - Evaluative lens metrics (e.g., tone, conciseness).
+     c) model: str (default: "llama3.2:3b") - Task processing model configuration.
+     d) iterations: int (default: 2) - Limit parameters detailing structural evaluation steps.
+   - Returns: ToolResult presenting step metrics alongside the finalized version.
+   - How to call: AITextGenerationAdvancedTool.critique_and_improve(text="Draft message block here", focus="professionalism")
+
+7. generate_code:
+   - Purpose: Produces localized, function-locked structural syntax scripts.
+   - Arguments:
+     a) description: str - Problem space statement tracking function logic paths (required).
+     b) language: str (default: "python") - Target language compiler style.
+     c) model: str (default: "codellama:7b-instruct") - Code-tuned model token.
+     d) tests: bool (default: True) - Appends unit testing functions to verification loops.
+     e) comments: bool (default: True) - Incorporates deep comments and semantic documentation blocks.
+   - Returns: ToolResult tracking functional raw scripts separated cleanly from markdown blocks.
+   - How to call: AITextGenerationAdvancedTool.generate_code(description="Binary search routine implementation")
+
+8. explain_code:
+   - Purpose: Translates strict code blocks into accessible conceptual descriptions.
+   - Arguments:
+     a) code: str - Source code string requiring conceptual layout dissection (required).
+     b) level: str (default: "intermediate") - Cognitive barrier profiles ("beginner", "intermediate", "expert").
+     c) model: str (default: "llama3.2:3b") - System model token string.
+   - Returns: ToolResult logging systematic line explanations matching requested competency baselines.
+   - How to call: AITextGenerationAdvancedTool.explain_code(code="def fn(x):\n  return x * 2", level="beginner")
+
+9. generate_test_cases:
+   - Purpose: Automatically sets up error paths and validation logic based on the provided code.
+   - Arguments:
+     a) code: str - Target code snippet needing test suite development (required).
+     b) framework: str (default: "pytest") - Framework standard configuration.
+     c) model: str (default: "codellama:7b-instruct") - Code validation engine selection.
+   - Returns: ToolResult tracking executable validation text segments.
+   - How to call: AITextGenerationAdvancedTool.generate_test_cases(code="def add(a, b): return a + b")
+
+10. refactor_code:
+    - Purpose: Restructures existing code architectures to optimize quality parameters.
+    - Arguments:
+      a) code: str - Source script requiring syntax adjustment (required).
+      b) goals: list (default: None) - Specific parameters targeting rewriting behaviors.
+      c) model: str (default: "codellama:7b-instruct") - Underlying code execution engine.
+    - Returns: ToolResult exposing refactored syntax alongside historical performance goals.
+    - How to call: AITextGenerationAdvancedTool.refactor_code(code="dense_unreadable_code_block", goals=["performance"])
+
+11. translate_text:
+    - Purpose: Translates text into alternative languages while maintaining appropriate stylistic expressions.
+    - Arguments:
+      a) text: str - Original text asset requiring conversion (required).
+      b) target_language: str - Destination language registry parameters (required).
+      c) style: str (default: "natural") - Tone constraints ("natural", "formal", "casual", "literal").
+      d) model: str (default: "llama3.2:3b") - Core engine identity values.
+    - Returns: ToolResult providing localization data fields without extra system notes.
+    - How to call: AITextGenerationAdvancedTool.translate_text(text="Hello friend", target_language="Spanish", style="casual")
+
+12. summarize_long_document:
+    - Purpose: Chunks long files or PDFs to extract a comprehensive summary.
+    - Arguments:
+      a) path: str - Location referencing target text assets or PDF items on the file system (required).
+      b) model: str (default: "llama3.2:3b") - Context mapping generation core.
+      c) chunk_size: int (default: 3000) - Character length window slicing the document data array.
+    - Returns: ToolResult detailing combined final page context insights.
+    - How to call: AITextGenerationAdvancedTool.summarize_long_document(path="annual_report.pdf", chunk_size=4000)
+""")
+
+    @staticmethod
+    def _llm(model: str = "llama3.2:3b", temperature: float = 0.7):
+        from agent_core import Ollama
+        return Ollama(model=model, temperature=temperature, change=True,
+                      Models=["mistral:7b", "llama3.2:3b"])
+
+    @staticmethod
+    def chain_prompts(prompts: list, models: list = None, pass_previous: bool = True,
+                      temperature: float = 0.7) -> ToolResult:
+        try:
+            results = []
+            context = ""
+            for i, prompt in enumerate(prompts):
+                model = (models[i] if models and i < len(models) else "llama3.2:3b")
+                llm = AITextGenerationAdvancedTool._llm(model, temperature)
+                full_prompt = f"Previous context:\n{context}\n\n{prompt}" if pass_previous and context else prompt
+                response = llm.invoke(full_prompt)
+                results.append({"step": i + 1, "prompt": prompt[:100], "response": response, "model": model})
+                if pass_previous:
+                    context = response
+            return ToolResult(True, f"✓ Chain of {len(prompts)} prompts completed", results)
+        except Exception as e:
+            return ToolResult(False, f"✗ chain_prompts failed: {e}")
+
+    @staticmethod
+    def few_shot_generate(examples: list, task: str, model: str = "llama3.2:3b",
+                          temperature: float = 0.5, n_shots: int = 3) -> ToolResult:
+        """examples: [{'input': '...', 'output': '...'}]"""
+        try:
+            llm = AITextGenerationAdvancedTool._llm(model, temperature)
+            shots = examples[:n_shots]
+            shot_text = "\n\n".join(f"Input: {s['input']}\nOutput: {s['output']}" for s in shots)
+            prompt = f"Learn from these examples:\n{shot_text}\n\nNow complete:\nInput: {task}\nOutput:"
+            response = llm.invoke(prompt)
+            return ToolResult(True, "✓ Few-shot generation complete",
+                              {"response": response, "shots_used": len(shots)})
+        except Exception as e:
+            return ToolResult(False, f"✗ few_shot_generate failed: {e}")
+
+    @staticmethod
+    def generate_structured_json(prompt: str, schema: dict, model: str = "llama3.2:3b",
+                                  temperature: float = 0.3, retries: int = 3) -> ToolResult:
+        try:
+            llm = AITextGenerationAdvancedTool._llm(model, temperature)
+            schema_str = json.dumps(schema, indent=2)
+            full_prompt = (f"{prompt}\n\nRespond ONLY with valid JSON matching this schema:\n"
+                           f"{schema_str}\n\nDo not include any explanation or markdown. Pure JSON only.")
+            for attempt in range(retries):
+                raw = llm.invoke(full_prompt)
+                # Strip markdown fences
+                cleaned = re.sub(r'```(?:json)?\s*|\s*```', '', raw).strip()
+                try:
+                    parsed = json.loads(cleaned)
+                    return ToolResult(True, "✓ Structured JSON generated", parsed)
+                except json.JSONDecodeError:
+                    # Try to extract JSON object/array
+                    match = re.search(r'[\[{].*[\]}]', cleaned, re.DOTALL)
+                    if match:
+                        try:
+                            parsed = json.loads(match.group())
+                            return ToolResult(True, "✓ Structured JSON extracted", parsed)
+                        except Exception:
+                            pass
+                    if attempt == retries - 1:
+                        return ToolResult(False, f"✗ Could not parse JSON after {retries} attempts",
+                                          {"raw": raw})
+            return ToolResult(False, "✗ generate_structured_json exhausted retries")
+        except Exception as e:
+            return ToolResult(False, f"✗ generate_structured_json failed: {e}")
+
+    @staticmethod
+    def debate_topic(topic: str, models: list = None, rounds: int = 2,
+                     output_format: str = "text") -> ToolResult:
+        try:
+            model_list = models or ["llama3.2:3b", "mistral:7b"]
+            transcript = []
+            for round_n in range(rounds):
+                for i, model in enumerate(model_list):
+                    llm = AITextGenerationAdvancedTool._llm(model, 0.8)
+                    side = "FOR" if i % 2 == 0 else "AGAINST"
+                    context = "\n".join(f"[{t['model']}]: {t['argument']}" for t in transcript[-4:])
+                    prompt = (f"Debate topic: '{topic}'\nYou are arguing {side}.\n"
+                              f"Previous arguments:\n{context}\n\n"
+                              f"Make your Round {round_n+1} argument in 2-3 sentences:")
+                    argument = llm.invoke(prompt)
+                    transcript.append({"round": round_n + 1, "side": side, "model": model,
+                                       "argument": argument})
+            if output_format == "json":
+                return ToolResult(True, f"✓ Debate: {rounds} rounds, {len(transcript)} arguments", transcript)
+            text = f"# Debate: {topic}\n\n"
+            for t in transcript:
+                text += f"**Round {t['round']} — {t['side']}** ({t['model']}):\n{t['argument']}\n\n"
+            return ToolResult(True, f"✓ Debate complete", {"transcript": transcript, "text": text})
+        except Exception as e:
+            return ToolResult(False, f"✗ debate_topic failed: {e}")
+
+    @staticmethod
+    def brainstorm(topic: str, n_ideas: int = 10, perspective: str = "general",
+                   model: str = "llama3.2:3b") -> ToolResult:
+        try:
+            llm = AITextGenerationAdvancedTool._llm(model, 0.9)
+            prompt = (f"Brainstorm {n_ideas} creative ideas about: {topic}\n"
+                      f"Perspective: {perspective}\n"
+                      f"Format: numbered list, one idea per line, be creative and specific.")
+            response = llm.invoke(prompt)
+            ideas = [line.strip() for line in response.split("\n")
+                     if line.strip() and (line.strip()[0].isdigit() or line.strip().startswith("-"))]
+            return ToolResult(True, f"✓ {len(ideas)} ideas generated",
+                              {"ideas": ideas, "raw": response, "topic": topic})
+        except Exception as e:
+            return ToolResult(False, f"✗ brainstorm failed: {e}")
+
+    @staticmethod
+    def critique_and_improve(text: str, focus: str = "clarity", model: str = "llama3.2:3b",
+                             iterations: int = 2) -> ToolResult:
+        try:
+            llm = AITextGenerationAdvancedTool._llm(model, 0.5)
+            current = text
+            history = []
+            for i in range(iterations):
+                critique_prompt = (f"Critique this text focusing on {focus}:\n\n{current}\n\n"
+                                   f"List 3 specific issues:")
+                critique = llm.invoke(critique_prompt)
+                improve_prompt = (f"Improve this text based on these critiques:\nCritiques: {critique}\n"
+                                  f"Original: {current}\n\nImproved version:")
+                improved = llm.invoke(improve_prompt)
+                history.append({"iteration": i+1, "critique": critique, "improved": improved})
+                current = improved
+            return ToolResult(True, f"✓ Text improved over {iterations} iterations",
+                              {"original": text, "final": current, "history": history})
+        except Exception as e:
+            return ToolResult(False, f"✗ critique_and_improve failed: {e}")
+
+    @staticmethod
+    def generate_code(description: str, language: str = "python", model: str = "codellama:7b-instruct",
+                      tests: bool = True, comments: bool = True) -> ToolResult:
+        try:
+            llm = AITextGenerationAdvancedTool._llm(model, 0.3)
+            extras = []
+            if comments:
+                extras.append("include clear docstrings and inline comments")
+            if tests:
+                extras.append("include unit tests at the end")
+            extra_str = "; ".join(extras)
+            prompt = (f"Write {language} code for: {description}\n"
+                      f"Requirements: {extra_str}\n"
+                      f"Return ONLY the code, no explanation outside comments.")
+            code = llm.invoke(prompt)
+            # Strip markdown
+            code = re.sub(r'```\w*\s*|\s*```', '', code).strip()
+            return ToolResult(True, f"✓ {language} code generated",
+                              {"code": code, "language": language, "description": description})
+        except Exception as e:
+            return ToolResult(False, f"✗ generate_code failed: {e}")
+
+    @staticmethod
+    def explain_code(code: str, level: str = "intermediate", model: str = "llama3.2:3b") -> ToolResult:
+        """level: beginner | intermediate | expert"""
+        try:
+            llm = AITextGenerationAdvancedTool._llm(model, 0.4)
+            level_prompts = {
+                "beginner": "Explain this code for a complete beginner. Use simple analogies.",
+                "intermediate": "Explain this code for an intermediate developer. Cover logic and patterns.",
+                "expert": "Analyze this code technically. Cover algorithms, complexity, and design patterns."
+            }
+            prompt = f"{level_prompts.get(level, level_prompts['intermediate'])}\n\n```\n{code}\n```"
+            explanation = llm.invoke(prompt)
+            return ToolResult(True, "✓ Code explained", {"explanation": explanation, "level": level})
+        except Exception as e:
+            return ToolResult(False, f"✗ explain_code failed: {e}")
+
+    @staticmethod
+    def generate_test_cases(code: str, framework: str = "pytest", model: str = "codellama:7b-instruct") -> ToolResult:
+        try:
+            llm = AITextGenerationAdvancedTool._llm(model, 0.3)
+            prompt = (f"Write comprehensive {framework} test cases for this code.\n"
+                      f"Include edge cases, happy path, and error cases.\n"
+                      f"Return ONLY the test code.\n\n```\n{code}\n```")
+            tests = llm.invoke(prompt)
+            tests = re.sub(r'```\w*\s*|\s*```', '', tests).strip()
+            return ToolResult(True, f"✓ {framework} tests generated", {"tests": tests, "framework": framework})
+        except Exception as e:
+            return ToolResult(False, f"✗ generate_test_cases failed: {e}")
+
+    @staticmethod
+    def refactor_code(code: str, goals: list = None, model: str = "codellama:7b-instruct") -> ToolResult:
+        try:
+            llm = AITextGenerationAdvancedTool._llm(model, 0.2)
+            goal_str = ", ".join(goals or ["readability", "performance", "DRY principles"])
+            prompt = (f"Refactor this code for: {goal_str}\n"
+                      f"Preserve all functionality. Return ONLY the refactored code.\n\n"
+                      f"```\n{code}\n```")
+            refactored = llm.invoke(prompt)
+            refactored = re.sub(r'```\w*\s*|\s*```', '', refactored).strip()
+            return ToolResult(True, "✓ Code refactored",
+                              {"refactored": refactored, "original": code, "goals": goals})
+        except Exception as e:
+            return ToolResult(False, f"✗ refactor_code failed: {e}")
+
+    @staticmethod
+    def translate_text(text: str, target_language: str, style: str = "natural",
+                       model: str = "llama3.2:3b") -> ToolResult:
+        try:
+            llm = AITextGenerationAdvancedTool._llm(model, 0.4)
+            style_instructions = {
+                "natural": "Use natural, fluent language",
+                "formal": "Use formal, professional language",
+                "casual": "Use casual, conversational language",
+                "literal": "Translate as literally as possible"
+            }
+            style_note = style_instructions.get(style, style)
+            prompt = (f"Translate the following text to {target_language}. {style_note}.\n"
+                      f"Return ONLY the translation, no explanation.\n\n{text}")
+            translation = llm.invoke(prompt)
+            return ToolResult(True, f"✓ Translated to {target_language}",
+                              {"translation": translation, "original": text,
+                               "target_language": target_language})
+        except Exception as e:
+            return ToolResult(False, f"✗ translate_text failed: {e}")
+
+    @staticmethod
+    def summarize_long_document(path: str, model: str = "llama3.2:3b",
+                                 chunk_size: int = 3000) -> ToolResult:
+        try:
+            from agent_core import Ollama
+            if path.endswith(".pdf"):
+                from pypdf import PdfReader
+                text = "\n".join(p.extract_text() or "" for p in PdfReader(path).pages)
+            else:
+                text = Path(path).read_text(errors="replace")
+            if not text.strip():
+                return ToolResult(False, "✗ Document is empty")
+            llm = Ollama(model=model, temperature=0.2, change=True, Models=["mistral:7b"])
+            chunks = [text[i:i+chunk_size] for i in range(0, len(text), chunk_size)]
+            chunk_summaries = []
+            for i, chunk in enumerate(chunks[:15]):
+                summary = llm.invoke(f"Summarize this section briefly (2-3 sentences):\n{chunk}")
+                chunk_summaries.append(summary)
+            combined = "\n\n".join(chunk_summaries)
+            final_summary = llm.invoke(
+                f"Create a comprehensive final summary from these {len(chunk_summaries)} section summaries:\n{combined}"
+            )
+            return ToolResult(True, "✓ Document summarized",
+                              {"summary": final_summary, "chunks_processed": len(chunks),
+                               "total_chars": len(text)})
+        except Exception as e:
+            return ToolResult(False, f"✗ summarize_long_document failed: {e}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 6. MLModelTool
+# ═══════════════════════════════════════════════════════════════════════════
+class MLModelTool:
+    name = "ml_model"
+    description = (
+        "ML operations: train classifier/regressor, predict, evaluate, "
+        "feature importance, cross-validate, hyperparameter tune, "
+        "save/load, serve API, explain predictions"
+    )
+    use = ("""
+Name of Tool: MLModelTool
+
+Purpose of Tool:
+The MLModelTool serves as a centralized Machine Learning Operations (MLOps) wrapper class designed to handle standard statistical learning workflows using scikit-learn. It abstracts data ingestion, automated label encoding for structural clean-up, model training splits, and model scoring. The tool supports classification and regression paradigms across a spectrum of algorithms (including Random Forests, Gradient Boosting, Support Vector Machines, and Linear/Logistic Regressions). Beyond initial fitment routines, it accommodates programmatic validation techniques such as k-fold cross-validation, grid-search hyperparameter tuning, local persistence serialization (via joblib and pickle), threaded deployment hosting using a Flask micro-API framework, and localized prediction interpretability vectors utilizing SHAP or feature weight calculations.
+
+Methods:
+- train_classifier: ingests rectangular dataset tables to automatically encode string arrays, split records, fit a mathematical classification engine, and compute multi-class metrics tables.
+- train_regressor: processes continuous numeric target matrices, implementing continuous value mapping and computing performance metrics such as Root Mean Squared Error (RMSE) and R-squared coefficient limits.
+- predict: references a saved model binary dynamically to run inference on input structures, generating target predictions and class assignment probabilities.
+- evaluate_model: tests serialized model items against an out-of-sample data reference asset to ensure classification or regression metric alignment.
+- feature_importance: extracts and ranks relative mathematical weight variables from decision nodes or model optimization coefficients.
+- cross_validate: calculates out-of-sample stability metrics across partition subsets using an automated k-fold distribution strategy.
+- hyperparameter_tune: runs exhaustive grid-searches against discrete parameter arrays to isolate optimized algorithm configurations.
+- save_model: serializes state tracking data objects natively into joblib or binary stream structures.
+- load_and_predict: executes a prediction workflow by immediately sourcing and scoring a target serialized asset path.
+- deploy_model_api: maps micro-server routes inside a background daemon thread to transform an active model object into an operational network service.
+- explain_prediction: extracts regional feature importance values or computes mathematical SHAP values to explain individual predictions.
+
+How to use Tool Methods:
+
+1. train_classifier:
+   - Purpose: Fits classification algorithms on structured tables and scores prediction performance.
+   - Arguments:
+     a) data_path: str - Local file location of the CSV or Excel source sheet asset (required).
+     b) target_col: str - String column key representing distinct discrete target labels (required).
+     c) model_type: str (default: "random_forest") - Model selector choice ("random_forest", "gradient_boosting", "logistic_regression", "svm", "decision_tree").
+     d) test_size: float (default: 0.2) - Percentage allocation bounding the isolated validation test set fraction.
+     e) output_model: str (default: "classifier.joblib") - System path configuration to write the trained model payload.
+   - Returns: ToolResult storing overall prediction accuracy, full classification reports, and encoded feature layouts.
+   - How to call: MLModelTool.train_classifier(data_path="users.csv", target_col="churned", model_type="gradient_boosting")
+
+2. train_regressor:
+   - Purpose: Restructures continuous linear/ensemble logic patterns to fit real-valued targets.
+   - Arguments:
+     a) data_path: str - File system dataset source layout link (required).
+     b) target_col: str - Column identity mapping continuous numerical targets (required).
+     c) model_type: str (default: "random_forest") - Architectural key string choices ("random_forest", "linear_regression", "ridge", "svr").
+     d) test_size: float (default: 0.2) - Data slicing factor ratio.
+     e) output_model: str (default: "regressor.joblib") - Output path target location.
+   - Returns: ToolResult documenting computed R² values alongside baseline RMSE indicators.
+   - How to call: MLModelTool.train_regressor(data_path="prices.csv", target_col="cost", model_type="ridge")
+
+3. predict:
+   - Purpose: Loads binary packages into operational instances to predict labels on new samples.
+   - Arguments:
+     a) model_path: str - Saved model configuration record pointer file (required).
+     b) input_data: Any - Input dataset structured as a Dictionary string, list array structure, or Pandas DataFrame (required).
+   - Returns: ToolResult passing raw generation classifications arrays paired with class confidence score list indexes.
+   - How to call: MLModelTool.predict(model_path="classifier.joblib", input_data={"age": 34, "income": 55000})
+
+4. evaluate_model:
+   - Purpose: Audits serialized model entities against isolated test datasets.
+   - Arguments:
+     a) model_path: str - Path map referencing an existing saved joblib file resource (required).
+     b) test_data: str - File location pointer mapping out-of-sample data tables (required).
+     c) target_col: str - Column key mapping representing verification objective boundaries (required).
+   - Returns: ToolResult recording classification tables or target margin statistics summaries.
+   - How to call: MLModelTool.evaluate_model(model_path="regressor.joblib", test_data="holdout.csv", target_col="cost")
+
+5. feature_importance:
+   - Purpose: Tallies relative column weight allocations derived from feature attributes.
+   - Arguments:
+     a) model_path: str - Serialized artifact repository target path (required).
+     b) feature_names: list (default: None) - Optional column identifier strings overrides tracking base alignment names.
+     c) output: str (default: None) - Target local storage address path to write JSON rankings.
+   - Returns: ToolResult providing descending feature matrix score components.
+   - How to call: MLModelTool.feature_importance(model_path="classifier.joblib", output="weights.json")
+
+6. cross_validate:
+   - Purpose: Evaluates model robustness by analyzing data slices using k-fold cross-validation.
+   - Arguments:
+     a) data_path: str - Location of the target dataset table (required).
+     b) target: str - Target dependent variable string identifier (required).
+     c) model_type: str (default: "random_forest") - Machine Learning structural key template.
+     d) folds: int (default: 5) - Number of dataset partitions to create.
+   - Returns: ToolResult logging multi-fold performance tracking lists along with calculated score mean deviations.
+   - How to call: MLModelTool.cross_validate(data_path="metrics.csv", target="status", folds=10)
+
+7. hyperparameter_tune:
+   - Purpose: Searches parameter grids to optimize model performance metrics.
+   - Arguments:
+     a) data_path: str - Source dataset table path string context (required).
+     b) target: str - Column identification mapping variable dependencies (required).
+     c) model_type: str (default: "random_forest") - Machine Learning algorithm base key.
+     d) param_grid: dict (default: None) - Configuration options linking testing variable maps.
+     e) cv: int (default: 3) - Subpartition validation metrics parameters.
+   - Returns: ToolResult storing optimal parameters, best scores, and comprehensive iteration records.
+   - How to call: MLModelTool.hyperparameter_tune(data_path="train.csv", target="label", param_grid={"max_depth": [3, 5]})
+
+8. save_model:
+   - Purpose: Serializes state vectors into storage files.
+   - Arguments:
+     a) model: Any - Active model object instances requiring file encoding pipelines (required).
+     b) output_path: str - File storage path (required).
+     c) format: str (default: "joblib") - Binary protocol serialization styles ("joblib" or "pickle").
+   - Returns: ToolResult certifying process finalization indicators.
+   - How to call: MLModelTool.save_model(model=my_trained_obj, output_path="models/rf_v1.pkl", format="pickle")
+
+9. load_and_predict:
+   - Purpose: Directly loads a model from disk to perform inference on input records.
+   - Arguments:
+     a) model_path: str - Saved file location path to read (required).
+     b) data: Any - Structural data input targets requiring analysis (required).
+   - Returns: ToolResult presenting the resulting prediction values.
+   - How to call: MLModelTool.load_and_predict(model_path="classifier.joblib", data=[{"age": 21}])
+
+10. deploy_model_api:
+    - Purpose: Launches a background Flask server endpoint to expose live model prediction endpoints.
+    - Arguments:
+      a) model_path: str - Target serialized file layout map path location (required).
+      b) host: str (default: "0.0.0.0") - Bound host location IP routing values.
+      c) port: int (default: 5000) - Application port routing options.
+      d) endpoint: str (default: "/predict") - Request URL route path configurations.
+    - Returns: ToolResult displaying localized network deployment address URLs.
+    - How to call: MLModelTool.deploy_model_api(model_path="classifier.joblib", port=8080)
+
+11. explain_prediction:
+    - Purpose: Provides local explainability for individual row item evaluations.
+    - Arguments:
+      a) model_path: str - Serialized model configuration path mapping (required).
+      b) instance: dict - Individual test row data mappings structured as column-value dictionaries (required).
+      c) method: str (default: "feature_importance") - Mathematical profiling strategies ("feature_importance" or "shap").
+    - Returns: ToolResult listing top feature attribution matrices sorted by impact.
+    - How to call: MLModelTool.explain_prediction(model_path="classifier.joblib", instance={"age": 45}, method="shap")
+""")
+
+    @staticmethod
+    def _get_model(model_type: str, task: str = "classifier"):
+        from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor, GradientBoostingClassifier
+        from sklearn.linear_model import LogisticRegression, LinearRegression, Ridge
+        from sklearn.svm import SVC, SVR
+        from sklearn.tree import DecisionTreeClassifier
+        classifier_map = {
+            "random_forest": RandomForestClassifier(n_estimators=100, random_state=42),
+            "gradient_boosting": GradientBoostingClassifier(n_estimators=100, random_state=42),
+            "logistic_regression": LogisticRegression(max_iter=1000, random_state=42),
+            "svm": SVC(probability=True, random_state=42),
+            "decision_tree": DecisionTreeClassifier(random_state=42),
+        }
+        regressor_map = {
+            "random_forest": RandomForestRegressor(n_estimators=100, random_state=42),
+            "linear_regression": LinearRegression(),
+            "ridge": Ridge(),
+            "svr": SVR(),
+        }
+        if task == "regressor":
+            return regressor_map.get(model_type, regressor_map["random_forest"])
+        return classifier_map.get(model_type, classifier_map["random_forest"])
+
+    @staticmethod
+    def train_classifier(data_path: str, target_col: str, model_type: str = "random_forest",
+                         test_size: float = 0.2, output_model: str = "classifier.joblib") -> ToolResult:
+        try:
+            import pandas as pd
+            import joblib
+            from sklearn.model_selection import train_test_split
+            from sklearn.metrics import classification_report, accuracy_score
+            from sklearn.preprocessing import LabelEncoder
+            df = pd.read_csv(data_path) if data_path.endswith(".csv") else pd.read_excel(data_path)
+            X = df.drop(columns=[target_col])
+            y = df[target_col]
+            # Encode categorical columns
+            for col in X.select_dtypes(include=["object"]).columns:
+                X[col] = LabelEncoder().fit_transform(X[col].astype(str))
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
+            model = MLModelTool._get_model(model_type, "classifier")
+            model.fit(X_train, y_train)
+            y_pred = model.predict(X_test)
+            acc = accuracy_score(y_test, y_pred)
+            report = classification_report(y_test, y_pred, output_dict=True)
+            joblib.dump({"model": model, "features": list(X.columns), "target": target_col,
+                         "model_type": model_type, "accuracy": acc}, output_model)
+            return ToolResult(True, f"✓ Classifier trained. Accuracy: {acc:.4f}",
+                              {"accuracy": acc, "report": report, "model_path": output_model,
+                               "features": list(X.columns), "n_samples": len(df)})
+        except Exception as e:
+            return ToolResult(False, f"✗ train_classifier failed: {e}")
+
+    @staticmethod
+    def train_regressor(data_path: str, target_col: str, model_type: str = "random_forest",
+                        test_size: float = 0.2, output_model: str = "regressor.joblib") -> ToolResult:
+        try:
+            import pandas as pd
+            import joblib
+            from sklearn.model_selection import train_test_split
+            from sklearn.metrics import mean_squared_error, r2_score
+            import numpy as np
+            df = pd.read_csv(data_path) if data_path.endswith(".csv") else pd.read_excel(data_path)
+            X = df.drop(columns=[target_col])
+            y = df[target_col]
+            for col in X.select_dtypes(include=["object"]).columns:
+                from sklearn.preprocessing import LabelEncoder
+                X[col] = LabelEncoder().fit_transform(X[col].astype(str))
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
+            model = MLModelTool._get_model(model_type, "regressor")
+            model.fit(X_train, y_train)
+            y_pred = model.predict(X_test)
+            rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+            r2 = r2_score(y_test, y_pred)
+            joblib.dump({"model": model, "features": list(X.columns), "target": target_col,
+                         "model_type": model_type, "r2": r2, "rmse": rmse}, output_model)
+            return ToolResult(True, f"✓ Regressor trained. R²: {r2:.4f}, RMSE: {rmse:.4f}",
+                              {"r2": r2, "rmse": rmse, "model_path": output_model})
+        except Exception as e:
+            return ToolResult(False, f"✗ train_regressor failed: {e}")
+
+    @staticmethod
+    def predict(model_path: str, input_data: Any) -> ToolResult:
+        try:
+            import joblib
+            import pandas as pd
+            saved = joblib.load(model_path)
+            model = saved["model"]
+            features = saved.get("features", [])
+            if isinstance(input_data, dict):
+                df = pd.DataFrame([input_data])
+            elif isinstance(input_data, list):
+                df = pd.DataFrame(input_data)
+            else:
+                df = input_data
+            if features:
+                df = df.reindex(columns=features, fill_value=0)
+            predictions = model.predict(df).tolist()
+            proba = None
+            if hasattr(model, "predict_proba"):
+                proba = model.predict_proba(df).tolist()
+            return ToolResult(True, f"✓ Predicted {len(predictions)} sample(s)",
+                              {"predictions": predictions, "probabilities": proba})
+        except Exception as e:
+            return ToolResult(False, f"✗ predict failed: {e}")
+
+    @staticmethod
+    def evaluate_model(model_path: str, test_data: str, target_col: str) -> ToolResult:
+        try:
+            import joblib, pandas as pd, numpy as np
+            from sklearn.metrics import (classification_report, accuracy_score,
+                                          mean_squared_error, r2_score)
+            saved = joblib.load(model_path)
+            model, features = saved["model"], saved.get("features", [])
+            df = pd.read_csv(test_data)
+            X = df.drop(columns=[target_col]).reindex(columns=features, fill_value=0)
+            y = df[target_col]
+            y_pred = model.predict(X)
+            if hasattr(model, "predict_proba"):
+                acc = accuracy_score(y, y_pred)
+                report = classification_report(y, y_pred, output_dict=True)
+                return ToolResult(True, f"✓ Accuracy: {acc:.4f}", {"accuracy": acc, "report": report})
+            else:
+                rmse = np.sqrt(mean_squared_error(y, y_pred))
+                r2 = r2_score(y, y_pred)
+                return ToolResult(True, f"✓ R²: {r2:.4f}, RMSE: {rmse:.4f}",
+                                  {"r2": r2, "rmse": rmse})
+        except Exception as e:
+            return ToolResult(False, f"✗ evaluate_model failed: {e}")
+
+    @staticmethod
+    def feature_importance(model_path: str, feature_names: list = None,
+                           output: str = None) -> ToolResult:
+        try:
+            import joblib, json
+            saved = joblib.load(model_path)
+            model = saved["model"]
+            names = feature_names or saved.get("features", [])
+            if hasattr(model, "feature_importances_"):
+                importances = model.feature_importances_.tolist()
+                ranked = sorted(zip(names, importances), key=lambda x: x[1], reverse=True)
+                result = [{"feature": f, "importance": round(v, 6)} for f, v in ranked]
+                if output:
+                    Path(output).write_text(json.dumps(result, indent=2))
+                return ToolResult(True, f"✓ Feature importances computed", result)
+            elif hasattr(model, "coef_"):
+                coefs = model.coef_.flatten().tolist()
+                result = [{"feature": names[i] if i < len(names) else f"f{i}",
+                           "coefficient": round(c, 6)} for i, c in enumerate(coefs)]
+                return ToolResult(True, "✓ Coefficients computed", result)
+            return ToolResult(False, "✗ Model does not support feature importance")
+        except Exception as e:
+            return ToolResult(False, f"✗ feature_importance failed: {e}")
+
+    @staticmethod
+    def cross_validate(data_path: str, target: str, model_type: str = "random_forest",
+                       folds: int = 5) -> ToolResult:
+        try:
+            import pandas as pd
+            from sklearn.model_selection import cross_val_score
+            from sklearn.preprocessing import LabelEncoder
+            import numpy as np
+            df = pd.read_csv(data_path)
+            X = df.drop(columns=[target])
+            y = df[target]
+            for col in X.select_dtypes(include=["object"]).columns:
+                X[col] = LabelEncoder().fit_transform(X[col].astype(str))
+            is_classifier = y.dtype == object or y.nunique() < 20
+            model = MLModelTool._get_model(model_type, "classifier" if is_classifier else "regressor")
+            scoring = "accuracy" if is_classifier else "r2"
+            scores = cross_val_score(model, X, y, cv=folds, scoring=scoring)
+            return ToolResult(True, f"✓ CV {folds}-fold: {scores.mean():.4f} ± {scores.std():.4f}",
+                              {"scores": scores.tolist(), "mean": float(scores.mean()),
+                               "std": float(scores.std()), "metric": scoring})
+        except Exception as e:
+            return ToolResult(False, f"✗ cross_validate failed: {e}")
+
+    @staticmethod
+    def hyperparameter_tune(data_path: str, target: str, model_type: str = "random_forest",
+                            param_grid: dict = None, cv: int = 3) -> ToolResult:
+        try:
+            import pandas as pd
+            from sklearn.model_selection import GridSearchCV, train_test_split
+            from sklearn.preprocessing import LabelEncoder
+            default_grids = {
+                "random_forest": {"n_estimators": [50, 100, 200], "max_depth": [None, 5, 10]},
+                "gradient_boosting": {"n_estimators": [50, 100], "learning_rate": [0.05, 0.1, 0.2]},
+                "logistic_regression": {"C": [0.1, 1.0, 10.0]},
+            }
+            df = pd.read_csv(data_path)
+            X = df.drop(columns=[target])
+            y = df[target]
+            for col in X.select_dtypes(include=["object"]).columns:
+                X[col] = LabelEncoder().fit_transform(X[col].astype(str))
+            model = MLModelTool._get_model(model_type)
+            grid = param_grid or default_grids.get(model_type, {"n_estimators": [50, 100]})
+            gs = GridSearchCV(model, grid, cv=cv, scoring="accuracy", n_jobs=-1)
+            gs.fit(X, y)
+            return ToolResult(True, f"✓ Best score: {gs.best_score_:.4f}",
+                              {"best_params": gs.best_params_, "best_score": gs.best_score_,
+                               "cv_results": {k: v.tolist() if hasattr(v, 'tolist') else v
+                                              for k, v in gs.cv_results_.items()
+                                              if k in ("mean_test_score", "std_test_score", "params")}})
+        except Exception as e:
+            return ToolResult(False, f"✗ hyperparameter_tune failed: {e}")
+
+    @staticmethod
+    def save_model(model: Any, output_path: str, format: str = "joblib") -> ToolResult:
+        try:
+            if format == "joblib":
+                import joblib
+                joblib.dump(model, output_path)
+            elif format == "pickle":
+                import pickle
+                with open(output_path, "wb") as f:
+                    pickle.dump(model, f)
+            return ToolResult(True, f"✓ Model saved to {output_path}")
+        except Exception as e:
+            return ToolResult(False, f"✗ save_model failed: {e}")
+
+    @staticmethod
+    def load_and_predict(model_path: str, data: Any) -> ToolResult:
+        return MLModelTool.predict(model_path, data)
+
+    @staticmethod
+    def deploy_model_api(model_path: str, host: str = "0.0.0.0", port: int = 5000,
+                         endpoint: str = "/predict") -> ToolResult:
+        """Starts a Flask prediction API in a background thread."""
+        try:
+            import joblib
+            from flask import Flask, request, jsonify
+            saved = joblib.load(model_path)
+            model = saved["model"]
+            features = saved.get("features", [])
+            app = Flask("NPMAgentModelAPI")
+
+            @app.route(endpoint, methods=["POST"])
+            def predict_endpoint():
+                import pandas as pd
+                data = request.get_json()
+                df = pd.DataFrame([data] if isinstance(data, dict) else data)
+                if features:
+                    df = df.reindex(columns=features, fill_value=0)
+                preds = model.predict(df).tolist()
+                proba = model.predict_proba(df).tolist() if hasattr(model, "predict_proba") else None
+                return jsonify({"predictions": preds, "probabilities": proba})
+
+            @app.route("/health", methods=["GET"])
+            def health():
+                return jsonify({"status": "ok", "model": model_path})
+
+            thread = threading.Thread(target=lambda: app.run(host=host, port=port, debug=False), daemon=True)
+            thread.start()
+            time.sleep(1)
+            return ToolResult(True, f"✓ Model API running at http://{host}:{port}{endpoint}",
+                              {"host": host, "port": port, "endpoint": endpoint})
+        except Exception as e:
+            return ToolResult(False, f"✗ deploy_model_api failed: {e}")
+
+    @staticmethod
+    def explain_prediction(model_path: str, instance: dict, method: str = "feature_importance") -> ToolResult:
+        try:
+            import joblib, pandas as pd
+            saved = joblib.load(model_path)
+            model, features = saved["model"], saved.get("features", [])
+            df = pd.DataFrame([instance]).reindex(columns=features, fill_value=0)
+            prediction = model.predict(df)[0]
+            if method == "shap":
+                _ensure("shap", "shap")
+                import shap
+                explainer = shap.TreeExplainer(model)
+                shap_values = explainer.shap_values(df)
+                vals = shap_values[0] if isinstance(shap_values, list) else shap_values[0]
+                explanation = [{"feature": features[i], "shap_value": float(vals[i])}
+                               for i in range(len(features))]
+                explanation.sort(key=lambda x: abs(x["shap_value"]), reverse=True)
+                return ToolResult(True, f"✓ SHAP explanation for prediction: {prediction}",
+                                  {"prediction": str(prediction), "shap_values": explanation})
+            # Feature-importance-based explanation
+            if hasattr(model, "feature_importances_"):
+                importances = model.feature_importances_
+                feat_contributions = [
+                    {"feature": features[i], "importance": float(importances[i]),
+                     "value": float(df.iloc[0, i])}
+                    for i in range(len(features))
+                ]
+                feat_contributions.sort(key=lambda x: x["importance"], reverse=True)
+                return ToolResult(True, f"✓ Prediction: {prediction}",
+                                  {"prediction": str(prediction), "top_features": feat_contributions[:10]})
+            return ToolResult(True, f"✓ Prediction: {prediction}", {"prediction": str(prediction)})
+        except Exception as e:
+            return ToolResult(False, f"✗ explain_prediction failed: {e}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 7. SpeechAITool
+# ═══════════════════════════════════════════════════════════════════════════
+class SpeechAITool:
+    name = "speech_ai"
+    description = (
+        "Speech AI: real-time transcription, file transcription, "
+        "speaker diarization, VAD, voice cloning (ElevenLabs), "
+        "real-time translation, command recognition, keyword detection"
+    )
+    use = ("""
+Name of Tool: SpeechAITool
+
+Purpose of Tool:
+The SpeechAITool is an advanced audio processing and speech-to-text / text-to-speech engine abstraction. It wraps several key audio processing capabilities using machine learning libraries such as OpenAI's Whisper (for high-fidelity transcription and Voice Activity Detection) and PyAnnote (for speaker diarization/segmentation tracking). Additionally, it hooks directly into external web APIs, like ElevenLabs, to provide instant sample-based voice cloning and multi-lingual text-to-speech synthesis. The tool exposes robust utility patterns designed to manage live microphone streaming, file-based batch transcription with subtitle timecode creation (SRT format), conversational translation chains, and keyword/intent matching routing matrices to build reactive voice-controlled applications.
+
+Methods:
+- transcribe_realtime: Captures audio on a live microphone stream in real-time, windows the buffer, and runs machine learning inference to convert the audio into a string snippet.
+- transcribe_file: Directs a target audio recording file through an automated language model grid to extract text blocks or timestamped segment lines.
+- speaker_diarization: Partitions an audio block by comparing unique structural voice characteristics, labeling exact time bounds for individual speakers.
+- voice_activity_detection (VAD): Isolates relevant human vocal segments from ambient background noise.
+- clone_and_speak: Uploads a distinct target vocal reference clip to an automated generation endpoint to render customized text lines using the cloned target voice print.
+- real_time_translation: Sequentially chains hardware microphone streams through a localized voice model before feeding the results into a translation engine to change the language on the fly.
+- command_recognition: Monitors localized speech buffers to map spoken phrases directly to executable program instructions.
+- keyword_detection: Sets up an active daemon listening thread that executes specific callbacks whenever designated vocabulary items pass through audio monitoring layers.
+
+How to use Tool Methods:
+
+1. transcribe_realtime:
+   - Purpose: Records and transcribes audio directly from a computer microphone on the fly.
+   - Arguments:
+     a) duration: int (default: 10) - Record timing window in seconds.
+     b) language: str (default: "en") - ISO target language categorization marker.
+     c) model_size: str (default: "base") - Machine learning neural model complexity scale ("tiny", "base", "small", "medium", "large").
+     d) output: str (default: None) - System path configuration to save raw text outputs.
+   - Returns: ToolResult matching extracted transcript texts alongside model performance metadata.
+   - How to call: SpeechAITool.transcribe_realtime(duration=15, language="en", model_size="small")
+
+2. transcribe_file:
+   - Purpose: Converts pre-recorded sound files into structured texts or sub-title tracks.
+   - Arguments:
+     a) audio_path: str - Target data file location map directory path (required).
+     b) language: str (default: "en") - Speech target translation target language identifier.
+     c) model_size: str (default: "base") - Model parameters size.
+     d) word_timestamps: bool (default: False) - Appends precise timestamp indicators directly to token tracking items.
+     e) output: str (default: None) - Output path destination. Writing to a path ending in '.srt' automatically formats the text as subtitles.
+   - Returns: ToolResult passing raw text summaries and segmented timestamp tracking objects.
+   - How to call: SpeechAITool.transcribe_file(audio_path="interview.mp3", word_timestamps=True, output="subtitles.srt")
+
+3. speaker_diarization:
+   - Purpose: Determines "who spoke when" across multi-speaker sound matrices.
+   - Arguments:
+     a) audio_path: str - Local audio repository source location (required).
+     b) n_speakers: int (default: 2) - Internal cluster threshold bounding individual speech patterns.
+     c) output: str (default: None) - Optional storage path configuration string to save JSON logs.
+   - Returns: ToolResult holding structural segment listings tracing start and end timeline frames relative to individual speaker keys.
+   - How to call: SpeechAITool.speaker_diarization(audio_path="podcast.wav", n_speakers=3)
+
+4. voice_activity_detection:
+   - Purpose: Discards dead space gaps to flag speech blocks.
+   - Arguments:
+     a) audio_path: str - File location pointer mapping target sound items (required).
+     b) threshold: float (default: 0.5) - Internal confidence metric boundary constraint.
+     c) output: str (default: None) - Output file target location path.
+   - Returns: ToolResult profiling structured data lists highlighting segments that contain human speech.
+   - How to call: SpeechAITool.voice_activity_detection(audio_path="recording_with_silences.wav")
+
+5. clone_and_speak:
+   - Purpose: Matches a reference sample style to synthesize written script text into an equivalent voice file.
+   - Arguments:
+     a) voice_sample: str - Path location linking target reference source speaker recording item (required).
+     b) text: str - Text lines to synthesize (required).
+     c) output: str (default: "cloned_voice.mp3") - Target path location to save the compiled file output.
+     d) cred_key: str (default: "elevenlabs") - Key to retrieve the necessary API credentials from the credential store.
+   - Returns: ToolResult detailing unique voice tracking IDs along with target file destination configurations.
+   - How to call: SpeechAITool.clone_and_speak(voice_sample="my_voice.mp3", text="Welcome to the system initialization routine.")
+
+6. real_time_translation:
+   - Purpose: Listens to incoming live microphone audio and translates the spoken words into a target language on the fly.
+   - Arguments:
+     a) source_language: str (default: "en") - Language identity code tracing active vocal sounds.
+     b) target_language: str (default: "es") - Output translation target standard selector.
+     c) duration: int (default: 10) - Active capture time limit tracking live hardware stream recordings.
+     d) output: str (default: None) - Text path destination location tracking log results.
+   - Returns: ToolResult containing side-by-side mapping logs displaying original text paired with translated content.
+   - How to call: SpeechAITool.real_time_translation(source_language="en", target_language="fr", duration=8)
+
+7. command_recognition:
+   - Purpose: Matches spoken command indicators to runtime program methods.
+   - Arguments:
+     a) commands: list - Explicit text lines checking phrase definitions (required).
+     b) action_map: dict - Route parameters binding string phrases to specific Python function callbacks (required).
+     c) duration: int (default: 5) - Microphone active sampling timeline constraint windows.
+   - Returns: ToolResult storing indicators reporting exactly what was heard and if a function action was executed.
+   - How to call: SpeechAITool.command_recognition(commands=["shutdown", "restart"], action_map={"shutdown": stop_system})
+
+8. keyword_detection:
+   - Purpose: Fires off continuous call handlers whenever specific hotwords are detected in an ambient background thread.
+   - Arguments:
+     a) keywords: list - Trigger keywords that activate validation checks (required).
+     b) duration: int (default: 30) - Thread process lifetime calculation parameters tracking absolute execution time.
+     c) callback: Callable (default: None) - Target function pointer executed upon keyword detection.
+   - Returns: ToolResult providing matching timelines and context snapshots logging keyword events.
+   - How to call: SpeechAITool.keyword_detection(keywords=["help", "alert"], callback=trigger_emergency_system)
+""")
+
+    @staticmethod
+    def transcribe_realtime(duration: int = 10, language: str = "en",
+                            model_size: str = "base", output: str = None) -> ToolResult:
+        try:
+            _ensure("openai-whisper", "whisper")
+            _ensure("sounddevice", "sounddevice")
+            _ensure("numpy", "numpy")
+            import sounddevice as sd
+            import numpy as np
+            import whisper
+            sr = 16000
+            audio = sd.rec(int(duration * sr), samplerate=sr, channels=1, dtype="float32")
+            sd.wait()
+            model = whisper.load_model(model_size)
+            audio_flat = audio.flatten()
+            result = model.transcribe(audio_flat, language=language)
+            text = result["text"].strip()
+            if output:
+                Path(output).write_text(text, encoding="utf-8")
+            return ToolResult(True, f"✓ Transcribed {duration}s of audio", {"text": text, "language": language})
+        except Exception as e:
+            return ToolResult(False, f"✗ transcribe_realtime failed: {e}")
+
+    @staticmethod
+    def transcribe_file(audio_path: str, language: str = "en", model_size: str = "base",
+                        word_timestamps: bool = False, output: str = None) -> ToolResult:
+        try:
+            _ensure("openai-whisper", "whisper")
+            import whisper
+            model = whisper.load_model(model_size)
+            result = model.transcribe(audio_path, language=language, word_timestamps=word_timestamps)
+            text = result["text"].strip()
+            segments = result.get("segments", [])
+            if output:
+                if output.endswith(".srt"):
+                    srt_lines = []
+                    for i, seg in enumerate(segments, 1):
+                        start = timedelta(seconds=seg["start"])
+                        end = timedelta(seconds=seg["end"])
+                        srt_lines.extend([str(i), f"{_fmt_srt(start)} --> {_fmt_srt(end)}",
+                                          seg["text"].strip(), ""])
+                    Path(output).write_text("\n".join(srt_lines), encoding="utf-8")
+                else:
+                    Path(output).write_text(text, encoding="utf-8")
+            return ToolResult(True, f"✓ Transcribed: {len(text)} chars",
+                              {"text": text, "segments": segments, "language": language})
+        except Exception as e:
+            return ToolResult(False, f"✗ transcribe_file failed: {e}")
+
+    @staticmethod
+    def speaker_diarization(audio_path: str, n_speakers: int = 2, output: str = None) -> ToolResult:
+        try:
+            _ensure("pyannote.audio", "pyannote")
+            from pyannote.audio import Pipeline
+            hf_token = CredStore.load("huggingface").get("token", "")
+            pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization",
+                                                use_auth_token=hf_token if hf_token else True)
+            diarization = pipeline(audio_path, num_speakers=n_speakers)
+            turns = []
+            for turn, _, speaker in diarization.itertracks(yield_label=True):
+                turns.append({"speaker": speaker, "start": round(turn.start, 2), "end": round(turn.end, 2)})
+            if output:
+                Path(output).write_text(json.dumps(turns, indent=2), encoding="utf-8")
+            return ToolResult(True, f"✓ {len(turns)} speech segments identified", turns)
+        except ImportError:
+            return ToolResult(False, "✗ pyannote.audio not installed. pip install pyannote.audio")
+        except Exception as e:
+            return ToolResult(False, f"✗ speaker_diarization failed: {e}")
+
+    @staticmethod
+    def voice_activity_detection(audio_path: str, threshold: float = 0.5,
+                                  output: str = None) -> ToolResult:
+        try:
+            _ensure("openai-whisper", "whisper")
+            import whisper
+            model = whisper.load_model("tiny")
+            result = model.transcribe(audio_path)
+            segments = result.get("segments", [])
+            vad = [{"start": round(s["start"], 2), "end": round(s["end"], 2),
+                    "speech": True, "confidence": 1.0} for s in segments]
+            if output:
+                Path(output).write_text(json.dumps(vad, indent=2), encoding="utf-8")
+            return ToolResult(True, f"✓ VAD: {len(vad)} speech segments detected", vad)
+        except Exception as e:
+            return ToolResult(False, f"✗ voice_activity_detection failed: {e}")
+
+    @staticmethod
+    def clone_and_speak(voice_sample: str, text: str, output: str = "cloned_voice.mp3",
+                        cred_key: str = "elevenlabs") -> ToolResult:
+        try:
+            import requests
+            api_key = CredStore.load(cred_key).get("api_key", "")
+            if not api_key:
+                return ToolResult(False, "No ElevenLabs API key. Save under 'elevenlabs' → {'api_key':'...'}")
+            # Add voice via instant voice cloning
+            with open(voice_sample, "rb") as f:
+                add_r = requests.post(
+                    "https://api.elevenlabs.io/v1/voices/add",
+                    headers={"xi-api-key": api_key},
+                    files={"files": (Path(voice_sample).name, f, "audio/mpeg")},
+                    data={"name": f"clone_{int(time.time())}", "description": "NPM Agent voice clone"},
+                    timeout=60
+                )
+            add_r.raise_for_status()
+            voice_id = add_r.json()["voice_id"]
+            # Generate speech
+            tts_r = requests.post(
+                f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}",
+                headers={"xi-api-key": api_key, "Content-Type": "application/json"},
+                json={"text": text, "model_id": "eleven_multilingual_v2",
+                      "voice_settings": {"stability": 0.5, "similarity_boost": 0.75}},
+                timeout=30
+            )
+            tts_r.raise_for_status()
+            Path(output).write_bytes(tts_r.content)
+            return ToolResult(True, f"✓ Cloned voice speech saved: {output}",
+                              {"voice_id": voice_id, "output": output})
+        except Exception as e:
+            return ToolResult(False, f"✗ clone_and_speak failed: {e}")
+
+    @staticmethod
+    def real_time_translation(source_language: str = "en", target_language: str = "es",
+                              duration: int = 10, output: str = None) -> ToolResult:
+        try:
+            transcription_result = SpeechAITool.transcribe_realtime(
+                duration=duration, language=source_language
+            )
+            if not transcription_result.success:
+                return transcription_result
+            text = transcription_result.data.get("text", "")
+            translation_result = AITextGenerationAdvancedTool.translate_text(
+                text, target_language, "natural"
+            )
+            if output and translation_result.success:
+                Path(output).write_text(
+                    f"[{source_language}]: {text}\n[{target_language}]: {translation_result.data['translation']}",
+                    encoding="utf-8"
+                )
+            return ToolResult(True, "✓ Real-time translation complete",
+                              {"original": text, "translation": translation_result.data.get("translation", ""),
+                               "source": source_language, "target": target_language})
+        except Exception as e:
+            return ToolResult(False, f"✗ real_time_translation failed: {e}")
+
+    @staticmethod
+    def command_recognition(commands: list, action_map: dict, duration: int = 5) -> ToolResult:
+        """commands: ['open browser', 'quit'], action_map: {'open browser': callable}"""
+        try:
+            result = SpeechAITool.transcribe_realtime(duration=duration)
+            if not result.success:
+                return result
+            spoken = result.data.get("text", "").lower().strip()
+            matched_command = None
+            for cmd in commands:
+                if cmd.lower() in spoken:
+                    matched_command = cmd
+                    action = action_map.get(cmd)
+                    if callable(action):
+                        action()
+                    break
+            return ToolResult(True, f"✓ Heard: '{spoken}'",
+                              {"heard": spoken, "matched_command": matched_command,
+                               "action_executed": matched_command is not None})
+        except Exception as e:
+            return ToolResult(False, f"✗ command_recognition failed: {e}")
+
+    @staticmethod
+    def keyword_detection(keywords: list, duration: int = 30, callback: Callable = None) -> ToolResult:
+        """Listen for keywords and trigger callback when detected."""
+        try:
+            detected = []
+
+            def _listen_loop():
+                end_time = time.time() + duration
+                while time.time() < end_time:
+                    result = SpeechAITool.transcribe_realtime(duration=3)
+                    if result.success:
+                        spoken = result.data.get("text", "").lower()
+                        for kw in keywords:
+                            if kw.lower() in spoken:
+                                detected.append({"keyword": kw, "time": datetime.now().isoformat(),
+                                                 "context": spoken})
+                                if callback:
+                                    callback(kw, spoken)
+
+            t = threading.Thread(target=_listen_loop, daemon=True)
+            t.start()
+            t.join(timeout=duration + 5)
+            return ToolResult(True, f"✓ Keyword detection complete. {len(detected)} detections",
+                              {"detections": detected, "keywords": keywords, "duration": duration})
+        except Exception as e:
+            return ToolResult(False, f"✗ keyword_detection failed: {e}")
+
+
+def _fmt_srt(td: timedelta) -> str:
+    """Format timedelta for SRT subtitle format."""
+    total_seconds = int(td.total_seconds())
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    ms = int(td.microseconds / 1000)
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d},{ms:03d}"
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 8. ComputerVisionTool
+# ═══════════════════════════════════════════════════════════════════════════
+class ComputerVisionTool:
+    name = "computer_vision"
+    description = (
+        "CV: object detection/tracking (YOLO), face recognition, emotions, "
+        "OCR, table extraction, QR/barcode scan, styled QR, image classify, "
+        "face compare, object count, segmentation, measurements, PDF OCR"
+    )
+    use = ("""
+Name of Tool: ComputerVisionTool
+
+Purpose of Tool:
+The ComputerVisionTool provides a centralized interface for multi-modal Computer Vision (CV) operations. It unifies state-of-the-art vision architectures such as Ultralytics YOLO (for object detection, video tracking, image classification, and instance segmentation), face-recognition and DeepFace (for structural biometric comparisons, localization, and emotional expression mapping), and Tesseract OCR (for parsing character structures from images and raw PDF scans). Additionally, the tool includes helper methods for tabular data extraction, QR code / barcode generation and processing, and geometric sizing measurements relative to bounding contours.
+
+Methods:
+- detect_objects: Uses YOLO neural networks to locate distinct object boundaries, returning descriptive class assignments and coordinate boxes.
+- track_objects: Processes video sequences frame-by-frame to map consistent track IDs to unique objects moving across frames.
+- recognize_faces: Identifies localized human facial boundaries against a provided baseline repository folder of known personnel images.
+- detect_emotions: Leverages neural embeddings to score facial features against seven baseline emotional categories.
+- read_text_ocr: Ingests structured and unstructured images to isolate and read text characters using optical character recognition.
+- read_table_from_image: Analyzes layout grids inside images to sort text words into logical row blocks.
+- scan_qr_barcode: Automatically reads matrix strings and geometric coordinates from barcodes and QR codes.
+- generate_qr_with_style: Packages a text string into a stylized, custom QR code layout with support for rounded modules and centralized brand logos.
+- classify_image: Outputs top-k categorical index labels scoring an entire image against recognized dataset classes.
+- compare_faces: Computes spatial facial distance tolerances to evaluate whether two image samples depict the same individual.
+- count_objects: Wraps core object recognition methods to filter and count instances of a target object class.
+- segment_image: Performs pixel-level instance segmentation to track precise object outlines instead of simple rectangular boxes.
+- measure_object: Calibrates pixel density using a known object size to mathematically estimate dimensions for all visible shapes.
+- extract_text_from_pdf_image: Uses document processing tools to convert multi-page static documents into manageable text arrays.
+
+How to use Tool Methods:
+
+1. detect_objects:
+   - Purpose: Identifies individual objects inside static graphics files.
+   - Arguments:
+     a) image_path: str - Local file location of the target image file (required).
+     b) model: str (default: "yolov8n.pt") - YOLO network weights architecture model variant pointer string.
+     c) confidence: float (default: 0.5) - Minimum verification threshold required to log predictions.
+     d) output: str (default: None) - Output path destination to save the image with plotted bounding boxes.
+   - Returns: ToolResult storing structured arrays listing the class name, confidence rating, and pixel coordinate box ($[x_{min}, y_{min}, x_{max}, y_{max}]$) for each detected object.
+   - How to call: ComputerVisionTool.detect_objects(image_path="room.jpg", confidence=0.6, output="detected.jpg")
+
+2. track_objects:
+   - Purpose: Tracks objects across sequential video stream intervals.
+   - Arguments:
+     a) video_path: str - Local directory file path mapping the target video asset (required).
+     b) model: str (default: "yolov8n.pt") - Network weights selector string.
+     c) output: str (default: None) - System workspace directory root path targeted to write finalized tracks.
+   - Returns: ToolResult reporting total unique track assignments registered across the tracking task.
+   - How to call: ComputerVisionTool.track_objects(video_path="traffic.mp4", output="tracked_output/")
+
+3. recognize_faces:
+   - Purpose: Maps localized face objects against a labeled gallery of known faces.
+   - Arguments:
+     a) image_path: str - Target scene graphic source location (required).
+     b) known_faces_folder: str (default: None) - Path mapping identity target files named by person.
+     c) output: str (default: None) - System path configuration targeted to save visual bounding rectangles.
+   - Returns: ToolResult pairing recognized identity strings alongside precise top, right, bottom, left pixel vectors.
+   - How to call: ComputerVisionTool.recognize_faces(image_path="group.jpg", known_faces_folder="employees/")
+
+4. detect_emotions:
+   - Purpose: Evaluates visible human expressions to identify a dominant emotional state.
+   - Arguments:
+     a) image_path: str - Image file path (required).
+     b) output: str (default: None) - Internal routing log path assignment.
+   - Returns: ToolResult containing percentages for all basic emotion scales along with a single dominant label.
+   - How to call: ComputerVisionTool.detect_emotions(image_path="portrait.png")
+
+5. read_text_ocr:
+   - Purpose: Extracts flat string lines from text-heavy images.
+   - Arguments:
+     a) image_path: str - Targeted document graphic source path direction (required).
+     b) language: str (default: "eng") - OCR engine language definition indicator.
+     c) output: str (default: None) - Optional file path layout targeted to dump extracted text.
+   - Returns: ToolResult returning the compiled text output characters string block.
+   - How to call: ComputerVisionTool.read_text_ocr(image_path="signboard.jpg", language="eng")
+
+6. read_table_from_image:
+   - Purpose: Converts image-based table grids into structural tabular row outputs.
+   - Arguments:
+     a) image_path: str - Target image source location (required).
+     b) output_csv: str (default: None) - Destination path to write parsed values as an organized spreadsheet.
+   - Returns: ToolResult delivering text lines grouped into lists delimited by structural pipe variables.
+   - How to call: ComputerVisionTool.read_table_from_image(image_path="invoice.jpg", output_csv="data.csv")
+
+7. scan_qr_barcode:
+   - Purpose: decodes programmatic tracking data lines embedded in matrix codes.
+   - Arguments:
+     a) image_path: str - Graphic image source tracking locator (required).
+   - Returns: ToolResult breaking down code format standard classes alongside the corresponding data string values.
+   - How to call: ComputerVisionTool.scan_qr_barcode(image_path="receipt_code.png")
+
+8. generate_qr_with_style:
+   - Purpose: Encodes target data payloads inside styled, customized matrix graphics files.
+   - Arguments:
+     a) data: str - Raw tracking link metadata text target block input (required).
+     b) output: str (default: "styled_qr.png") - Storage name parameters tracking final targets.
+     c) style: str (default: "rounded") - Structural geometry choices ("rounded" or "square").
+     d) color: str (default: "#000000") - Hex styling indicator setting tracking foreground matrix colors.
+     e) logo: str (default: None) - Center brand image asset location string.
+   - Returns: ToolResult verifying image file write finalizations.
+   - How to call: ComputerVisionTool.generate_qr_with_style(data="https://google.com", style="rounded", color="#002244")
+
+9. classify_image:
+   - Purpose: Computes contextual scene designations categorizing an entire image asset frame.
+   - Arguments:
+     a) image_path: str - Image workspace tracking point (required).
+     b) model: str (default: "yolov8n-cls.pt") - Dedicated image classification network selection.
+     c) top_k: int (default: 5) - Number of top label probability candidates to return.
+   - Returns: ToolResult listing top class name strings sorted alongside confidence probabilities.
+   - How to call: ComputerVisionTool.classify_image(image_path="pet.jpg", top_k=3)
+
+10. compare_faces:
+    - Purpose: Compares two separate images to determine if they show the same face.
+    - Arguments:
+      a) image1: str - Path location linking baseline picture asset (required).
+      b) image2: str - Path location pointing toward verification target file item (required).
+    - Returns: ToolResult passing Boolean match flags paired with calculated similarity index metrics.
+    - How to call: ComputerVisionTool.compare_faces(image1="id_card.jpg", image2="selfie.jpg")
+
+11. count_objects:
+    - Purpose: Tallies occurrences of a specific target object class within an image.
+    - Arguments:
+      a) image_path: str - Directory location of source picture asset (required).
+      b) object_class: str - String designation tracking chosen model target labels (required).
+      c) model: str (default: "yolov8n.pt") - Core validation framework weights configuration file.
+    - Returns: ToolResult listing the integer tally alongside global detection items.
+    - How to call: ComputerVisionTool.count_objects(image_path="warehouse.jpg", object_class="box")
+
+12. segment_image:
+    - Purpose: Performs fine-grained contour outline separation across pixel targets.
+    - Arguments:
+      a) image_path: str - Local input picture frame directory route mapping (required).
+      b) model: str (default: "yolov8n-seg.pt") - YOLO segmentation model weight settings.
+      c) output: str (default: None) - Path layout targeted to store mask image frames.
+    - Returns: ToolResult profiling segment class lists along with detection confidence arrays.
+    - How to call: ComputerVisionTool.segment_image(image_path="street.png", output="mask.png")
+
+13. measure_object:
+    - Purpose: Estimates real-world spatial sizes based on a known reference object.
+    - Arguments:
+      a) image_path: str - Local file mapping structural image views (required).
+      b) reference_object_size: float - Real-world dimension metric value of the largest visible object (required).
+    - Returns: ToolResult storing a structural collection containing calculated dimension heights, widths, and square surface areas.
+    - How to call: ComputerVisionTool.measure_object(image_path="coin_and_keys.jpg", reference_object_size=2.5)
+
+14. extract_text_from_pdf_image:
+    - Purpose: Runs optical character recognition across multi-page, non-searchable document structures.
+    - Arguments:
+      a) pdf_path: str - Document storage pointer link (required).
+      b) output: str (default: None) - Path map tracking local text output writes.
+    - Returns: ToolResult delivering text contents systematically organized by document page blocks.
+    - How to call: ComputerVisionTool.extract_text_from_pdf_image(pdf_path="scanned_contract.pdf", output="extracted.txt")
+""")
+    
+
+    @staticmethod
+    def detect_objects(image_path: str, model: str = "yolov8n.pt",
+                       confidence: float = 0.5, output: str = None) -> ToolResult:
+        try:
+            _ensure("ultralytics", "ultralytics")
+            from ultralytics import YOLO
+            yolo = YOLO(model)
+            results = yolo(image_path, conf=confidence)
+            detections = []
+            for r in results:
+                for box in r.boxes:
+                    detections.append({
+                        "class": r.names[int(box.cls)],
+                        "confidence": round(float(box.conf), 3),
+                        "bbox": [round(x, 1) for x in box.xyxy[0].tolist()]
+                    })
+                if output:
+                    r.save(filename=output)
+            return ToolResult(True, f"✓ Detected {len(detections)} objects", detections)
+        except Exception as e:
+            return ToolResult(False, f"✗ detect_objects failed: {e}")
+
+    @staticmethod
+    def track_objects(video_path: str, model: str = "yolov8n.pt", output: str = None) -> ToolResult:
+        try:
+            _ensure("ultralytics", "ultralytics")
+            from ultralytics import YOLO
+            yolo = YOLO(model)
+            results = yolo.track(source=video_path, save=bool(output), project=str(Path(output).parent) if output else ".",
+                                  name=Path(output).stem if output else "track")
+            all_tracks = []
+            for r in results:
+                if r.boxes.id is not None:
+                    for tid, cls, conf in zip(r.boxes.id.tolist(), r.boxes.cls.tolist(), r.boxes.conf.tolist()):
+                        all_tracks.append({"track_id": int(tid), "class": r.names[int(cls)],
+                                           "confidence": round(float(conf), 3)})
+            unique_ids = len(set(t["track_id"] for t in all_tracks))
+            return ToolResult(True, f"✓ Tracked {unique_ids} unique objects",
+                              {"unique_objects": unique_ids, "total_detections": len(all_tracks)})
+        except Exception as e:
+            return ToolResult(False, f"✗ track_objects failed: {e}")
+
+    @staticmethod
+    def recognize_faces(image_path: str, known_faces_folder: str = None,
+                        output: str = None) -> ToolResult:
+        try:
+            _ensure("face-recognition", "face_recognition")
+            import face_recognition, cv2
+            image = face_recognition.load_image_file(image_path)
+            face_locations = face_recognition.face_locations(image)
+            face_encodings = face_recognition.face_encodings(image, face_locations)
+            results = []
+            known_encodings, known_names = [], []
+            if known_faces_folder and Path(known_faces_folder).exists():
+                for img_file in Path(known_faces_folder).glob("*.*"):
+                    try:
+                        known_img = face_recognition.load_image_file(str(img_file))
+                        encs = face_recognition.face_encodings(known_img)
+                        if encs:
+                            known_encodings.append(encs[0])
+                            known_names.append(img_file.stem)
+                    except Exception:
+                        pass
+            for loc, enc in zip(face_locations, face_encodings):
+                name = "Unknown"
+                if known_encodings:
+                    matches = face_recognition.compare_faces(known_encodings, enc, tolerance=0.6)
+                    distances = face_recognition.face_distance(known_encodings, enc)
+                    if any(matches):
+                        best = int(distances.argmin())
+                        if matches[best]:
+                            name = known_names[best]
+                results.append({"name": name, "location": {"top": loc[0], "right": loc[1],
+                                                              "bottom": loc[2], "left": loc[3]}})
+            if output:
+                img_cv = cv2.imread(image_path)
+                for r in results:
+                    loc = r["location"]
+                    cv2.rectangle(img_cv, (loc["left"], loc["top"]), (loc["right"], loc["bottom"]), (0, 255, 0), 2)
+                    cv2.putText(img_cv, r["name"], (loc["left"], loc["top"] - 10),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                cv2.imwrite(output, img_cv)
+            return ToolResult(True, f"✓ Found {len(results)} face(s)", results)
+        except ImportError:
+            return ToolResult(False, "✗ face-recognition not installed. pip install face-recognition")
+        except Exception as e:
+            return ToolResult(False, f"✗ recognize_faces failed: {e}")
+
+    @staticmethod
+    def detect_emotions(image_path: str, output: str = None) -> ToolResult:
+        try:
+            _ensure("deepface", "deepface")
+            from deepface import DeepFace
+            analysis = DeepFace.analyze(img_path=image_path, actions=["emotion"],
+                                         enforce_detection=False)
+            results = []
+            for face in (analysis if isinstance(analysis, list) else [analysis]):
+                results.append({
+                    "dominant_emotion": face.get("dominant_emotion", ""),
+                    "emotions": face.get("emotion", {}),
+                    "region": face.get("region", {})
+                })
+            return ToolResult(True, f"✓ Emotion detected: {results[0]['dominant_emotion'] if results else 'none'}",
+                              results)
+        except ImportError:
+            return ToolResult(False, "✗ deepface not installed. pip install deepface")
+        except Exception as e:
+            return ToolResult(False, f"✗ detect_emotions failed: {e}")
+
+    @staticmethod
+    def read_text_ocr(image_path: str, language: str = "eng", output: str = None) -> ToolResult:
+        try:
+            import pytesseract
+            from PIL import Image
+            img = Image.open(image_path)
+            text = pytesseract.image_to_string(img, lang=language)
+            if output:
+                Path(output).write_text(text, encoding="utf-8")
+            return ToolResult(True, f"✓ OCR: {len(text)} chars", {"text": text})
+        except Exception as e:
+            return ToolResult(False, f"✗ read_text_ocr failed: {e}")
+
+    @staticmethod
+    def read_table_from_image(image_path: str, output_csv: str = None) -> ToolResult:
+        try:
+            import pytesseract
+            from PIL import Image
+            img = Image.open(image_path)
+            data = pytesseract.image_to_data(img, output_type=pytesseract.Output.DICT)
+            # Group text by lines using block/line numbers
+            lines: dict = {}
+            for i, text in enumerate(data["text"]):
+                if not text.strip():
+                    continue
+                key = (data["block_num"][i], data["line_num"][i])
+                lines.setdefault(key, []).append(text)
+            rows = [" | ".join(words) for words in lines.values()]
+            if output_csv:
+                with open(output_csv, "w", newline="", encoding="utf-8") as f:
+                    writer = csv.writer(f)
+                    for row in rows:
+                        writer.writerow(row.split(" | "))
+            return ToolResult(True, f"✓ Extracted {len(rows)} table rows",
+                              {"rows": rows, "raw_count": len(rows)})
+        except Exception as e:
+            return ToolResult(False, f"✗ read_table_from_image failed: {e}")
+
+    @staticmethod
+    def scan_qr_barcode(image_path: str) -> ToolResult:
+        try:
+            from pyzbar.pyzbar import decode
+            from PIL import Image
+            img = Image.open(image_path)
+            codes = decode(img)
+            results = [{"type": c.type, "data": c.data.decode("utf-8", errors="replace"),
+                        "rect": {"left": c.rect.left, "top": c.rect.top,
+                                 "width": c.rect.width, "height": c.rect.height}}
+                       for c in codes]
+            return ToolResult(True if results else False,
+                              f"✓ Found {len(results)} code(s)" if results else "✗ No codes found",
+                              results)
+        except Exception as e:
+            return ToolResult(False, f"✗ scan_qr_barcode failed: {e}")
+
+    @staticmethod
+    def generate_qr_with_style(data: str, output: str = "styled_qr.png",
+                               style: str = "rounded", color: str = "#000000",
+                               logo: str = None) -> ToolResult:
+        try:
+            import qrcode
+            from qrcode.image.styledpil import StyledPilImage
+            from qrcode.image.styles.moduledrawers import RoundedModuleDrawer, SquareModuleDrawer
+            from qrcode.image.styles.colormasks import SolidFillColorMask
+            from PIL import Image
+            drawer = RoundedModuleDrawer() if style == "rounded" else SquareModuleDrawer()
+            # Parse hex color
+            color_rgb = tuple(int(color.lstrip("#")[i:i+2], 16) for i in (0, 2, 4))
+            qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_H)
+            qr.add_data(data)
+            qr.make(fit=True)
+            img = qr.make_image(image_factory=StyledPilImage, module_drawer=drawer,
+                                color_mask=SolidFillColorMask(front_color=color_rgb))
+            if logo and Path(logo).exists():
+                logo_img = Image.open(logo).convert("RGBA")
+                base = img.convert("RGBA")
+                qr_size = base.size[0]
+                logo_size = qr_size // 4
+                logo_img = logo_img.resize((logo_size, logo_size), Image.LANCZOS)
+                pos = ((qr_size - logo_size) // 2, (qr_size - logo_size) // 2)
+                base.paste(logo_img, pos, logo_img)
+                base.save(output)
+            else:
+                img.save(output)
+            return ToolResult(True, f"✓ Styled QR code saved: {output}")
+        except Exception as e:
+            return ToolResult(False, f"✗ generate_qr_with_style failed: {e}")
+
+    @staticmethod
+    def classify_image(image_path: str, model: str = "yolov8n-cls.pt", top_k: int = 5) -> ToolResult:
+        try:
+            _ensure("ultralytics", "ultralytics")
+            from ultralytics import YOLO
+            clf = YOLO(model)
+            results = clf(image_path)
+            classifications = []
+            for r in results:
+                probs = r.probs
+                top_indices = probs.top5 if top_k >= 5 else list(range(min(top_k, len(probs.data))))
+                for idx in top_indices[:top_k]:
+                    classifications.append({
+                        "class": r.names[idx],
+                        "confidence": round(float(probs.data[idx]), 4)
+                    })
+            return ToolResult(True, f"✓ Top-{top_k} classes: {classifications[0]['class'] if classifications else 'none'}",
+                              classifications)
+        except Exception as e:
+            return ToolResult(False, f"✗ classify_image failed: {e}")
+
+    @staticmethod
+    def compare_faces(image1: str, image2: str) -> ToolResult:
+        try:
+            _ensure("face-recognition", "face_recognition")
+            import face_recognition
+            img1 = face_recognition.load_image_file(image1)
+            img2 = face_recognition.load_image_file(image2)
+            enc1 = face_recognition.face_encodings(img1)
+            enc2 = face_recognition.face_encodings(img2)
+            if not enc1 or not enc2:
+                return ToolResult(False, "✗ Face not detected in one or both images")
+            distance = float(face_recognition.face_distance([enc1[0]], enc2[0])[0])
+            match = distance < 0.6
+            similarity = round((1 - distance) * 100, 1)
+            return ToolResult(True, f"✓ Faces {'match' if match else 'do not match'} ({similarity}% similar)",
+                              {"match": match, "similarity_percent": similarity, "distance": distance})
+        except ImportError:
+            return ToolResult(False, "✗ face-recognition not installed.")
+        except Exception as e:
+            return ToolResult(False, f"✗ compare_faces failed: {e}")
+
+    @staticmethod
+    def count_objects(image_path: str, object_class: str, model: str = "yolov8n.pt") -> ToolResult:
+        try:
+            result = ComputerVisionTool.detect_objects(image_path, model=model)
+            if not result.success:
+                return result
+            count = sum(1 for d in (result.data or []) if d.get("class", "").lower() == object_class.lower())
+            return ToolResult(True, f"✓ Counted {count} '{object_class}' in image",
+                              {"count": count, "class": object_class, "all_detections": result.data})
+        except Exception as e:
+            return ToolResult(False, f"✗ count_objects failed: {e}")
+
+    @staticmethod
+    def segment_image(image_path: str, model: str = "yolov8n-seg.pt", output: str = None) -> ToolResult:
+        try:
+            _ensure("ultralytics", "ultralytics")
+            from ultralytics import YOLO
+            seg = YOLO(model)
+            results = seg(image_path)
+            segments = []
+            for r in results:
+                if r.masks is not None:
+                    for i, (cls, conf) in enumerate(zip(r.boxes.cls, r.boxes.conf)):
+                        segments.append({"class": r.names[int(cls)], "confidence": round(float(conf), 3)})
+                if output:
+                    r.save(filename=output)
+            return ToolResult(True, f"✓ Segmented {len(segments)} objects", segments)
+        except Exception as e:
+            return ToolResult(False, f"✗ segment_image failed: {e}")
+
+    @staticmethod
+    def measure_object(image_path: str, reference_object_size: float) -> ToolResult:
+        """Estimate object sizes using a known reference object (in real-world units)."""
+        try:
+            import cv2, numpy as np
+            img = cv2.imread(image_path)
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            blur = cv2.GaussianBlur(gray, (7, 7), 0)
+            edges = cv2.Canny(blur, 50, 150)
+            contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            if not contours:
+                return ToolResult(False, "✗ No objects detected for measurement")
+            # Use largest contour as reference
+            ref_contour = max(contours, key=cv2.contourArea)
+            ref_bbox = cv2.boundingRect(ref_contour)
+            pixels_per_unit = ref_bbox[2] / reference_object_size  # width
+            measurements = []
+            for c in contours:
+                x, y, w, h = cv2.boundingRect(c)
+                measurements.append({
+                    "width_units": round(w / pixels_per_unit, 2),
+                    "height_units": round(h / pixels_per_unit, 2),
+                    "area_sq_units": round((w * h) / (pixels_per_unit ** 2), 2),
+                    "bbox_pixels": [x, y, w, h]
+                })
+            return ToolResult(True, f"✓ Measured {len(measurements)} objects",
+                              {"measurements": measurements, "pixels_per_unit": pixels_per_unit})
+        except Exception as e:
+            return ToolResult(False, f"✗ measure_object failed: {e}")
+
+    @staticmethod
+    def extract_text_from_pdf_image(pdf_path: str, output: str = None) -> ToolResult:
+        try:
+            import pytesseract
+            from PIL import Image
+            _ensure("pdf2image", "pdf2image")
+            from pdf2image import convert_from_path
+            pages = convert_from_path(pdf_path, dpi=300)
+            full_text = []
+            for i, page in enumerate(pages):
+                text = pytesseract.image_to_string(page)
+                full_text.append(f"--- Page {i+1} ---\n{text}")
+            combined = "\n".join(full_text)
+            if output:
+                Path(output).write_text(combined, encoding="utf-8")
+            return ToolResult(True, f"✓ OCR'd {len(pages)} PDF pages: {len(combined)} chars",
+                              {"text": combined, "pages": len(pages)})
+        except ImportError:
+            return ToolResult(False, "✗ pdf2image not installed. pip install pdf2image (also needs poppler)")
+        except Exception as e:
+            return ToolResult(False, f"✗ extract_text_from_pdf_image failed: {e}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 9. AutomationWorkflowTool
+# ═══════════════════════════════════════════════════════════════════════════
+class AutomationWorkflowTool:
+    name = "automation_workflow"
+    description = (
+        "No-code workflows: create/run/schedule, file/email/webhook triggers, "
+        "chain workflows, conditional branches, retry, parallel, loops"
+    )
+    use = ("""
+Name of Tool: AutomationWorkflowTool
+
+Purpose of Tool:
+The AutomationWorkflowTool provides an engine for building, running, and managing automated, low-code/no-code operational workflows. It acts as an execution orchestration layer capable of sequencing custom operations (such as system terminal tasks, physical file writing, logging metrics, or external REST API calls) while providing contextual state tracking. The tool handles complex architectural pipeline flows by supporting event-driven data tracking, timed crontab-like schedulers, reactive triggers (monitoring filesystem loops, email standard filters, or HTTP webhooks), task chains, multi-path conditional gates, exponential delay retries, parallel execution gates, and array data loops.
+
+Methods:
+- create_workflow: Stores structured JSON blueprints defining execution routines, parameter variables, and validation matrices.
+- run_workflow: Evaluates a target flow sequentially while tracking parameter injections across isolated task blocks.
+- schedule_workflow: Hooks into system tracking daemons to repeat target workflow profiles using natural language timing definitions.
+- list_scheduled_workflows: Scans memory registers to summarize currently queued automation task loops.
+- cancel_scheduled_workflow: Deregisters scheduled loop records from system execution tables to prevent further background runs.
+- get_workflow_history: Reads historical file logs to provide execution audits for specific automation tasks.
+- create_trigger_on_file_change: Starts an asynchronous watcher thread that matches specific file patterns to trigger automated runs.
+- create_trigger_on_email: Launches background polling routines that check message mailboxes for defined keyword filters.
+- create_trigger_on_webhook: Spins up a local Flask server to listen for web requests that trigger target automated tasks.
+- chain_workflows: Links multiple workflow objects together so they execute back-to-back, passing context forward through the chain.
+- create_conditional_branch: Builds a split execution path that decides which workflow to run based on runtime context evaluations.
+- retry_on_failure: Wraps a workflow with exponential backoff logic to retry failed tasks automatically over time.
+- run_parallel: Deploys multiple tasks simultaneously across semaphore-capped processing pools to speed up execution.
+- create_loop_workflow: Iterates over target lists or collection structures to execute a specific workflow block for each item.
+
+How to use Tool Methods:
+
+1. create_workflow:
+   - Purpose: Registers a structured automation routine profile.
+   - Arguments:
+     a) name: str - Unique target identity label for the workflow (required).
+     b) trigger: dict - Activation metadata configuration dictionary mapping event rules (required).
+     c) steps: list - Ordered arrays listing individual command parameter maps (required).
+     d) conditions: list (default: None) - Context validation gate arrays used to skip or abort steps.
+   - Returns: ToolResult passing the compiled workflow structural blueprint dictionary.
+   - How to call: AutomationWorkflowTool.create_workflow(name="backup", trigger={"type": "manual"}, steps=[{"action": "run_command", "params": {"cmd": "tar -czf backup.tar.gz /data"}}])
+
+2. run_workflow:
+   - Purpose: Executes a target workflow configuration sequentially.
+   - Arguments:
+     a) workflow_name_or_dict: Any - Registered tracking name string or direct workflow map configuration (required).
+     b) context: dict (default: None) - Initial parameter state variables passed into variable fields (e.g., `{ctx.variable_name}`).
+   - Returns: ToolResult summarizing overall process success alongside granular step execution output tracking arrays.
+   - How to call: AutomationWorkflowTool.run_workflow(workflow_name_or_dict="backup", context={"user_dir": "/home/user"})
+
+3. schedule_workflow:
+   - Purpose: Registers workflows to run automatically at scheduled time intervals.
+   - Arguments:
+     a) workflow: Any - Targeted lookup identity identifier string or workflow dictionary map (required).
+     b) schedule_str: str - Natural language recurrence description expression (e.g., "every 5 minutes", "every day at 09:00") (required).
+     c) timezone: str (default: "UTC") - Baseline reference geographic timing zone marker.
+   - Returns: ToolResult passing tracking IDs generated to manage the running daemon process.
+   - How to call: AutomationWorkflowTool.schedule_workflow(workflow="backup", schedule_str="every day at 23:30")
+
+4. list_scheduled_workflows:
+   - Purpose: Returns all currently active background automated cron task processes.
+   - Arguments: None.
+   - Returns: ToolResult listing metadata summaries for active jobs currently loaded into memory tracking tables.
+   - How to call: AutomationWorkflowTool.list_scheduled_workflows()
+
+5. cancel_scheduled_workflow:
+   - Purpose: Stops a background scheduled job using its unique tracking handle.
+   - Arguments:
+     a) workflow_id: str - Target process tracking identifier UUID string (required).
+   - Returns: ToolResult verifying removal from the system scheduler tables.
+   - How to call: AutomationWorkflowTool.cancel_scheduled_workflow(workflow_id="abcd-1234-efgh-5678")
+
+6. get_workflow_history:
+   - Purpose: Retrieves execution logs and audit trails for a specific workflow.
+   - Arguments:
+     a) workflow_name: str - The lookup label of the workflow (required).
+     b) limit: int (default: 20) - Maximum number of historical records to return.
+   - Returns: ToolResult delivering chronological arrays detailing step statuses, timestamps, and contextual data.
+   - How to call: AutomationWorkflowTool.get_workflow_history(workflow_name="backup", limit=10)
+
+7. create_trigger_on_file_change:
+   - Purpose: Monitored data directory paths to trigger runs when specified files are modified.
+   - Arguments:
+     a) path: str - Workspace tracking route folder directory link (required).
+     b) pattern: str - Standard string match validation token filter (e.g., "*.csv") (required).
+     c) workflow: Any - Workflow schema blueprint or system string key target link (required).
+   - Returns: ToolResult verifying active setup of the filesystem monitoring listener.
+   - How to call: AutomationWorkflowTool.create_trigger_on_file_change(path="/dropzone", pattern="*.xlsx", workflow="process_spreadsheet")
+
+8. create_trigger_on_email:
+   - Purpose: Monitors email folders to trigger actions based on message attributes.
+   - Arguments:
+     a) criteria: dict - Filtering keys (e.g., `subject_contains`, `from_contains`, `check_interval_seconds`) (required).
+     b) workflow: Any - Targeting identity string link or map reference metadata structure (required).
+   - Returns: ToolResult verifying active thread setup tracking the inbox process.
+   - How to call: AutomationWorkflowTool.create_trigger_on_email(criteria={"subject_contains": "URGENT", "check_interval_seconds": 30}, workflow="alert_system")
+
+9. create_trigger_on_webhook:
+   - Purpose: Deploys a local network listener that triggers workflows when it receives an HTTP POST request.
+   - Arguments:
+     a) port: int - Port number to bind the web server to (required).
+     b) path: str - Route endpoint string pattern matching rules (required).
+     c) workflow: Any - Associated task blueprint targeted for run execution (required).
+   - Returns: ToolResult verifying active socket listener initialization.
+   - How to call: AutomationWorkflowTool.create_trigger_on_webhook(port=8080, path="/v1/deploy", workflow="build_pipeline")
+
+10. chain_workflows:
+    - Purpose: Runs an ordered list of workflows sequentially, passing variables forward through the execution chain.
+    - Arguments:
+      a) workflows: list - Ordered arrays containing identity keys or schema dictionaries (required).
+      b) pass_context: bool (default: True) - Enables forward propagation of runtime state context.
+    - Returns: ToolResult containing cumulative tracking arrays verifying structural steps.
+    - How to call: AutomationWorkflowTool.chain_workflows(workflows=["clean_temp", "fetch_data", "generate_report"])
+
+11. create_conditional_branch:
+    - Purpose: Branches execution paths dynamically based on runtime evaluations.
+    - Arguments:
+      a) condition_func: Callable - Validation logic function that evaluates runtime context maps to true or false (required).
+      b) true_workflow: Any - Target routine configuration deployed if validation evaluations pass (required).
+      c) false_workflow: Any - Fallback operational routine deployed if validation evaluations fail (required).
+    - Returns: A specialized conditional step structural schema configuration dictionary wrapper.
+    - How to call: AutomationWorkflowTool.create_conditional_branch(condition_func=lambda ctx: ctx.get("status") == 200, true_workflow="success_flow", false_workflow="error_flow")
+
+12. retry_on_failure:
+    - Purpose: Safeguards unstable jobs by wrapping them with automatic retry logic.
+    - Arguments:
+      a) workflow: Any - Operational task component structure targeted for execution checks (required).
+      b) max_retries: int (default: 3) - Absolute re-try repetition limits constraint variables.
+      c) delay: float (default: 5.0) - Baseline rest padding interval time tracking initial retry operations.
+      d) backoff: float (default: 2.0) - Exponential multiplier scaling retry delays (e.g., $delay \times backoff^{attempt}$).
+    - Returns: ToolResult reporting execution verification profiles after running retry attempts.
+    - How to call: AutomationWorkflowTool.retry_on_failure(workflow="api_sync", max_retries=4, delay=2.0)
+
+13. run_parallel:
+    - Purpose: Fires off multiple separate workflows simultaneously to speed up large automated tasks.
+    - Arguments:
+      a) workflows: list - Target collection listing tasks intended for execution processing (required).
+      b) max_concurrent: int (default: 5) - Thread throttle limit constraining maximum concurrent tasks.
+    - Returns: ToolResult summarizing successful completions alongside output responses from each thread.
+    - How to call: AutomationWorkflowTool.run_parallel(workflows=["sync_node_1", "sync_node_2", "sync_node_3"], max_concurrent=3)
+
+14. create_loop_workflow:
+    - Purpose: Iterates over a dataset to execute a specific workflow block for every record found.
+    - Arguments:
+      a) items_source: Any - Raw element array lists or callable generator target data interfaces (required).
+      b) item_workflow: Any - Task configuration block deployed across every item instance iteration loop (required).
+      c) collect_results: bool (default: True) - Saves and returns execution response results generated across each loop iteration.
+    - Returns: ToolResult containing complete arrays tracing individual item loop step data frames.
+    - How to call: AutomationWorkflowTool.create_loop_workflow(items_source=["user1.txt", "user2.txt"], item_workflow="parse_user_logs")
+""")
+
+    _STORE_PATH = Path.home() / ".npmai_agent" / "workflows.json"
+    _HISTORY_PATH = Path.home() / ".npmai_agent" / "workflow_history.json"
+    _SCHEDULED: dict = {}
+
+    @staticmethod
+    def _load_store() -> dict:
+        if AutomationWorkflowTool._STORE_PATH.exists():
+            try:
+                return json.loads(AutomationWorkflowTool._STORE_PATH.read_text())
+            except Exception:
+                pass
+        return {}
+
+    @staticmethod
+    def _save_store(data: dict):
+        AutomationWorkflowTool._STORE_PATH.parent.mkdir(exist_ok=True)
+        AutomationWorkflowTool._STORE_PATH.write_text(json.dumps(data, indent=2))
+
+    @staticmethod
+    def create_workflow(name: str, trigger: dict, steps: list,
+                        conditions: list = None) -> ToolResult:
+        """
+        trigger: {'type': 'manual'|'schedule'|'file'|'webhook', ...opts}
+        steps: [{'action': 'run_command'|'call_tool', 'params': {...}}]
+        conditions: [{'if': 'context.key == value', 'then': 'skip'|'abort'}]
+        """
+        try:
+            store = AutomationWorkflowTool._load_store()
+            workflow = {
+                "name": name, "id": str(uuid.uuid4()), "trigger": trigger,
+                "steps": steps, "conditions": conditions or [],
+                "created": datetime.now().isoformat(), "enabled": True
+            }
+            store[name] = workflow
+            AutomationWorkflowTool._save_store(store)
+            return ToolResult(True, f"✓ Workflow '{name}' created with {len(steps)} steps", workflow)
+        except Exception as e:
+            return ToolResult(False, f"✗ create_workflow failed: {e}")
+
+    @staticmethod
+    def run_workflow(workflow_name_or_dict: Any, context: dict = None) -> ToolResult:
+        try:
+            ctx = context or {}
+            if isinstance(workflow_name_or_dict, str):
+                store = AutomationWorkflowTool._load_store()
+                workflow = store.get(workflow_name_or_dict)
+                if not workflow:
+                    return ToolResult(False, f"✗ Workflow '{workflow_name_or_dict}' not found")
+            else:
+                workflow = workflow_name_or_dict
+            step_results = []
+            for i, step in enumerate(workflow.get("steps", [])):
+                action = step.get("action", "")
+                params = step.get("params", {})
+                # Substitute context variables
+                params_str = json.dumps(params)
+                for k, v in ctx.items():
+                    params_str = params_str.replace(f"{{ctx.{k}}}", str(v))
+                params = json.loads(params_str)
+                result = {"step": i + 1, "action": action, "status": "ok"}
+                if action == "run_command":
+                    r = subprocess.run(params.get("cmd", ""), shell=True, capture_output=True,
+                                       text=True, timeout=params.get("timeout", 30))
+                    result["output"] = r.stdout + r.stderr
+                    result["status"] = "ok" if r.returncode == 0 else "error"
+                    ctx[f"step_{i+1}_output"] = result["output"]
+                elif action == "write_file":
+                    Path(params["path"]).write_text(params.get("content", ""))
+                    result["output"] = f"Written to {params['path']}"
+                elif action == "log":
+                    result["output"] = params.get("message", "")
+                elif action == "http_request":
+                    import requests as req
+                    r = req.request(params.get("method", "GET"), params["url"],
+                                    json=params.get("body"), headers=params.get("headers"),
+                                    timeout=15)
+                    result["output"] = r.text[:500]
+                    ctx[f"step_{i+1}_status"] = r.status_code
+                else:
+                    result["output"] = f"Unknown action: {action}"
+                    result["status"] = "skipped"
+                step_results.append(result)
+                if result["status"] == "error" and step.get("on_error") == "abort":
+                    break
+            AutomationWorkflowTool._log_history(workflow.get("name", "unnamed"), step_results, ctx)
+            return ToolResult(True, f"✓ Workflow '{workflow.get('name', '')}' completed",
+                              {"steps_run": len(step_results), "results": step_results, "context": ctx})
+        except Exception as e:
+            return ToolResult(False, f"✗ run_workflow failed: {e}")
+
+    @staticmethod
+    def _log_history(workflow_name: str, step_results: list, context: dict):
+        try:
+            path = AutomationWorkflowTool._HISTORY_PATH
+            path.parent.mkdir(exist_ok=True)
+            history = json.loads(path.read_text()) if path.exists() else []
+            history.insert(0, {"workflow": workflow_name, "run_at": datetime.now().isoformat(),
+                                "steps": step_results})
+            path.write_text(json.dumps(history[:100], indent=2))
+        except Exception:
+            pass
+
+    @staticmethod
+    def schedule_workflow(workflow: Any, schedule_str: str,
+                          timezone: str = "UTC") -> ToolResult:
+        """schedule_str: 'every 5 minutes' | 'every day at 09:00' | 'every monday at 08:00'"""
+        try:
+            import schedule as sched
+            wf_name = workflow if isinstance(workflow, str) else workflow.get("name", "unnamed")
+            wf_id = str(uuid.uuid4())
+
+            def run_job():
+                AutomationWorkflowTool.run_workflow(workflow)
+
+            parts = schedule_str.lower().split()
+            if "minutes" in parts:
+                n = int(parts[1])
+                job = sched.every(n).minutes.do(run_job)
+            elif "hours" in parts:
+                n = int(parts[1])
+                job = sched.every(n).hours.do(run_job)
+            elif "day" in parts and "at" in parts:
+                t = parts[parts.index("at") + 1]
+                job = sched.every().day.at(t).do(run_job)
+            elif any(d in parts for d in ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"]):
+                day = next(d for d in ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"] if d in parts)
+                t = parts[-1] if ":" in parts[-1] else "09:00"
+                job = getattr(sched.every(), day).at(t).do(run_job)
+            else:
+                return ToolResult(False, f"✗ Unrecognised schedule: '{schedule_str}'")
+            AutomationWorkflowTool._SCHEDULED[wf_id] = {"job": job, "workflow": wf_name, "schedule": schedule_str}
+
+            def _runner():
+                while wf_id in AutomationWorkflowTool._SCHEDULED:
+                    sched.run_pending()
+                    time.sleep(10)
+            threading.Thread(target=_runner, daemon=True).start()
+            return ToolResult(True, f"✓ Workflow '{wf_name}' scheduled: {schedule_str}",
+                              {"workflow_id": wf_id, "schedule": schedule_str})
+        except Exception as e:
+            return ToolResult(False, f"✗ schedule_workflow failed: {e}")
+
+    @staticmethod
+    def list_scheduled_workflows() -> ToolResult:
+        try:
+            active = [{"id": wf_id, "workflow": data["workflow"], "schedule": data["schedule"]}
+                      for wf_id, data in AutomationWorkflowTool._SCHEDULED.items()]
+            return ToolResult(True, f"✓ {len(active)} scheduled workflows", active)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_scheduled_workflows failed: {e}")
+
+    @staticmethod
+    def cancel_scheduled_workflow(workflow_id: str) -> ToolResult:
+        try:
+            import schedule as sched
+            if workflow_id not in AutomationWorkflowTool._SCHEDULED:
+                return ToolResult(False, f"✗ Workflow ID '{workflow_id}' not found")
+            job = AutomationWorkflowTool._SCHEDULED[workflow_id].get("job")
+            if job:
+                sched.cancel_job(job)
+            del AutomationWorkflowTool._SCHEDULED[workflow_id]
+            return ToolResult(True, f"✓ Scheduled workflow {workflow_id} cancelled")
+        except Exception as e:
+            return ToolResult(False, f"✗ cancel_scheduled_workflow failed: {e}")
+
+    @staticmethod
+    def get_workflow_history(workflow_name: str, limit: int = 20) -> ToolResult:
+        try:
+            path = AutomationWorkflowTool._HISTORY_PATH
+            history = json.loads(path.read_text()) if path.exists() else []
+            filtered = [h for h in history if h.get("workflow") == workflow_name][:limit]
+            return ToolResult(True, f"✓ {len(filtered)} history entries for '{workflow_name}'", filtered)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_workflow_history failed: {e}")
+
+    @staticmethod
+    def create_trigger_on_file_change(path: str, pattern: str, workflow: Any) -> ToolResult:
+        try:
+            from watchdog.observers import Observer
+            from watchdog.events import FileSystemEventHandler
+
+            class Handler(FileSystemEventHandler):
+                def on_any_event(self, event):
+                    import fnmatch
+                    if not event.is_directory and fnmatch.fnmatch(Path(event.src_path).name, pattern):
+                        AutomationWorkflowTool.run_workflow(workflow, {"file": event.src_path,
+                                                                        "event": event.event_type})
+
+            obs = Observer()
+            obs.schedule(Handler(), path, recursive=True)
+            obs.start()
+            return ToolResult(True, f"✓ File watcher started on {path} for pattern '{pattern}'")
+        except Exception as e:
+            return ToolResult(False, f"✗ create_trigger_on_file_change failed: {e}")
+
+    @staticmethod
+    def create_trigger_on_email(criteria: dict, workflow: Any) -> ToolResult:
+        """criteria: {'subject_contains': '...', 'from_contains': '...', 'check_interval_seconds': 60}"""
+        try:
+            import imaplib, email as email_lib
+            interval = criteria.get("check_interval_seconds", 60)
+
+            def _check():
+                creds = CredStore.load("gmail")
+                user, pwd = creds.get("email", ""), creds.get("password", "")
+                host = creds.get("imap_host", "imap.gmail.com")
+                while True:
+                    try:
+                        mail = imaplib.IMAP4_SSL(host)
+                        mail.login(user, pwd)
+                        mail.select("inbox")
+                        _, ids = mail.search(None, "UNSEEN")
+                        for mid in ids[0].split()[-10:]:
+                            _, data = mail.fetch(mid, "(RFC822)")
+                            msg = email_lib.message_from_bytes(data[0][1])
+                            subject = str(msg.get("Subject", ""))
+                            from_addr = str(msg.get("From", ""))
+                            subj_match = criteria.get("subject_contains", "") in subject
+                            from_match = criteria.get("from_contains", "") in from_addr
+                            if subj_match or from_match:
+                                AutomationWorkflowTool.run_workflow(
+                                    workflow, {"subject": subject, "from": from_addr})
+                        mail.logout()
+                    except Exception:
+                        pass
+                    time.sleep(interval)
+
+            threading.Thread(target=_check, daemon=True).start()
+            return ToolResult(True, f"✓ Email trigger active, checking every {interval}s")
+        except Exception as e:
+            return ToolResult(False, f"✗ create_trigger_on_email failed: {e}")
+
+    @staticmethod
+    def create_trigger_on_webhook(port: int, path: str, workflow: Any) -> ToolResult:
+        """Starts a minimal HTTP server that triggers the workflow on POST."""
+        try:
+            from flask import Flask, request, jsonify
+            app = Flask(f"webhook_{port}")
+
+            @app.route(path, methods=["POST"])
+            def handle():
+                payload = request.get_json(silent=True) or {}
+                AutomationWorkflowTool.run_workflow(workflow, payload)
+                return jsonify({"status": "triggered"})
+
+            threading.Thread(target=lambda: app.run(host="0.0.0.0", port=port, debug=False),
+                             daemon=True).start()
+            return ToolResult(True, f"✓ Webhook trigger listening on port {port}{path}")
+        except Exception as e:
+            return ToolResult(False, f"✗ create_trigger_on_webhook failed: {e}")
+
+    @staticmethod
+    def chain_workflows(workflows: list, pass_context: bool = True) -> ToolResult:
+        """Run workflows sequentially, optionally passing context forward."""
+        try:
+            ctx: dict = {}
+            all_results = []
+            for wf in workflows:
+                result = AutomationWorkflowTool.run_workflow(wf, ctx if pass_context else {})
+                all_results.append({"workflow": wf if isinstance(wf, str) else wf.get("name"),
+                                    "success": result.success, "output": result.output})
+                if result.success and pass_context and isinstance(result.data, dict):
+                    ctx.update(result.data.get("context", {}))
+            success = all(r["success"] for r in all_results)
+            return ToolResult(success, f"✓ Chain of {len(workflows)} workflows complete",
+                              all_results)
+        except Exception as e:
+            return ToolResult(False, f"✗ chain_workflows failed: {e}")
+
+    @staticmethod
+    def create_conditional_branch(condition_func: Callable, true_workflow: Any,
+                                   false_workflow: Any) -> dict:
+        """Returns a workflow dict that branches based on condition_func(context)."""
+        return {
+            "name": "conditional_branch",
+            "id": str(uuid.uuid4()),
+            "_type": "conditional",
+            "_condition": condition_func,
+            "_true": true_workflow,
+            "_false": false_workflow,
+            "steps": []
+        }
+
+    @staticmethod
+    def retry_on_failure(workflow: Any, max_retries: int = 3, delay: float = 5.0,
+                         backoff: float = 2.0) -> ToolResult:
+        """Run workflow with exponential backoff retry."""
+        try:
+            current_delay = delay
+            for attempt in range(max_retries + 1):
+                result = AutomationWorkflowTool.run_workflow(workflow)
+                if result.success:
+                    return ToolResult(True, f"✓ Workflow succeeded on attempt {attempt + 1}", result.data)
+                if attempt < max_retries:
+                    time.sleep(current_delay)
+                    current_delay *= backoff
+            return ToolResult(False, f"✗ Workflow failed after {max_retries + 1} attempts")
+        except Exception as e:
+            return ToolResult(False, f"✗ retry_on_failure failed: {e}")
+
+    @staticmethod
+    def run_parallel(workflows: list, max_concurrent: int = 5) -> ToolResult:
+        """Run multiple workflows concurrently."""
+        try:
+            semaphore = threading.Semaphore(max_concurrent)
+            results = [None] * len(workflows)
+
+            def run_one(i, wf):
+                with semaphore:
+                    results[i] = AutomationWorkflowTool.run_workflow(wf)
+
+            threads = [threading.Thread(target=run_one, args=(i, wf)) for i, wf in enumerate(workflows)]
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join(timeout=120)
+
+            successes = sum(1 for r in results if r and r.success)
+            return ToolResult(True, f"✓ {successes}/{len(workflows)} parallel workflows succeeded",
+                              [{"index": i, "success": r.success if r else False,
+                                "output": r.output if r else "timeout"}
+                               for i, r in enumerate(results)])
+        except Exception as e:
+            return ToolResult(False, f"✗ run_parallel failed: {e}")
+
+    @staticmethod
+    def create_loop_workflow(items_source: Any, item_workflow: Any,
+                             collect_results: bool = True) -> ToolResult:
+        """items_source: list or callable; item_workflow applied to each item."""
+        try:
+            items = items_source() if callable(items_source) else items_source
+            results = []
+            for item in items:
+                ctx = {"item": item}
+                r = AutomationWorkflowTool.run_workflow(item_workflow, ctx)
+                if collect_results:
+                    results.append({"item": str(item)[:100], "success": r.success, "output": r.output})
+            return ToolResult(True, f"✓ Loop completed {len(items)} iterations", results)
+        except Exception as e:
+            return ToolResult(False, f"✗ create_loop_workflow failed: {e}")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 10. KnowledgeBaseTool
+# ═══════════════════════════════════════════════════════════════════════════
+class KnowledgeBaseTool:
+    name = "knowledge_base"
+    description = (
+        "AI knowledge management: create KB, add docs/URLs/text, "
+        "semantic query, search, update/delete, stats, export/import, "
+        "QA pair generation, answer with sources"
+    )
+    use = ("""
+Name of Tool: KnowledgeBaseTool
+
+Purpose of Tool:
+The KnowledgeBaseTool provides an end-to-end local knowledge base (KB) management system optimized for Retrieval-Augmented Generation (RAG). It provides developers with methods to initialize storage namespaces, segment and ingest documents (PDFs, raw text), crawl external URLs, compute vector embeddings using Hugging Face models, index data partitions locally via FAISS (Facebook AI Similarity Search), execute semantic queries, edit/delete documents, generate automated synthetic Q&A pairs for model evaluation, and execute conversational tasks with explicit contextual citations.
+
+Methods:
+- create_kb: Initializes an isolated workspace namespace directory alongside a baseline multi-dimensional FAISS semantic vector index layer.
+- add_documents: Parses physical system text assets or extracted multi-page PDF strings into overlapping granular chunks embedded inside local matrix profiles.
+- add_url_to_kb: Directs an embedded recursive web crawler to scrape remote network domains, stripping boilerplate structural elements for text storage.
+- add_text: Directs raw string payloads into configured segmentation blocks to build ad-hoc vector entries.
+- query_kb: Runs target question strings against matching vector entries to ground conversational responses against retrieved text frames.
+- search_kb: Performs vector distance matrix checks to locate top matching document fragments.
+- update_document: Replaces target data sources inside tracking registries by running coordinated deletion and addition routines.
+- delete_document: Removes a document from local indexing storage, purging its text chunks and completely rebuilding the structural FAISS collection indices.
+- list_documents: Extracts internal configuration schemas to enumerate registered source assets.
+- get_kb_stats: Audits local data metrics to return structural vector counts, character counts, and model tracking metrics.
+- export_kb: Serializes index states and chunks to structured data files (JSON, CSV, or PKL) for external backups.
+- import_kb: Restores structural metadata states and re-indexes raw chunk vectors from a backup file to recreate a target knowledge environment.
+- create_qa_pairs: Evaluates chunk clusters using local LLMs to dynamically generate synthetic evaluation datasets matching physical source references.
+- answer_with_sources: Runs comprehensive semantic searches to piece together clean contextual references, returning responses with integrated source citations.
+
+How to use Tool Methods:
+
+1. create_kb:
+   - Purpose: Initializes a new isolated vector database workspace.
+   - Arguments:
+     a) name: str - Unique identifier for the knowledge base instance (required).
+     b) path: str (default: None) - Alternative target workspace route.
+     c) embedding_model: str (default: "all-MiniLM-L6-v2") - Sentence Transformers token architecture map string.
+   - Returns: ToolResult verifying initial index creation.
+   - How to call: KnowledgeBaseTool.create_kb(name="tech_specs", embedding_model="all-MiniLM-L6-v2")
+
+2. add_documents:
+   - Purpose: Segments and converts files into vector configurations.
+   - Arguments:
+     a) kb_name: str - Target knowledge base destination label (required).
+     b) paths: list - Target collection array containing file paths (required).
+     c) chunk_size: int (default: 500) - Maximum window length boundary of split strings.
+     d) overlap: int (default: 50) - Sliding character window padding shared between consecutive text blocks.
+   - Returns: ToolResult summarizing document ingestion and vector additions.
+   - How to call: KnowledgeBaseTool.add_documents(kb_name="tech_specs", paths=["/docs/manual.pdf", "/docs/release_notes.txt"], chunk_size=400)
+
+3. add_url_to_kb:
+   - Purpose: Ingests web contents by scraping external target pages.
+   - Arguments:
+     a) kb_name: str - Target knowledge base instance identifier (required).
+     b) url: str - Base internet address resource string (required).
+     c) recursive: bool (default: False) - Enables parsing of discovery hyperlinks sharing the root domain.
+     d) max_pages: int (default: 10) - Maximum page count safety limit for web scraping jobs.
+   - Returns: ToolResult verifying pages processed and updated vector metrics.
+   - How to call: KnowledgeBaseTool.add_url_to_kb(kb_name="tech_specs", url="https://docs.example.com/api", recursive=True, max_pages=5)
+
+4. add_text:
+   - Purpose: Explicitly records inline text content blocks directly into the vector database.
+   - Arguments:
+     a) kb_name: str - Target knowledge base destination label (required).
+     b) text: str - Raw input content body to be chunked and indexed (required).
+     c) metadata: dict (default: None) - Custom parameters to attach to the ingested chunk.
+   - Returns: ToolResult mapping data block creation confirmations.
+   - How to call: KnowledgeBaseTool.add_text(kb_name="tech_specs", text="System architecture operates on port 9000.", metadata={"author": "admin"})
+
+5. query_kb:
+   - Purpose: Queries the KB and generates a structured answer from an LLM bounded strictly by matching contexts.
+   - Arguments:
+     a) kb_name: str - Target workspace selection label (required).
+     b) question: str - Natural language lookup string (required).
+     c) top_k: int (default: 5) - Volume threshold mapping total returned context items.
+     d) model: str (default: "llama3.2:3b") - Associated generative interface target.
+     e) temperature: float (default: 0.3) - Creative variance constraint tracking generation routines.
+   - Returns: ToolResult containing the generated answer, along with tracking metrics mapping context layers.
+   - How to call: KnowledgeBaseTool.query_kb(kb_name="tech_specs", question="What is the default port configuration?", top_k=3)
+
+6. search_kb:
+   - Purpose: Locates data slices via proximity metrics.
+   - Arguments:
+     a) kb_name: str - Target database namespace target (required).
+     b) query: str - Key term lookup or sentence vector pattern target (required).
+     c) top_k: int (default: 5) - Cap constraints matching retrieved fragments.
+   - Returns: ToolResult tracking array segments with structural relevance markers.
+   - How to call: KnowledgeBaseTool.search_kb(kb_name="tech_specs", query="port parameters", top_k=5)
+
+7. update_document:
+   - Purpose: Re-indexes a tracking entry from a modified document path.
+   - Arguments:
+     a) kb_name: str - Target knowledge base database profile (required).
+     b) doc_id: str - target key matching file source names (required).
+     c) new_path: str - Workspace file pointer mapping new resources (required).
+   - Returns: ToolResult summarizing operational completion profiles.
+   - How to call: KnowledgeBaseTool.update_document(kb_name="tech_specs", doc_id="manual.pdf", new_path="/updates/manual_v2.pdf")
+
+8. delete_document:
+   - Purpose: Purges all text vectors linked to a specific document and rebuilds the remaining indices.
+   - Arguments:
+     a) kb_name: str - Target knowledge base identity profile link (required).
+     b) doc_id: str - Filename string key target matching internal items (required).
+   - Returns: ToolResult tracing index state updates.
+   - How to call: KnowledgeBaseTool.delete_document(kb_name="tech_specs", doc_id="release_notes.txt")
+
+9. list_documents:
+   - Purpose: Details metadata schemas mapping active sources within a knowledge base.
+   - Arguments:
+     a) kb_name: str - Target search environment key (required).
+     b) Returns: ToolResult tracing summary records of documents.
+   - How to call: KnowledgeBaseTool.list_documents(kb_name="tech_specs")
+
+10. get_kb_stats:
+    - Purpose: Summarizes quantitative operational counts characterizing vector database frameworks.
+    - Arguments:
+      a) kb_name: str - Targeting identity lookup label (required).
+    - Returns: ToolResult detailing characters, chunks, sizes, and model targets.
+    - How to call: KnowledgeBaseTool.get_kb_stats(kb_name="tech_specs")
+
+11. export_kb:
+    - Purpose: Extracts structural assets into structured files for storage or migration.
+    - Arguments:
+      a) kb_name: str - Source operational instance selection key (required).
+      b) output: str - Target local backup export path route (required).
+      c) format: str (default: "json") - File structure specification standard ('json' | 'csv' | 'pkl').
+    - Returns: ToolResult reporting target validation paths.
+    - How to call: KnowledgeBaseTool.export_kb(kb_name="tech_specs", output="/backups/specs.json", format="json")
+
+12. import_kb:
+    - Purpose: Loads a knowledge base backup file and rebuilds the semantic index.
+    - Arguments:
+      a) kb_name: str - Destination tracking name applied to the database namespace (required).
+      b) path: str - Target resource snapshot data input route (required).
+    - Returns: ToolResult reporting imported chunk volumes.
+    - How to call: KnowledgeBaseTool.import_kb(kb_name="imported_specs", path="/backups/specs.json")
+
+13. create_qa_pairs:
+    - Purpose: Automatically creates test Q&A pairs from text blocks to evaluate system prompt models.
+    - Arguments:
+      a) kb_name: str - Target knowledge domain dataset anchor (required).
+      b) n_questions: int (default: 10) - Target quantity constraint bounding output dataset records.
+      c) model: str (default: "llama3.2:3b") - Associated generation engine pipeline selection parameter.
+      d) output: str (default: None) - Optional path to save the generated QA pair records as a JSON file.
+    - Returns: ToolResult passing lists containing question, answer, and source citation tuples.
+    - How to call: KnowledgeBaseTool.create_qa_pairs(kb_name="tech_specs", n_questions=5, output="test_set.json")
+
+14. answer_with_sources:
+    - Purpose: Synthesizes multi-document details into a unified response with in-text source references.
+    - Arguments:
+      a) kb_name: str - Targeting identity lookup namespace tracker (required).
+      b) question: str - Evaluative natural query sentence (required).
+      c) model: str (default: "llama3.2:3b") - Generative pipeline engine selection identifier.
+      d) max_context: int (default: 4000) - Maximum context window character capacity limit.
+    - Returns: ToolResult outlining generation answers beside specific tracked resource citations.
+    - How to call: KnowledgeBaseTool.answer_with_sources(kb_name="tech_specs", question="How do I modify architecture bounds?", max_context=2000)
+""")
+
+    _KB_ROOT = Path.home() / ".npmai_agent" / "knowledge_bases"
+
+    @staticmethod
+    def _kb_path(kb_name: str) -> Path:
+        p = KnowledgeBaseTool._KB_ROOT / kb_name
+        p.mkdir(parents=True, exist_ok=True)
+        return p
+
+    @staticmethod
+    def _load_meta(kb_name: str) -> dict:
+        meta_path = KnowledgeBaseTool._kb_path(kb_name) / "meta.json"
+        if meta_path.exists():
+            try:
+                return json.loads(meta_path.read_text())
+            except Exception:
+                pass
+        return {"name": kb_name, "documents": {}, "created": datetime.now().isoformat()}
+
+    @staticmethod
+    def _save_meta(kb_name: str, meta: dict):
+        (KnowledgeBaseTool._kb_path(kb_name) / "meta.json").write_text(json.dumps(meta, indent=2))
+
+    @staticmethod
+    def _get_embedder(model: str = "all-MiniLM-L6-v2"):
+        from sentence_transformers import SentenceTransformer
+        return SentenceTransformer(model)
+
+    @staticmethod
+    def _load_index(kb_name: str):
+        import faiss, numpy as np, pickle
+        kb_path = KnowledgeBaseTool._kb_path(kb_name)
+        index_path = kb_path / "index.faiss"
+        chunks_path = kb_path / "chunks.pkl"
+        if index_path.exists() and chunks_path.exists():
+            index = faiss.read_index(str(index_path))
+            with open(chunks_path, "rb") as f:
+                chunks = pickle.load(f)
+            return index, chunks
+        return None, []
+
+    @staticmethod
+    def _save_index(kb_name: str, index, chunks: list):
+        import faiss, pickle
+        kb_path = KnowledgeBaseTool._kb_path(kb_name)
+        faiss.write_index(index, str(kb_path / "index.faiss"))
+        with open(kb_path / "chunks.pkl", "wb") as f:
+            pickle.dump(chunks, f)
+
+    @staticmethod
+    def create_kb(name: str, path: str = None, embedding_model: str = "all-MiniLM-L6-v2") -> ToolResult:
+        try:
+            import faiss, numpy as np
+            kb_path = KnowledgeBaseTool._kb_path(name)
+            meta = {"name": name, "documents": {}, "embedding_model": embedding_model,
+                    "created": datetime.now().isoformat(), "custom_path": path}
+            KnowledgeBaseTool._save_meta(name, meta)
+            # Create empty FAISS index (384-dim for MiniLM)
+            dim = 384
+            index = faiss.IndexFlatL2(dim)
+            KnowledgeBaseTool._save_index(name, index, [])
+            return ToolResult(True, f"✓ Knowledge base '{name}' created at {kb_path}")
+        except Exception as e:
+            return ToolResult(False, f"✗ create_kb failed: {e}")
+
+    @staticmethod
+    def add_documents(kb_name: str, paths: list, chunk_size: int = 500, overlap: int = 50) -> ToolResult:
+        try:
+            import faiss, numpy as np, pickle
+            from langchain_text_splitters import RecursiveCharacterTextSplitter
+            meta = KnowledgeBaseTool._load_meta(kb_name)
+            embedder = KnowledgeBaseTool._get_embedder(meta.get("embedding_model", "all-MiniLM-L6-v2"))
+            index, chunks = KnowledgeBaseTool._load_index(kb_name)
+            if index is None:
+                index = faiss.IndexFlatL2(384)
+            splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=overlap)
+            added = 0
+            for file_path in paths:
+                try:
+                    p = Path(file_path)
+                    if not p.exists():
+                        continue
+                    if p.suffix == ".pdf":
+                        from pypdf import PdfReader
+                        text = "\n".join(page.extract_text() or "" for page in PdfReader(str(p)).pages)
+                    else:
+                        text = p.read_text(errors="replace")
+                    doc_chunks = splitter.split_text(text)
+                    for i, chunk in enumerate(doc_chunks):
+                        embedding = embedder.encode([chunk], normalize_embeddings=True)
+                        index.add(np.array(embedding, dtype=np.float32))
+                        chunks.append({"text": chunk, "source": str(p), "chunk_index": i,
+                                       "doc_id": p.name})
+                    meta["documents"][p.name] = {"path": str(p), "chunks": len(doc_chunks),
+                                                  "added": datetime.now().isoformat()}
+                    added += len(doc_chunks)
+                except Exception as ex:
+                    continue
+            KnowledgeBaseTool._save_index(kb_name, index, chunks)
+            KnowledgeBaseTool._save_meta(kb_name, meta)
+            return ToolResult(True, f"✓ Added {len(paths)} docs ({added} chunks) to '{kb_name}'")
+        except Exception as e:
+            return ToolResult(False, f"✗ add_documents failed: {e}")
+
+    @staticmethod
+    def add_url_to_kb(kb_name: str, url: str, recursive: bool = False,
+                      max_pages: int = 10) -> ToolResult:
+        try:
+            import requests
+            from bs4 import BeautifulSoup
+            from urllib.parse import urljoin, urlparse
+            visited = set()
+            to_visit = [url]
+            texts = []
+
+            def fetch_page(page_url):
+                try:
+                    r = requests.get(page_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
+                    soup = BeautifulSoup(r.text, "html.parser")
+                    for tag in soup(["script", "style", "nav", "footer"]):
+                        tag.decompose()
+                    text = soup.get_text(separator="\n", strip=True)
+                    texts.append({"url": page_url, "text": text})
+                    if recursive:
+                        base = urlparse(url).netloc
+                        for a in soup.find_all("a", href=True):
+                            href = urljoin(page_url, a["href"])
+                            if urlparse(href).netloc == base and href not in visited:
+                                to_visit.append(href)
+                except Exception:
+                    pass
+
+            while to_visit and len(visited) < max_pages:
+                page_url = to_visit.pop(0)
+                if page_url in visited:
+                    continue
+                visited.add(page_url)
+                fetch_page(page_url)
+
+            # Add texts to KB
+            tmp_files = []
+            for i, item in enumerate(texts):
+                tmp = tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False, encoding="utf-8")
+                tmp.write(f"Source: {item['url']}\n\n{item['text']}")
+                tmp.close()
+                tmp_files.append(tmp.name)
+            result = KnowledgeBaseTool.add_documents(kb_name, tmp_files)
+            for f in tmp_files:
+                try:
+                    os.unlink(f)
+                except Exception:
+                    pass
+            return ToolResult(True, f"✓ Added {len(visited)} URLs to KB '{kb_name}'",
+                              {"pages_fetched": len(visited), "add_result": result.output})
+        except Exception as e:
+            return ToolResult(False, f"✗ add_url_to_kb failed: {e}")
+
+    @staticmethod
+    def add_text(kb_name: str, text: str, metadata: dict = None) -> ToolResult:
+        try:
+            import faiss, numpy as np
+            from langchain_text_splitters import RecursiveCharacterTextSplitter
+            meta = KnowledgeBaseTool._load_meta(kb_name)
+            embedder = KnowledgeBaseTool._get_embedder(meta.get("embedding_model", "all-MiniLM-L6-v2"))
+            index, chunks = KnowledgeBaseTool._load_index(kb_name)
+            if index is None:
+                index = faiss.IndexFlatL2(384)
+            splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+            text_chunks = splitter.split_text(text)
+            for i, chunk in enumerate(text_chunks):
+                emb = embedder.encode([chunk], normalize_embeddings=True)
+                index.add(np.array(emb, dtype=np.float32))
+                chunks.append({"text": chunk, "source": "direct_text",
+                               "metadata": metadata or {}, "chunk_index": i})
+            doc_id = f"text_{int(time.time())}"
+            meta["documents"][doc_id] = {"type": "text", "chunks": len(text_chunks),
+                                          "added": datetime.now().isoformat(),
+                                          "metadata": metadata or {}}
+            KnowledgeBaseTool._save_index(kb_name, index, chunks)
+            KnowledgeBaseTool._save_meta(kb_name, meta)
+            return ToolResult(True, f"✓ Text added to KB '{kb_name}' ({len(text_chunks)} chunks)")
+        except Exception as e:
+            return ToolResult(False, f"✗ add_text failed: {e}")
+
+    @staticmethod
+    def query_kb(kb_name: str, question: str, top_k: int = 5, model: str = "llama3.2:3b",
+                 temperature: float = 0.3) -> ToolResult:
+        try:
+            search_result = KnowledgeBaseTool.search_kb(kb_name, question, top_k)
+            if not search_result.success or not search_result.data:
+                return ToolResult(False, "✗ No relevant context found in KB")
+            context_chunks = "\n\n---\n\n".join(
+                f"[Source: {r['source']}]\n{r['text']}" for r in search_result.data
+            )
+            from agent_core import Ollama
+            llm = Ollama(model=model, temperature=temperature, change=True, Models=["mistral:7b"])
+            prompt = (f"Answer this question using ONLY the provided context.\n\n"
+                      f"Context:\n{context_chunks}\n\n"
+                      f"Question: {question}\n\n"
+                      f"Answer:")
+            answer = llm.invoke(prompt)
+            return ToolResult(True, "✓ KB query answered",
+                              {"answer": answer, "sources": [r["source"] for r in search_result.data],
+                               "context_chunks_used": len(search_result.data)})
+        except Exception as e:
+            return ToolResult(False, f"✗ query_kb failed: {e}")
+
+    @staticmethod
+    def search_kb(kb_name: str, query: str, top_k: int = 5) -> ToolResult:
+        try:
+            import numpy as np
+            meta = KnowledgeBaseTool._load_meta(kb_name)
+            embedder = KnowledgeBaseTool._get_embedder(meta.get("embedding_model", "all-MiniLM-L6-v2"))
+            index, chunks = KnowledgeBaseTool._load_index(kb_name)
+            if index is None or index.ntotal == 0:
+                return ToolResult(False, f"✗ KB '{kb_name}' is empty")
+            query_emb = embedder.encode([query], normalize_embeddings=True)
+            distances, indices = index.search(np.array(query_emb, dtype=np.float32), top_k)
+            results = []
+            for dist, idx in zip(distances[0], indices[0]):
+                if 0 <= idx < len(chunks):
+                    chunk = chunks[idx]
+                    results.append({**chunk, "distance": float(dist),
+                                    "relevance_score": round(1 / (1 + float(dist)), 4)})
+            return ToolResult(True, f"✓ Found {len(results)} relevant chunks", results)
+        except Exception as e:
+            return ToolResult(False, f"✗ search_kb failed: {e}")
+
+    @staticmethod
+    def update_document(kb_name: str, doc_id: str, new_path: str) -> ToolResult:
+        try:
+            meta = KnowledgeBaseTool._load_meta(kb_name)
+            if doc_id not in meta.get("documents", {}):
+                return ToolResult(False, f"✗ Document '{doc_id}' not found in KB '{kb_name}'")
+            # Delete old, re-add new
+            KnowledgeBaseTool.delete_document(kb_name, doc_id)
+            return KnowledgeBaseTool.add_documents(kb_name, [new_path])
+        except Exception as e:
+            return ToolResult(False, f"✗ update_document failed: {e}")
+
+    @staticmethod
+    def delete_document(kb_name: str, doc_id: str) -> ToolResult:
+        """Rebuild index excluding chunks from this doc."""
+        try:
+            import faiss, numpy as np
+            meta = KnowledgeBaseTool._load_meta(kb_name)
+            if doc_id not in meta.get("documents", {}):
+                return ToolResult(False, f"✗ Document '{doc_id}' not found")
+            embedder = KnowledgeBaseTool._get_embedder(meta.get("embedding_model", "all-MiniLM-L6-v2"))
+            _, chunks = KnowledgeBaseTool._load_index(kb_name)
+            remaining = [c for c in chunks if c.get("doc_id") != doc_id and
+                         c.get("source", "") != doc_id]
+            new_index = faiss.IndexFlatL2(384)
+            if remaining:
+                texts = [c["text"] for c in remaining]
+                embs = embedder.encode(texts, normalize_embeddings=True)
+                new_index.add(np.array(embs, dtype=np.float32))
+            KnowledgeBaseTool._save_index(kb_name, new_index, remaining)
+            del meta["documents"][doc_id]
+            KnowledgeBaseTool._save_meta(kb_name, meta)
+            return ToolResult(True, f"✓ Document '{doc_id}' deleted from KB '{kb_name}'")
+        except Exception as e:
+            return ToolResult(False, f"✗ delete_document failed: {e}")
+
+    @staticmethod
+    def list_documents(kb_name: str) -> ToolResult:
+        try:
+            meta = KnowledgeBaseTool._load_meta(kb_name)
+            docs = [{"id": k, **v} for k, v in meta.get("documents", {}).items()]
+            return ToolResult(True, f"✓ {len(docs)} documents in '{kb_name}'", docs)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_documents failed: {e}")
+
+    @staticmethod
+    def get_kb_stats(kb_name: str) -> ToolResult:
+        try:
+            meta = KnowledgeBaseTool._load_meta(kb_name)
+            index, chunks = KnowledgeBaseTool._load_index(kb_name)
+            total_text = sum(len(c.get("text", "")) for c in chunks)
+            return ToolResult(True, f"✓ KB '{kb_name}' stats", {
+                "name": kb_name,
+                "documents": len(meta.get("documents", {})),
+                "total_chunks": len(chunks),
+                "total_text_chars": total_text,
+                "index_size": index.ntotal if index else 0,
+                "embedding_model": meta.get("embedding_model"),
+                "created": meta.get("created"),
+            })
+        except Exception as e:
+            return ToolResult(False, f"✗ get_kb_stats failed: {e}")
+
+    @staticmethod
+    def export_kb(kb_name: str, output: str, format: str = "json") -> ToolResult:
+        try:
+            import pickle
+            meta = KnowledgeBaseTool._load_meta(kb_name)
+            _, chunks = KnowledgeBaseTool._load_index(kb_name)
+            if format == "json":
+                data = {"meta": meta, "chunks": chunks}
+                Path(output).write_text(json.dumps(data, indent=2), encoding="utf-8")
+            elif format == "csv":
+                with open(output, "w", newline="", encoding="utf-8") as f:
+                    writer = csv.DictWriter(f, fieldnames=["text", "source", "chunk_index"])
+                    writer.writeheader()
+                    writer.writerows({"text": c.get("text", ""), "source": c.get("source", ""),
+                                      "chunk_index": c.get("chunk_index", 0)} for c in chunks)
+            elif format == "pkl":
+                with open(output, "wb") as f:
+                    pickle.dump({"meta": meta, "chunks": chunks}, f)
+            return ToolResult(True, f"✓ KB '{kb_name}' exported to {output} ({format})")
+        except Exception as e:
+            return ToolResult(False, f"✗ export_kb failed: {e}")
+
+    @staticmethod
+    def import_kb(kb_name: str, path: str) -> ToolResult:
+        try:
+            import faiss, numpy as np
+            with open(path, "rb" if path.endswith(".pkl") else "r") as f:
+                if path.endswith(".pkl"):
+                    import pickle
+                    data = pickle.load(f)
+                else:
+                    data = json.load(f)
+            meta = data.get("meta", {})
+            chunks = data.get("chunks", [])
+            embedder = KnowledgeBaseTool._get_embedder(meta.get("embedding_model", "all-MiniLM-L6-v2"))
+            index = faiss.IndexFlatL2(384)
+            if chunks:
+                texts = [c.get("text", "") for c in chunks]
+                embs = embedder.encode(texts, normalize_embeddings=True)
+                index.add(np.array(embs, dtype=np.float32))
+            KnowledgeBaseTool._kb_path(kb_name)
+            KnowledgeBaseTool._save_index(kb_name, index, chunks)
+            meta["name"] = kb_name
+            KnowledgeBaseTool._save_meta(kb_name, meta)
+            return ToolResult(True, f"✓ KB '{kb_name}' imported: {len(chunks)} chunks")
+        except Exception as e:
+            return ToolResult(False, f"✗ import_kb failed: {e}")
+
+    @staticmethod
+    def create_qa_pairs(kb_name: str, n_questions: int = 10, model: str = "llama3.2:3b",
+                        output: str = None) -> ToolResult:
+        try:
+            from agent_core import Ollama
+            _, chunks = KnowledgeBaseTool._load_index(kb_name)
+            if not chunks:
+                return ToolResult(False, f"✗ KB '{kb_name}' is empty")
+            llm = Ollama(model=model, temperature=0.7, change=True, Models=["mistral:7b"])
+            qa_pairs = []
+            sample_chunks = chunks[:min(n_questions * 2, len(chunks))]
+            for chunk in sample_chunks[:n_questions]:
+                text = chunk.get("text", "")
+                prompt = (f"Generate 1 question and its answer from this text.\n"
+                          f"Format:\nQ: [question]\nA: [answer]\n\nText: {text[:800]}")
+                raw = llm.invoke(prompt)
+                q_match = re.search(r'Q:\s*(.+)', raw)
+                a_match = re.search(r'A:\s*(.+)', raw, re.DOTALL)
+                if q_match and a_match:
+                    qa_pairs.append({
+                        "question": q_match.group(1).strip(),
+                        "answer": a_match.group(1).strip()[:500],
+                        "source": chunk.get("source", "")
+                    })
+            if output:
+                Path(output).write_text(json.dumps(qa_pairs, indent=2), encoding="utf-8")
+            return ToolResult(True, f"✓ Generated {len(qa_pairs)} QA pairs", qa_pairs)
+        except Exception as e:
+            return ToolResult(False, f"✗ create_qa_pairs failed: {e}")
+
+    @staticmethod
+    def answer_with_sources(kb_name: str, question: str, model: str = "llama3.2:3b",
+                            max_context: int = 4000) -> ToolResult:
+        try:
+            search_result = KnowledgeBaseTool.search_kb(kb_name, question, top_k=10)
+            if not search_result.success:
+                return search_result
+            chunks = search_result.data or []
+            # Build context up to max_context chars
+            context_parts = []
+            total_chars = 0
+            sources = []
+            for chunk in chunks:
+                text = chunk.get("text", "")
+                source = chunk.get("source", "unknown")
+                if total_chars + len(text) > max_context:
+                    break
+                context_parts.append(f"[Source: {source}]\n{text}")
+                if source not in sources:
+                    sources.append(source)
+                total_chars += len(text)
+            context = "\n\n---\n\n".join(context_parts)
+            from agent_core import Ollama
+            llm = Ollama(model=model, temperature=0.2, change=True, Models=["mistral:7b"])
+            prompt = (f"Answer this question based ONLY on the provided sources.\n"
+                      f"If the answer is not in the sources, say so.\n\n"
+                      f"Sources:\n{context}\n\n"
+                      f"Question: {question}\n\n"
+                      f"Answer with citations (mention [Source: ...] when referencing):")
+            answer = llm.invoke(prompt)
+            return ToolResult(True, "✓ Answer generated with sources",
+                              {"answer": answer, "sources": sources,
+                               "context_chars_used": total_chars,
+                               "chunks_referenced": len(context_parts)})
+        except Exception as e:
+            return ToolResult(False, f"✗ answer_with_sources failed: {e}")
 
 
 
+######################################################################################################################################
+"""System_Hardware TOOLS"""
+#####################################################################################################################################
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1. SystemAdvancedTool
+# ─────────────────────────────────────────────────────────────────────────────
+
+class SystemAdvancedTool:
+    name = "system_advanced"
+    description = (
+        "Deep OS operations cross-platform: system info, services, cron, firewall, startup, "
+        "hosts file, DNS, programs, restore points, volume, battery, USB, drives."
+    )
+    use = ("""
+Name of Tool:- SystemAdvancedTool
+
+Purpose of Tool:- 
+The SystemAdvancedTool provides a comprehensive cross-platform interface for performing deep Operating System operations. 
+It supports robust hardware monitoring, detailed system resource reporting, service lifecycle orchestration (Windows, macOS, Linux), 
+cron/scheduled task automation, host-file layout mutations, live DNS flushing, package/program inventory evaluations, uninstall sequences, 
+Windows restore point baselines, software volume tracking, real-time peripheral diagnostic queries (battery, USB layouts), and disk 
+lifecycle actions (ejection, multi-filesystem drive formatting).
+This tool is designed for systemic automation, engineering infrastructure monitoring, and system-level agent configurations across 
+Windows, macOS, and Linux kernels.
+
+Methods:-
+- get_full_system_info: Collects core operating system, environment, processing core configurations, memory capacity, and platform runtime context metrics.
+- get_hardware_info: Collects diagnostic state frames mapping physical core utilities, partition tables, disk storage maps, interface network configurations, and systemic thermal/fan telemetry if fully initialized.
+- manage_service: Modulates platform-native background system services (state updates like starting, stopping, reloading, restarting) via sub-layer system calls.
+- list_services: Fetches an exhaustive string matrix representation of active and inactive background tasks running via standard system service layers.
+- create_cron_job: Inserts system-scheduled crontab workflows or task-scheduler executions targeting persistent operational workflows.
+- list_cron_jobs: Enumerates raw multi-line records tracking existing system scripts bound inside crontab schemas or scheduler configurations.
+- remove_cron_job: Filters matching commands out of underlying automation crontabs or task-scheduler repositories to clear execution routines.
+- manage_firewall: Alters local machine operational connectivity profiles to filter target TCP/UDP ports or process active configurations.
+- create_startup_item: Configures system hooks within the registry matrix, plist launch domains, or target init configurations for boot executions.
+- remove_startup_item: Disables and destroys configurations keeping target startup services initialized at early boot runtime environments.
+- manage_hosts_file: Manipulates or extracts explicit local static domain-name target routes matching defined IP network configurations.
+- flush_dns: Invalidates operating system local resolve caches to clear path bindings on dynamic network configurations.
+- get_installed_programs: Indexes system software registries, application paths, or system package managers to build an exhaustive binary landscape.
+- uninstall_program: Forces automated native application execution sequences to remove files and target binaries.
+- create_restore_point: Instantiates a persistent system recovery index on Windows environments to safe-keep current OS files.
+- list_restore_points: Queries the structural historical timeline listing existing Windows restore configurations and baseline indexes.
+- set_system_volume: Updates physical master terminal system audio indicators by mapping a concrete percentage index context.
+- get_battery_info: Reports systemic hardware cell metrics including structural depletion percentages, line power connection vectors, and remaining lifespan estimations.
+- set_screen_brightness: Programs display hardware control lines to re-index the operational target balance parameters on laptop panels.
+- list_usb_devices: Discovers structural multi-class USB processing trees and attached hardware interface devices currently reporting connections.
+- eject_drive: Performs safely handled block-level unmount operations targeting local drives or removeable media layouts.
+- format_drive: Overwrites layout headers and builds clean multi-flavor structural platforms targeting disk file containers.
+
+How to use Tool Methods:-
+
+1. get_full_system_info:
+   - Purpose: Collects an overarching diagnostic frame aggregating OS platform identifiers, CPU designators, physical core indexes, RAM capacities, dynamic tracking margins, root storage availability layouts, and baseline boot epoch times.
+   - Arguments: None.
+   - Returns: ToolResult tracking successful completion status, validation strings, and a dictionary packing platform markers.
+   - How to call: SystemAdvancedTool.get_full_system_info()
+
+2. get_hardware_info:
+   - Purpose: Samples underlying computing sub-components to deliver structured reports charting component-by-component hardware utilization rates and device state parameters.
+   - Arguments:
+     a) detail_level: str (default: "basic") - Selects analytical depths. Choosing "full" appends live thermal structural sensors and cooling fan rotational reporting data matrices where hardware access permissions permit.
+   - Returns: ToolResult indicating diagnostic generation status, diagnostic logging strings, and a nested hardware configuration topology dictionary.
+   - How to call: SystemAdvancedTool.get_hardware_info(detail_level="full")
+
+3. manage_service:
+   - Purpose: Programmatically dispatches command directives controlling platform background daemons, running through Windows "sc", macOS "launchctl", or Linux "systemctl" frameworks.
+   - Arguments:
+     a) name: str - The specific target identifier labeling the service structure under configuration.
+     b) action: str - Command action to execute (e.g., "start", "stop", "restart", "reload").
+     c) os_platform: str (default: None) - Manually target platform overrides. Leaves mapping automated based on detected system metrics when unassigned.
+   - Returns: ToolResult outlining processing success parameters alongside captured process output logs.
+   - How to call: SystemAdvancedTool.manage_service(name="nginx", action="restart", os_platform="Linux")
+
+4. list_services:
+   - Purpose: Queries standard system management tools to output a unified textual list mapping all registered service elements matching targeted parameter spaces.
+   - Arguments:
+     a) os_platform: str (default: None) - Directs selection variables targeting explicit OS environments. Falls back to local auto-detection if none provided.
+     b) status_filter: str (default: "") - Token match string applied to filter matching output list elements during compilation stages.
+   - Returns: ToolResult holding evaluation success markers and a multi-string sequence tracking individual lines of active components.
+   - How to call: SystemAdvancedTool.list_services(os_platform="Windows", status_filter="running")
+
+5. create_cron_job:
+   - Purpose: Schedules an automated application execution rule set based on crontab parameters for Unix structures or daily Scheduled Tasks ("schtasks") environments for Windows setups.
+   - Arguments:
+     a) command: str - Raw programmatic script strings, application paths, or shell execution sequences targeted for persistent scheduling.
+     b) schedule: str - Unix standard positional time instruction rulesets (e.g., "* * * * *") mapped down to simple hour/minute specifications when matching Windows environments.
+     c) user: str (default: None) - Context parameter allocating target user table mappings on Linux configurations.
+   - Returns: ToolResult capturing operational deployment success metrics alongside validation logs.
+   - How to call: SystemAdvancedTool.create_cron_job(command="/usr/bin/backup.sh", schedule="0 2 * * *")
+
+6. list_cron_jobs:
+   - Purpose: Exposes automated execution timelines by dumping individual entries found across active scheduled user tasks or system crontab tables.
+   - Arguments:
+     a) user: str (default: None) - Filters results for a specific username when querying multi-user crontab registers.
+   - Returns: ToolResult with completion flags accompanied by a string matrix sorting target operational lines.
+   - How to call: SystemAdvancedTool.list_cron_jobs(user="root")
+
+7. remove_cron_job:
+   - Purpose: Scrubs scheduled scripts from automation registers by eliminating all table configuration records matching tracking criteria strings.
+   - Arguments:
+     a) command: str - Substring string target used to scan and remove items from scheduling system tables.
+   - Returns: ToolResult tracking completion validation flags along with descriptive process results text.
+   - How to call: SystemAdvancedTool.remove_cron_job(command="/usr/bin/backup.sh")
+
+8. manage_firewall:
+   - Purpose: Re-allocates ingress network packet filters across platform interface utilities like Windows Advanced Firewall netsh profiles, Apple pfctl configurations, or Linux ufw tools.
+   - Arguments:
+     a) action: str - Security action directive to enforce on the firewall stack (e.g., "allow", "deny", "status").
+     b) port: int (default: None) - Numeric target network port marker targeted for explicit programmatic entry changes.
+     c) protocol: str (default: "tcp") - Operational transport layer tracking scheme selector, typically supporting "tcp" or "udp" models.
+     d) source_ip: str (default: "any") - Source network address constraints filtering packet traffic routes.
+     e) os_platform: str (default: None) - Selects operational engine context maps. Automatically resolves from local platform signatures if left empty.
+   - Returns: ToolResult formatting processing success conditions and reporting systemic responses.
+   - How to call: SystemAdvancedTool.manage_firewall(action="allow", port=8080, protocol="tcp")
+
+9. create_startup_item:
+   - Purpose: Injects tracking links into the system to run targeted scripts automatically upon boot-up, using the Windows HKCU Run registry path, macOS LaunchAgents plist directories, or systemd target definitions.
+   - Arguments:
+     a) name: str - Target application descriptor tagging deployment configs.
+     b) command: str - The specific target terminal execution command string triggered on boot events.
+     c) os_platform: str (default: None) - System processing environment engine target switcher.
+   - Returns: ToolResult displaying status parameters alongside execution logging frames.
+   - How to call: SystemAdvancedTool.create_startup_item(name="MyAgent", command="/usr/local/bin/agent --start")
+
+10. remove_startup_item:
+    - Purpose: Removes application entries from system startup registers to prevent them from executing on next boot.
+    - Arguments:
+      a) name: str - Label identifier targeting files or key values slated for removal from startup configurations.
+      b) os_platform: str (default: None) - System architectural processing framework selector switch override.
+    - Returns: ToolResult detailing execution completion properties.
+    - How to call: SystemAdvancedTool.remove_startup_item(name="MyAgent")
+
+11. manage_hosts_file:
+    - Purpose: Processes read, update, or clear mutations directly on system local networking resolution route tables.
+    - Arguments:
+      a) action: str - Explicit file operation direction target choice supporting parameters "add", "remove", or "list".
+      b) ip: str (default: "") - Specific IP network destination routing node parameter string mapped during actions.
+      c) hostname: str (default: "") - Target network naming label reference used during configuration modifications.
+    - Returns: ToolResult packaging structural mapping evaluation flags alongside multi-line operational data blocks.
+    - How to call: SystemAdvancedTool.manage_hosts_file(action="add", ip="127.0.0.1", hostname="local.test")
+
+12. flush_dns:
+    - Purpose: Purges operating system runtime domain resolution memory stores to force live cache updates over changing routing structures.
+    - Arguments: None.
+    - Returns: ToolResult outlining flush tracking confirmations and operation status values.
+    - How to call: SystemAdvancedTool.flush_dns()
+
+13. get_installed_programs:
+    - Purpose: Indexes system locations such as Windows Uninstall paths, macOS Application structures, or Linux package registers (dpkg/rpm) to build a software tracking matrix.
+    - Arguments:
+      a) os_platform: str (default: None) - Architectural layout override switch targeting cross-system engines.
+    - Returns: ToolResult providing success state metadata alongside an array sequence containing discovered application names.
+    - How to call: SystemAdvancedTool.get_installed_programs(os_platform="Linux")
+
+14. uninstall_program:
+    - Purpose: Invokes native package removals or system application delete operations to erase tools from processing directories.
+    - Arguments:
+      a) name: str - Specific name key or program label pattern searched for during uninstall execution loops.
+      b) os_platform: str (default: None) - Platform environment selector tracking operating conditions.
+    - Returns: ToolResult declaring total tracking removal success indicators and application output logging.
+    - How to call: SystemAdvancedTool.uninstall_program(name="badapp")
+
+15. create_restore_point:
+    - Purpose: Generates a system baseline state record via Windows PowerShell checkpoint utilities to protect operational states before running updates.
+    - Arguments:
+      a) description: str - Human-readable comment detailing why the restore point was generated.
+    - Returns: ToolResult charting checkpoint production status or reporting validation blockages on non-supported OS targets.
+    - How to call: SystemAdvancedTool.create_restore_point(description="Before Major Update")
+
+16. list_restore_points:
+    - Purpose: Returns historical indices containing dates and descriptions of previously compiled Windows restore operations.
+    - Arguments: None.
+    - Returns: ToolResult mapping data compilation states alongside list arrays outlining restore configuration rows.
+    - How to call: SystemAdvancedTool.list_restore_points()
+
+17. set_system_volume:
+    - Purpose: Directly updates active terminal system audio processing attributes by enforcing concrete balance limits across standard platform engines.
+    - Arguments:
+      a) percent: int - Int parameter ranging between 0 and 100 pointing to the targeted sound pressure audio level.
+    - Returns: ToolResult confirming new volume setting levels.
+    - How to call: SystemAdvancedTool.set_system_volume(percent=75)
+
+18. get_battery_info:
+    - Purpose: Accesses system internal power infrastructure interfaces to track battery performance metrics.
+    - Arguments: None.
+    - Returns: ToolResult outputting runtime power status details including current remaining charge metrics, power brick connectivity states, and remaining runtime estimates.
+    - How to call: SystemAdvancedTool.get_battery_info()
+
+19. set_screen_brightness:
+    - Purpose: Adjusts active visual monitor backlighting power levels via platform-native interface pathways.
+    - Arguments:
+      a) percent: int - Int target bounded from 0 to 100 mapping out the target screen visibility coefficient.
+    - Returns: ToolResult documenting tracking change validations.
+    - How to call: SystemAdvancedTool.set_screen_brightness(percent=80)
+
+20. list_usb_devices:
+    - Purpose: Triggers deep subsystem processing hardware walks to collect raw JSON metadata arrays or text representations enumerating visible USB devices.
+    - Arguments: None.
+    - Returns: ToolResult tracking parsing success parameters along with data records logging connected devices.
+    - How to call: SystemAdvancedTool.list_usb_devices()
+
+21. eject_drive:
+    - Purpose: Unmounts specified target partitions or removeable hardware mount blocks cleanly to prevent data corruption.
+    - Arguments:
+      a) drive_path: str - Target filesystem mount route designation, storage label pattern, or platform volume reference (e.g., "E:", "/dev/sdb1").
+    - Returns: ToolResult displaying execution validation logs and partition state reports.
+    - How to call: SystemAdvancedTool.eject_drive(drive_path="E:")
+
+22. format_drive:
+    - Purpose: Erases structural sector properties and builds a fresh, clean filesystem framework across targeted storage blocks.
+    - Arguments:
+      a) drive_path: str - Targeted volume identifier or path reference pointing to the destination hardware block under configuration.
+      b) filesystem: str (default: "ext4") - Filesystem format layout selection token (e.g., "ext4", "ntfs", "fat32", "exfat").
+      c) label: str (default: "") - Appends a volume label name identifier to the formatted disk space.
+    - Returns: ToolResult packing formatting block processing success indicators along with sub-layer terminal execution details.
+    - How to call: SystemAdvancedTool.format_drive(drive_path="/dev/sdb1", filesystem="ext4", label="BackupDrive")
+""")
+
+    @staticmethod
+    def get_full_system_info() -> ToolResult:
+        try:
+            import psutil, cpuinfo
+
+            cpu   = cpuinfo.get_cpu_info()
+            vmem  = psutil.virtual_memory()
+            disk  = psutil.disk_usage("/")
+            boot  = psutil.boot_time()
+            from datetime import datetime
+            info = {
+                "os":            platform.platform(),
+                "hostname":      platform.node(),
+                "cpu_brand":     cpu.get("brand_raw", ""),
+                "cpu_cores_phys": psutil.cpu_count(logical=False),
+                "cpu_cores_log":  psutil.cpu_count(logical=True),
+                "cpu_freq_mhz":  psutil.cpu_freq().current if psutil.cpu_freq() else 0,
+                "ram_total_gb":  round(vmem.total / 1e9, 2),
+                "ram_used_gb":   round(vmem.used  / 1e9, 2),
+                "disk_total_gb": round(disk.total / 1e9, 2),
+                "disk_free_gb":  round(disk.free  / 1e9, 2),
+                "boot_time":     datetime.fromtimestamp(boot).isoformat(),
+                "python":        platform.python_version(),
+            }
+            return ToolResult(True, "✓ Full system info fetched", info)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_full_system_info failed: {e}")
+
+    @staticmethod
+    def get_hardware_info(detail_level: str = "basic") -> ToolResult:
+        try:
+            import psutil
+
+            data: dict = {}
+            # CPU
+            data["cpu"] = {
+                "logical_cores":  psutil.cpu_count(logical=True),
+                "physical_cores": psutil.cpu_count(logical=False),
+                "percent":        psutil.cpu_percent(interval=1, percpu=True),
+                "freq":           psutil.cpu_freq()._asdict() if psutil.cpu_freq() else {},
+            }
+            # Memory
+            vm = psutil.virtual_memory()
+            sw = psutil.swap_memory()
+            data["memory"] = {"virtual": vm._asdict(), "swap": sw._asdict()}
+            # Disks
+            data["disks"] = [
+                {"device": p.device, "mountpoint": p.mountpoint,
+                 "fstype": p.fstype, "usage": psutil.disk_usage(p.mountpoint)._asdict()}
+                for p in psutil.disk_partitions(all=False)
+            ]
+            # Network
+            nics = psutil.net_if_addrs()
+            data["network"] = {k: [a._asdict() for a in v] for k, v in nics.items()}
+            if detail_level == "full":
+                data["sensors"] = {}
+                try:
+                    temps = psutil.sensors_temperatures()
+                    data["sensors"]["temperatures"] = {k: [t._asdict() for t in v] for k, v in (temps or {}).items()}
+                    fans = psutil.sensors_fans()
+                    data["sensors"]["fans"] = {k: [f._asdict() for f in v] for k, v in (fans or {}).items()}
+                except Exception:
+                    pass
+            return ToolResult(True, "✓ Hardware info fetched", data)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_hardware_info failed: {e}")
+
+    @staticmethod
+    def manage_service(name: str, action: str, os_platform: str = None) -> ToolResult:
+        try:
+            os_platform = os_platform or platform.system()
+            if os_platform == "Windows":
+                r = subprocess.run(["sc", action, name], capture_output=True, text=True)
+            elif os_platform == "Darwin":
+                r = subprocess.run(["launchctl", action, name], capture_output=True, text=True)
+            else:
+                r = subprocess.run(["systemctl", action, name], capture_output=True, text=True)
+            out = r.stdout + r.stderr
+            return ToolResult(r.returncode == 0, f"✓ Service '{name}' {action}" if r.returncode == 0 else out.strip())
+        except Exception as e:
+            return ToolResult(False, f"✗ manage_service failed: {e}")
+
+    @staticmethod
+    def list_services(os_platform: str = None, status_filter: str = "") -> ToolResult:
+        try:
+            os_platform = os_platform or platform.system()
+            if os_platform == "Windows":
+                r = subprocess.run(["sc", "query", "type=", "all", "state=", "all"],
+                                   capture_output=True, text=True)
+            elif os_platform == "Darwin":
+                r = subprocess.run(["launchctl", "list"], capture_output=True, text=True)
+            else:
+                r = subprocess.run(["systemctl", "list-units", "--type=service", "--no-pager"],
+                                   capture_output=True, text=True)
+            lines = r.stdout.splitlines()
+            if status_filter:
+                lines = [l for l in lines if status_filter.lower() in l.lower()]
+            return ToolResult(True, f"✓ {len(lines)} service lines found", lines)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_services failed: {e}")
+
+    @staticmethod
+    def create_cron_job(command: str, schedule: str, user: str = None) -> ToolResult:
+        try:
+            if platform.system() == "Windows":
+                parts  = schedule.split()
+                minute = parts[0] if len(parts) > 0 else "0"
+                hour   = parts[1] if len(parts) > 1 else "*"
+                r = subprocess.run(
+                    ["schtasks", "/create", "/tn", command[:20], "/tr", command,
+                     "/sc", "DAILY", "/st", f"{hour.zfill(2)}:{minute.zfill(2)}", "/f"],
+                    capture_output=True, text=True,
+                )
+                return ToolResult(r.returncode == 0, r.stdout + r.stderr)
+            import tempfile, os
+            r = subprocess.run(["crontab", "-l"], capture_output=True, text=True)
+            existing = r.stdout if r.returncode == 0 else ""
+            new_entry = f"{schedule} {command}\n"
+            if new_entry.strip() in existing:
+                return ToolResult(True, "✓ Cron job already exists")
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".cron", delete=False) as tmp:
+                tmp.write(existing + new_entry)
+                tmp_path = tmp.name
+            r2 = subprocess.run(["crontab", tmp_path], capture_output=True, text=True)
+            os.unlink(tmp_path)
+            return ToolResult(r2.returncode == 0, f"✓ Cron job created: {schedule} {command}")
+        except Exception as e:
+            return ToolResult(False, f"✗ create_cron_job failed: {e}")
+
+    @staticmethod
+    def list_cron_jobs(user: str = None) -> ToolResult:
+        try:
+            if platform.system() == "Windows":
+                r = subprocess.run(["schtasks", "/query", "/fo", "LIST"], capture_output=True, text=True)
+                return ToolResult(True, "✓ Scheduled tasks fetched", r.stdout.splitlines())
+            cmd = ["crontab", "-l"]
+            if user:
+                cmd = ["crontab", "-l", "-u", user]
+            r = subprocess.run(cmd, capture_output=True, text=True)
+            lines = [l for l in r.stdout.splitlines() if l.strip() and not l.startswith("#")]
+            return ToolResult(True, f"✓ {len(lines)} cron job(s)", lines)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_cron_jobs failed: {e}")
+
+    @staticmethod
+    def remove_cron_job(command: str) -> ToolResult:
+        try:
+            if platform.system() == "Windows":
+                r = subprocess.run(["schtasks", "/delete", "/tn", command[:20], "/f"],
+                                   capture_output=True, text=True)
+                return ToolResult(r.returncode == 0, r.stdout + r.stderr)
+            import tempfile, os
+            r = subprocess.run(["crontab", "-l"], capture_output=True, text=True)
+            lines = [l for l in r.stdout.splitlines() if command not in l]
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".cron", delete=False) as tmp:
+                tmp.write("\n".join(lines) + "\n")
+                tmp_path = tmp.name
+            r2 = subprocess.run(["crontab", tmp_path], capture_output=True, text=True)
+            os.unlink(tmp_path)
+            return ToolResult(r2.returncode == 0, f"✓ Cron job removed: {command}")
+        except Exception as e:
+            return ToolResult(False, f"✗ remove_cron_job failed: {e}")
+
+    @staticmethod
+    def manage_firewall(
+        action: str,
+        port: int = None,
+        protocol: str = "tcp",
+        source_ip: str = "any",
+        os_platform: str = None,
+    ) -> ToolResult:
+        try:
+            os_platform = os_platform or platform.system()
+            if os_platform == "Windows":
+                if action == "allow" and port:
+                    r = subprocess.run([
+                        "netsh", "advfirewall", "firewall", "add", "rule",
+                        f"name=NPMAgent_{port}", "dir=in", "action=allow",
+                        f"protocol={protocol}", f"localport={port}",
+                    ], capture_output=True, text=True)
+                elif action == "deny" and port:
+                    r = subprocess.run([
+                        "netsh", "advfirewall", "firewall", "add", "rule",
+                        f"name=NPMAgent_BLOCK_{port}", "dir=in", "action=block",
+                        f"protocol={protocol}", f"localport={port}",
+                    ], capture_output=True, text=True)
+                elif action == "status":
+                    r = subprocess.run(["netsh", "advfirewall", "show", "allprofiles"],
+                                       capture_output=True, text=True)
+                else:
+                    return ToolResult(False, f"✗ Unknown firewall action: {action}")
+            elif os_platform == "Darwin":
+                if action in ("allow", "deny"):
+                    r = subprocess.run(["pfctl", "-f", "/etc/pf.conf"], capture_output=True, text=True)
+                else:
+                    r = subprocess.run(["pfctl", "-s", "all"], capture_output=True, text=True)
+            else:
+                if action == "allow" and port:
+                    r = subprocess.run(["ufw", "allow", f"{port}/{protocol}"], capture_output=True, text=True)
+                elif action == "deny" and port:
+                    r = subprocess.run(["ufw", "deny", f"{port}/{protocol}"], capture_output=True, text=True)
+                elif action == "status":
+                    r = subprocess.run(["ufw", "status", "verbose"], capture_output=True, text=True)
+                else:
+                    return ToolResult(False, f"✗ Unknown firewall action: {action}")
+            return ToolResult(r.returncode == 0, r.stdout + r.stderr)
+        except Exception as e:
+            return ToolResult(False, f"✗ manage_firewall failed: {e}")
+
+    @staticmethod
+    def create_startup_item(name: str, command: str, os_platform: str = None) -> ToolResult:
+        try:
+            os_platform = os_platform or platform.system()
+            if os_platform == "Windows":
+                import winreg
+                key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                                     r"Software\Microsoft\Windows\CurrentVersion\Run",
+                                     0, winreg.KEY_SET_VALUE)
+                winreg.SetValueEx(key, name, 0, winreg.REG_SZ, command)
+                winreg.CloseKey(key)
+            elif os_platform == "Darwin":
+                import plistlib
+                from pathlib import Path
+                plist = {
+                    "Label": f"com.npmai.{name}",
+                    "ProgramArguments": command.split(),
+                    "RunAtLoad": True,
+                }
+                dest = Path.home() / "Library" / "LaunchAgents" / f"com.npmai.{name}.plist"
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                with open(dest, "wb") as f:
+                    plistlib.dump(plist, f)
+                subprocess.run(["launchctl", "load", str(dest)], capture_output=True)
+            else:
+                from pathlib import Path
+                service = f"""[Unit]
+Description={name}
+After=network.target
+
+[Service]
+ExecStart={command}
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+"""
+                dest = Path(f"/etc/systemd/system/{name}.service")
+                dest.write_text(service)
+                subprocess.run(["systemctl", "enable", name], capture_output=True)
+            return ToolResult(True, f"✓ Startup item '{name}' created")
+        except Exception as e:
+            return ToolResult(False, f"✗ create_startup_item failed: {e}")
+
+    @staticmethod
+    def remove_startup_item(name: str, os_platform: str = None) -> ToolResult:
+        try:
+            os_platform = os_platform or platform.system()
+            if os_platform == "Windows":
+                import winreg
+                key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                                     r"Software\Microsoft\Windows\CurrentVersion\Run",
+                                     0, winreg.KEY_SET_VALUE)
+                winreg.DeleteValue(key, name)
+                winreg.CloseKey(key)
+            elif os_platform == "Darwin":
+                from pathlib import Path
+                dest = Path.home() / "Library" / "LaunchAgents" / f"com.npmai.{name}.plist"
+                subprocess.run(["launchctl", "unload", str(dest)], capture_output=True)
+                dest.unlink(missing_ok=True)
+            else:
+                subprocess.run(["systemctl", "disable", name], capture_output=True)
+                from pathlib import Path
+                Path(f"/etc/systemd/system/{name}.service").unlink(missing_ok=True)
+            return ToolResult(True, f"✓ Startup item '{name}' removed")
+        except Exception as e:
+            return ToolResult(False, f"✗ remove_startup_item failed: {e}")
+
+    @staticmethod
+    def manage_hosts_file(action: str, ip: str = "", hostname: str = "") -> ToolResult:
+        try:
+            import re
+            from pathlib import Path
+            hosts_path = Path("C:/Windows/System32/drivers/etc/hosts") if platform.system() == "Windows" \
+                else Path("/etc/hosts")
+            content = hosts_path.read_text()
+            if action == "add":
+                entry = f"\n{ip}\t{hostname}"
+                if hostname in content:
+                    return ToolResult(True, f"✓ Entry already exists for {hostname}")
+                hosts_path.write_text(content + entry)
+                return ToolResult(True, f"✓ Added {ip} → {hostname} to hosts file")
+            elif action == "remove":
+                new_content = re.sub(rf".*\s+{re.escape(hostname)}\s*\n?", "", content)
+                hosts_path.write_text(new_content)
+                return ToolResult(True, f"✓ Removed {hostname} from hosts file")
+            elif action == "list":
+                lines = [l for l in content.splitlines() if l.strip() and not l.startswith("#")]
+                return ToolResult(True, f"✓ {len(lines)} hosts entries", lines)
+            return ToolResult(False, f"✗ Unknown action: {action}")
+        except Exception as e:
+            return ToolResult(False, f"✗ manage_hosts_file failed: {e}")
+
+    @staticmethod
+    def flush_dns() -> ToolResult:
+        try:
+            os_name = platform.system()
+            if os_name == "Windows":
+                r = subprocess.run(["ipconfig", "/flushdns"], capture_output=True, text=True)
+            elif os_name == "Darwin":
+                r = subprocess.run(["dscacheutil", "-flushcache"], capture_output=True, text=True)
+                subprocess.run(["killall", "-HUP", "mDNSResponder"], capture_output=True)
+            else:
+                r = subprocess.run(["systemd-resolve", "--flush-caches"], capture_output=True, text=True)
+                if r.returncode != 0:
+                    r = subprocess.run(["service", "dns-clean", "restart"], capture_output=True, text=True)
+            return ToolResult(True, "✓ DNS cache flushed")
+        except Exception as e:
+            return ToolResult(False, f"✗ flush_dns failed: {e}")
+
+    @staticmethod
+    def get_installed_programs(os_platform: str = None) -> ToolResult:
+        try:
+            os_platform = os_platform or platform.system()
+            programs = []
+            if os_platform == "Windows":
+                import winreg
+                for hive in [winreg.HKEY_LOCAL_MACHINE, winreg.HKEY_CURRENT_USER]:
+                    for path in [
+                        r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall",
+                        r"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall",
+                    ]:
+                        try:
+                            key = winreg.OpenKey(hive, path)
+                            for i in range(winreg.QueryInfoKey(key)[0]):
+                                try:
+                                    subkey_name = winreg.EnumKey(key, i)
+                                    subkey = winreg.OpenKey(key, subkey_name)
+                                    name, _ = winreg.QueryValueEx(subkey, "DisplayName")
+                                    programs.append(name)
+                                except Exception:
+                                    pass
+                        except Exception:
+                            pass
+            elif os_platform == "Darwin":
+                r = subprocess.run(["ls", "/Applications"], capture_output=True, text=True)
+                programs = [l.replace(".app", "") for l in r.stdout.splitlines() if l.endswith(".app")]
+            else:
+                r = subprocess.run(["dpkg", "--get-selections"], capture_output=True, text=True)
+                if r.returncode == 0:
+                    programs = [l.split()[0] for l in r.stdout.splitlines() if "install" in l]
+                else:
+                    r2 = subprocess.run(["rpm", "-qa"], capture_output=True, text=True)
+                    programs = r2.stdout.splitlines()
+            return ToolResult(True, f"✓ {len(programs)} installed programs found", programs)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_installed_programs failed: {e}")
+
+    @staticmethod
+    def uninstall_program(name: str, os_platform: str = None) -> ToolResult:
+        try:
+            os_platform = os_platform or platform.system()
+            if os_platform == "Windows":
+                r = subprocess.run(
+                    ["wmic", "product", "where", f'name="{name}"', "call", "uninstall", "/nointeractive"],
+                    capture_output=True, text=True,
+                )
+            elif os_platform == "Darwin":
+                from pathlib import Path
+                app_path = f"/Applications/{name}.app"
+                r = subprocess.run(["rm", "-rf", app_path], capture_output=True, text=True)
+            else:
+                r = subprocess.run(["apt-get", "remove", "-y", name], capture_output=True, text=True)
+                if r.returncode != 0:
+                    r = subprocess.run(["yum", "remove", "-y", name], capture_output=True, text=True)
+            return ToolResult(r.returncode == 0, f"✓ Uninstalled: {name}" if r.returncode == 0 else r.stderr)
+        except Exception as e:
+            return ToolResult(False, f"✗ uninstall_program failed: {e}")
+
+    @staticmethod
+    def create_restore_point(description: str) -> ToolResult:
+        try:
+            if platform.system() != "Windows":
+                return ToolResult(False, "✗ Restore points are Windows-only.")
+            r = subprocess.run(
+                ["powershell", "-Command",
+                 f'Checkpoint-Computer -Description "{description}" -RestorePointType MODIFY_SETTINGS'],
+                capture_output=True, text=True,
+            )
+            return ToolResult(r.returncode == 0, f"✓ Restore point created: {description}")
+        except Exception as e:
+            return ToolResult(False, f"✗ create_restore_point failed: {e}")
+
+    @staticmethod
+    def list_restore_points() -> ToolResult:
+        try:
+            if platform.system() != "Windows":
+                return ToolResult(False, "✗ Restore points are Windows-only.")
+            r = subprocess.run(
+                ["powershell", "-Command", "Get-ComputerRestorePoint | Select-Object Description,CreationTime"],
+                capture_output=True, text=True,
+            )
+            return ToolResult(True, "✓ Restore points listed", r.stdout.splitlines())
+        except Exception as e:
+            return ToolResult(False, f"✗ list_restore_points failed: {e}")
+
+    @staticmethod
+    def set_system_volume(percent: int) -> ToolResult:
+        try:
+            percent = max(0, min(100, percent))
+            os_name = platform.system()
+            if os_name == "Windows":
+                r = subprocess.run(
+                    ["powershell", "-Command",
+                     f"$obj = New-Object -ComObject WScript.Shell; $obj.SendKeys([char]174*{(100-percent)//2})"],
+                    capture_output=True,
+                )
+            elif os_name == "Darwin":
+                r = subprocess.run(["osascript", "-e", f"set volume output volume {percent}"],
+                                   capture_output=True, text=True)
+            else:
+                r = subprocess.run(["amixer", "-D", "pulse", "sset", "Master", f"{percent}%"],
+                                   capture_output=True, text=True)
+            return ToolResult(True, f"✓ Volume set to {percent}%")
+        except Exception as e:
+            return ToolResult(False, f"✗ set_system_volume failed: {e}")
+
+    @staticmethod
+    def get_battery_info() -> ToolResult:
+        try:
+            import psutil
+            battery = psutil.sensors_battery()
+            if not battery:
+                return ToolResult(False, "✗ No battery detected.")
+            return ToolResult(True, f"✓ Battery: {battery.percent:.1f}%", {
+                "percent":    round(battery.percent, 1),
+                "plugged_in": battery.power_plugged,
+                "secs_left":  battery.secsleft if battery.secsleft != psutil.POWER_TIME_UNLIMITED else "Unlimited",
+            })
+        except Exception as e:
+            return ToolResult(False, f"✗ get_battery_info failed: {e}")
+
+    @staticmethod
+    def set_screen_brightness(percent: int) -> ToolResult:
+        try:
+            percent = max(0, min(100, percent))
+            os_name = platform.system()
+            if os_name == "Windows":
+                r = subprocess.run(
+                    ["powershell", "-Command",
+                     f"(Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightnessMethods).WmiSetBrightness(1,{percent})"],
+                    capture_output=True, text=True,
+                )
+            elif os_name == "Darwin":
+                r = subprocess.run(["osascript", "-e", f"tell application \"System Events\" to set brightness to {percent/100}"],
+                                   capture_output=True, text=True)
+            else:
+                r = subprocess.run(["xrandr", "--output", "eDP-1", "--brightness", str(percent / 100)],
+                                   capture_output=True, text=True)
+            return ToolResult(True, f"✓ Brightness set to {percent}%")
+        except Exception as e:
+            return ToolResult(False, f"✗ set_screen_brightness failed: {e}")
+
+    @staticmethod
+    def list_usb_devices() -> ToolResult:
+        try:
+            os_name = platform.system()
+            if os_name == "Windows":
+                r = subprocess.run(
+                    ["powershell", "-Command",
+                     "Get-PnpDevice -Class USB | Select-Object FriendlyName, Status | ConvertTo-Json"],
+                    capture_output=True, text=True,
+                )
+                import json
+                try:
+                    data = json.loads(r.stdout)
+                    return ToolResult(True, f"✓ {len(data) if isinstance(data,list) else 1} USB device(s)", data)
+                except Exception:
+                    return ToolResult(True, "✓ USB devices listed", r.stdout.splitlines())
+            elif os_name == "Darwin":
+                r = subprocess.run(["system_profiler", "SPUSBDataType"], capture_output=True, text=True)
+            else:
+                r = subprocess.run(["lsusb"], capture_output=True, text=True)
+            return ToolResult(True, "✓ USB devices listed", r.stdout.splitlines())
+        except Exception as e:
+            return ToolResult(False, f"✗ list_usb_devices failed: {e}")
+
+    @staticmethod
+    def eject_drive(drive_path: str) -> ToolResult:
+        try:
+            os_name = platform.system()
+            if os_name == "Windows":
+                r = subprocess.run(
+                    ["powershell", "-Command",
+                     f"$vol = [System.IO.DriveInfo]'{drive_path}'; $shell = New-Object -ComObject Shell.Application; $shell.Namespace(17).ParseName('{drive_path}').InvokeVerb('Eject')"],
+                    capture_output=True, text=True,
+                )
+            elif os_name == "Darwin":
+                r = subprocess.run(["diskutil", "eject", drive_path], capture_output=True, text=True)
+            else:
+                r = subprocess.run(["eject", drive_path], capture_output=True, text=True)
+            return ToolResult(True, f"✓ Drive ejected: {drive_path}")
+        except Exception as e:
+            return ToolResult(False, f"✗ eject_drive failed: {e}")
+
+    @staticmethod
+    def format_drive(drive_path: str, filesystem: str = "ext4", label: str = "") -> ToolResult:
+        try:
+            os_name = platform.system()
+            if os_name == "Windows":
+                label_arg = f"label={label}" if label else ""
+                r = subprocess.run(
+                    ["format", drive_path, f"/FS:{filesystem}", "/Q", "/Y"] +
+                    ([f"/V:{label}"] if label else []),
+                    capture_output=True, text=True, input="Y\n",
+                )
+            elif os_name == "Darwin":
+                fs_map = {"ext4": "JHFS+", "fat32": "FAT32", "exfat": "ExFAT", "ntfs": "NTFS"}
+                fs = fs_map.get(filesystem.lower(), "JHFS+")
+                cmd = ["diskutil", "eraseDisk", fs, label or "DISK", drive_path]
+                r = subprocess.run(cmd, capture_output=True, text=True)
+            else:
+                cmd = [f"mkfs.{filesystem}", drive_path] + (["-L", label] if label else [])
+                r = subprocess.run(cmd, capture_output=True, text=True)
+            return ToolResult(r.returncode == 0, r.stdout + r.stderr)
+        except Exception as e:
+            return ToolResult(False, f"✗ format_drive failed: {e}")
 
 
-# %% [code] Cell 2
+# ─────────────────────────────────────────────────────────────────────────────
+# 2. NetworkAdvancedTool
+# ─────────────────────────────────────────────────────────────────────────────
+
+class NetworkAdvancedTool:
+    name = "network_advanced"
+    description = (
+        "Network diagnostics and management: ping, traceroute, port scan, DNS, WHOIS, "
+        "SSL, HTTP test, bandwidth, ARP, routing, uptime monitoring, SSH tunnels."
+    )
+    use = ("""
+Name of Tool:- NetworkAdvancedTool
+
+Purpose of Tool:- 
+The NetworkAdvancedTool provides an advanced interface for executing core network diagnostics, probing host reachability, 
+monitoring web health, mapping routing layouts, and handling secure encrypted communication forwarding mechanisms. It standardizes cross-platform 
+diagnostics (ICMP ping, multi-hop packet routing paths) and low-level socket integrations (TCP port sweeps, specific port validation checks). 
+Additionally, the tool automates public/private address reporting, DNS query tracking, reverse zone maps, deep domain WHOIS ownership indexes, 
+SSL/TLS validation timelines, precise HTTP payload validations, live bandwidth throttling calculations, link-layer ARP caches, IP routing rulesets, 
+and background multi-threaded uptime monitors alongside Paramiko-driven SSH tunneling channels.
+
+Methods:-
+- ping: Verifies physical remote host connectivity over low-overhead system ICMP requests.
+- traceroute: Captures network path configurations by stepping through individual multi-hop gateways separating intermediate hardware channels.
+- port_scan: Scans selected port lists to find exposed endpoints running on a target host.
+- check_port_open: Fast-probes an explicit single transport address using native non-blocking TCP handshake sequences.
+- dns_lookup: Interfaces with standard resolution tools to pull specific network record indicators mapping domain targets.
+- reverse_dns: Back-resolves a numeric remote IP address layout into its registered textual pointer address name.
+- whois_lookup: Extracts comprehensive registration metadata detailing domain records, hosting parameters, and administrative entities.
+- get_local_ip: Checks the active interface routing configuration to identify the host machine's primary internal IP.
+- get_public_ip: Queries an external secure API gateway to retrieve the machine's external-facing WAN IP address.
+- get_network_interfaces: Enumerates system interfaces while indexing structural throughput indicators, operational states, and layer address pools.
+- check_ssl_certificate: Handshakes with secure endpoints to inspect the root validity parameters of active x509 encryption keys.
+- get_ssl_expiry: Computes standard certificate expiration parameters to safely predict remaining validation times.
+- http_test: Dispatches customizable web request frames to measure performance timings and return payloads.
+- bandwidth_test: Performs streaming operations over high-throughput content endpoints to calculate link speeds.
+- capture_packets: Leverages Scapy mechanisms to monitor network interfaces and compile explicit raw payload capture records (.pcap).
+- get_arp_table: Extracts network neighbor mappings linking Layer 2 physical hardware paths with active Layer 3 address structures.
+- get_routing_table: Details current systemic destination routing rules and core interface gateways.
+- set_dns_servers: Modifies primary static resolver endpoints within system scripts or configuration utilities.
+- check_domain_health: Synthesizes multi-vector testing paths across DNS, HTTP status configurations, and encryption states to evaluate system availability.
+- monitor_uptime: Spawns persistent analytical tracking threads designed to monitor target availability profiles using interval-bound probes.
+- create_ssh_tunnel: Builds secure multi-threaded local-to-remote local port forwarding circuits across automated SSH pipelines.
+
+How to use Tool Methods:-
+
+1. ping:
+   - Purpose: Measures the reachability and round-trip performance metrics of a specified remote node using ICMP echo chains.
+   - Arguments:
+     a) host: str - Target domain address or numeric IP sequence under verification.
+     b) count: int (default: 4) - Number of sequential packet echo iterations dispatched during tests.
+     c) timeout: int (default: 5) - Maximum lifespan parameters allocated to individual request drops.
+   - Returns: ToolResult holding structural boolean connectivity status flags and a detailed execution block.
+   - How to call: NetworkAdvancedTool.ping(host="8.8.8.8", count=4)
+
+2. traceroute:
+   - Purpose: Maps the explicit intermediate pathway taken by packets traveling across network routers to reach a destination.
+   - Arguments:
+     a) host: str - Destination destination routing endpoint node to investigate.
+     b) max_hops: int (default: 30) - Safe terminal boundary checking ceiling limiting the path traversal loops.
+     c) timeout: int (default: 5) - System response timeout threshold parameters.
+   - Returns: ToolResult tracking routing path validation blocks and sequential hop-by-hop node matrices.
+   - How to call: NetworkAdvancedTool.traceroute(host="example.com")
+
+3. port_scan:
+   - Purpose: Evaluates target system vulnerabilities or active services by attempting TCP connection routines across list vectors.
+   - Arguments:
+     a) host: str - System address targeted for service detection routines.
+     b) ports: list (default: None) - Array of destination port digits to check. Falls back to scanning ports 1 to 1024 if unassigned.
+     c) timeout: float (default: 1.0) - Handshake processing limit constraint applied per connection attempt.
+     d) method: str (default: "connect") - Explicit operational state handling mechanism selection parameter.
+   - Returns: ToolResult displaying scan status summaries alongside map dictionaries matching exposed ports with known protocols.
+   - How to call: NetworkAdvancedTool.port_scan(host="192.168.1.1", ports=[22, 80, 443])
+
+4. check_port_open:
+   - Purpose: Performs a fast connection handshake check against a specific target port to see if it is actively accepting connections.
+   - Arguments:
+     a) host: str - The host network node under configuration audit.
+     b) port: int - Exact port number targeted for connection verification.
+     c) timeout: float (default: 3.0) - Time budget limits applied to socket connection states.
+   - Returns: ToolResult storing open/closed validation states.
+   - How to call: NetworkAdvancedTool.check_port_open(host="127.0.0.1", port=3306)
+
+5. dns_lookup:
+   - Purpose: Interrogates domain databases via system sub-layer structures to fetch requested zone records.
+   - Arguments:
+     a) domain: str - Textual destination identifier to look up.
+     b) record_type: str (default: "A") - Explicit lookup target filter (e.g., "A", "AAAA", "MX", "TXT", "CNAME").
+   - Returns: ToolResult containing processing flags alongside raw nslookup output records.
+   - How to call: NetworkAdvancedTool.dns_lookup(domain="google.com", record_type="MX")
+
+6. reverse_dns:
+   - Purpose: Resolves an IP address back to its associated hostname via Pointer (PTR) record extraction routines.
+   - Arguments:
+     a) ip: str - Target IP routing location sequence under examination.
+   - Returns: ToolResult tracking mapping updates and resolved text markers.
+   - How to call: NetworkAdvancedTool.reverse_dns(ip="8.8.8.8")
+
+7. whois_lookup:
+   - Purpose: Queries domain WHOIS registries to extract structural assignment details, creation dates, and organization metadata.
+   - Arguments:
+     a) domain: str - Core domain name targeted for registry examination.
+   - Returns: ToolResult packing validation flags alongside a dictionary filled with domain registration information.
+   - How to call: NetworkAdvancedTool.whois_lookup(domain="github.com")
+
+8. get_local_ip:
+   - Purpose: Safely computes the machine's primary internal LAN routing address by opening an inactive socket channel toward external addresses.
+   - Arguments: None.
+   - Returns: ToolResult formatting operational flags and local network IP fields.
+   - How to call: NetworkAdvancedTool.get_local_ip()
+
+9. get_public_ip:
+   - Purpose: Identifies the local environment's external WAN IP address as seen by the public internet.
+   - Arguments: None.
+   - Returns: ToolResult logging connectivity status along with external network IP metrics.
+   - How to call: NetworkAdvancedTool.get_public_ip()
+
+10. get_network_interfaces:
+    - Purpose: Aggregates hardware interface lists to verify configuration statuses, packet speeds, and assigned address pools.
+    - Arguments: None.
+    - Returns: ToolResult mapping active adapter setups alongside structural network properties.
+    - How to call: NetworkAdvancedTool.get_network_interfaces()
+
+11. check_ssl_certificate:
+    - Purpose: Validates peer certificate authentication layers during connection tests to detect potential trust failures.
+    - Arguments:
+      a) domain: str - Destination secure endpoint web address.
+      b) port: int (default: 443) - Target security socket link identifier.
+    - Returns: ToolResult describing certificate validation results and properties.
+    - How to call: NetworkAdvancedTool.check_ssl_certificate(domain="cloudflare.com")
+
+12. get_ssl_expiry:
+    - Purpose: Analyzes x509 validation fields to compute the exact number of days remaining before an SSL/TLS certificate expires.
+    - Arguments:
+      a) domain: str - Web host target path intended for evaluation.
+      b) port: int (default: 443) - The specific port number used to initiate the secure handshake.
+    - Returns: ToolResult holding tracking metrics and expiration timelines.
+    - How to call: NetworkAdvancedTool.get_ssl_expiry(domain="microsoft.com")
+
+13. http_test:
+    - Purpose: Dispatches custom HTTP request configurations to audit server endpoint availability, response headers, and performance latency.
+    - Arguments:
+      a) url: str - Absolute destination link schema targeted for verification.
+      b) method: str (default: "GET") - HTTP transmission verb identifier (e.g., "GET", "POST", "PUT", "DELETE").
+      c) headers: dict (default: None) - Key-value pair configurations mapping custom HTTP request headers.
+      d) data: dict (default: None) - JSON-formatted payload structures appended to the request body.
+      e) timeout: int (default: 15) - Maximum duration bounds allocated to response streaming windows.
+      f) follow_redirects: bool (default: True) - Determines whether the client follows HTTP redirect chains.
+      g) verify_ssl: bool (default: True) - Enables or disables enforcement of strict peer security checks.
+    - Returns: ToolResult packing status codes, header configurations, and timing details.
+    - How to call: NetworkAdvancedTool.http_test(url="https://httpbin.org/post", method="POST", data={"test": True})
+
+14. bandwidth_test:
+    - Purpose: Estimates connection performance limits by continuously downloading chunked streams over a fixed timeframe.
+    - Arguments:
+      a) server_url: str (default: high-capacity byte node) - Secure endpoint link supplying download test streams.
+      b) duration: int (default: 5) - Target time duration bounds limiting speed tracking metrics loops.
+    - Returns: ToolResult declaring evaluation metrics and average connection speeds in Mbps.
+    - How to call: NetworkAdvancedTool.bandwidth_test(duration=3)
+
+15. capture_packets:
+    - Purpose: Sniffs low-level hardware or virtual interface frames, filtering capture data into formatted analysis records.
+    - Arguments:
+      a) interface: str (default: "eth0") - Specific interface adapter channel target assigned for packet capture.
+      b) count: int (default: 10) - Target ceiling limiting packet counts captured during testing runs.
+      c) filter: str (default: "") - Standard BPF packet filtering syntax queries (e.g., "tcp port 80").
+      d) output_pcap: str (default: "capture.pcap") - Path location where captured file traces are saved.
+    - Returns: ToolResult tracking saved output confirmation markers.
+    - How to call: NetworkAdvancedTool.capture_packets(interface="wlan0", count=5, filter="icmp")
+
+16. get_arp_table:
+    - Purpose: Dumps the system Address Resolution Protocol table to check current IP-to-MAC address mappings.
+    - Arguments: None.
+    - Returns: ToolResult collecting network configuration arrays detailing known hardware address targets.
+    - How to call: NetworkAdvancedTool.get_arp_table()
+
+17. get_routing_table:
+    - Purpose: Exposes internal packet path selections by extracting the operating system's active IP routing matrices.
+    - Arguments: None.
+    - Returns: ToolResult logging execution success metrics and raw system routing tracks.
+    - How to call: NetworkAdvancedTool.get_routing_table()
+
+18. set_dns_servers:
+    - Purpose: Overwrites system resolver targets to re-route domain lookups through specific external name servers.
+    - Arguments:
+      a) servers: list - Array sequence mapping string formatting destination server IP records (e.g., ["8.8.8.8", "1.1.1.1"]).
+      b) interface: str (default: "") - Targeted link adapter descriptor targeted for structural configuration.
+    - Returns: ToolResult providing validation updates.
+    - How to call: NetworkAdvancedTool.set_dns_servers(servers=["1.1.1.1", "1.0.0.1"])
+
+19. check_domain_health:
+    - Purpose: Aggregates multiple network testing utilities to build a unified profile evaluating domain availability and security posture.
+    - Arguments:
+      a) domain: str - Target name string intended for architectural health checks.
+    - Returns: ToolResult packaging validation flags and sub-layer service evaluation parameters.
+    - How to call: NetworkAdvancedTool.check_domain_health(domain="apple.com")
+
+20. monitor_uptime:
+    - Purpose: Spawns independent background monitoring tasks that check web server availability and trigger alerts if failure rates exceed thresholds.
+    - Arguments:
+      a) url: str - Destination link under analytical surveillance.
+      b) interval: int (default: 60) - Testing delay cycles measured in seconds separating individual check sweeps.
+      c) alert_threshold: int (default: 3) - Maximum allowable consecutive drops before triggering alert routines.
+      d) callback: function (default: None) - Custom execution reference called when failure conditions are reached.
+    - Returns: ToolResult validating successful initiation of the tracking background loop.
+    - How to call: NetworkAdvancedTool.monitor_uptime(url="https://mywebsite.com", interval=30)
+
+21. create_ssh_tunnel:
+    - Purpose: Leverages paramiko SSH channels to forward local traffic securely across encrypted pipelines toward remote targets.
+    - Arguments:
+      a) local_port: int - Local connection target port listening for traffic on the host machine.
+      b) remote_host: str - Final internal network destination address situated beyond the jump box.
+      c) remote_port: int - Final system network application target port under configuration.
+      d) ssh_host: str - Gateway intermediary server hosting active shell connections.
+      e) ssh_user: str - Identity label used for secure shell server authentication.
+      f) ssh_key: str (default: None) - Storage target file path referencing the user's private authentication key.
+      g) cred_key: str (default: "ssh") - Index key mapping default verification metrics out of storage systems.
+    - Returns: ToolResult mapping active circuit connection confirmations.
+    - How to call: NetworkAdvancedTool.create_ssh_tunnel(local_port=8080, remote_host="10.0.0.5", remote_port=80, ssh_host="jump.mycompany.com", ssh_user="admin")
+""")
+
+    @staticmethod
+    def ping(host: str, count: int = 4, timeout: int = 5) -> ToolResult:
+        try:
+            os_name = platform.system()
+            flag    = "-n" if os_name == "Windows" else "-c"
+            r = subprocess.run(["ping", flag, str(count), host], capture_output=True, text=True, timeout=timeout * count + 5)
+            success = r.returncode == 0
+            return ToolResult(success, r.stdout + r.stderr, {"reachable": success, "output": r.stdout})
+        except Exception as e:
+            return ToolResult(False, f"✗ ping failed: {e}")
+
+    @staticmethod
+    def traceroute(host: str, max_hops: int = 30, timeout: int = 5) -> ToolResult:
+        try:
+            cmd = ["tracert", host] if platform.system() == "Windows" else ["traceroute", "-m", str(max_hops), host]
+            r = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+            return ToolResult(True, "✓ Traceroute complete", r.stdout.splitlines())
+        except Exception as e:
+            return ToolResult(False, f"✗ traceroute failed: {e}")
+
+    @staticmethod
+    def port_scan(
+        host: str,
+        ports: list = None,
+        timeout: float = 1.0,
+        method: str = "connect",
+    ) -> ToolResult:
+        try:
+            import socket
+
+            ports = ports or list(range(1, 1025))
+            open_ports = []
+            for port in ports:
+                try:
+                    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                        s.settimeout(timeout)
+                        result = s.connect_ex((host, port))
+                        if result == 0:
+                            try:
+                                service = socket.getservbyport(port)
+                            except Exception:
+                                service = "unknown"
+                            open_ports.append({"port": port, "service": service})
+                except Exception:
+                    pass
+            return ToolResult(True, f"✓ {len(open_ports)} open port(s) on {host}", open_ports)
+        except Exception as e:
+            return ToolResult(False, f"✗ port_scan failed: {e}")
+
+    @staticmethod
+    def check_port_open(host: str, port: int, timeout: float = 3.0) -> ToolResult:
+        try:
+            import socket
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.settimeout(timeout)
+                result = s.connect_ex((host, port))
+            open_ = result == 0
+            return ToolResult(open_, f"✓ Port {port} is {'open' if open_ else 'closed'} on {host}", {"open": open_})
+        except Exception as e:
+            return ToolResult(False, f"✗ check_port_open failed: {e}")
+
+    @staticmethod
+    def dns_lookup(domain: str, record_type: str = "A") -> ToolResult:
+        try:
+            r = subprocess.run(
+                ["nslookup", "-type=" + record_type, domain],
+                capture_output=True, text=True, timeout=15,
+            )
+            return ToolResult(True, f"✓ DNS lookup: {domain} ({record_type})", r.stdout.splitlines())
+        except Exception as e:
+            return ToolResult(False, f"✗ dns_lookup failed: {e}")
+
+    @staticmethod
+    def reverse_dns(ip: str) -> ToolResult:
+        try:
+            import socket
+            hostname = socket.gethostbyaddr(ip)[0]
+            return ToolResult(True, f"✓ Reverse DNS: {ip} → {hostname}", {"hostname": hostname})
+        except Exception as e:
+            return ToolResult(False, f"✗ reverse_dns failed: {e}")
+
+    @staticmethod
+    def whois_lookup(domain: str) -> ToolResult:
+        try:
+            import whois
+            w = whois.whois(domain)
+            return ToolResult(True, f"✓ WHOIS for {domain}", dict(w))
+        except Exception as e:
+            return ToolResult(False, f"✗ whois_lookup failed: {e}")
+
+    @staticmethod
+    def get_local_ip() -> ToolResult:
+        try:
+            import socket
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(("8.8.8.8", 80))
+            ip = s.getsockname()[0]
+            s.close()
+            return ToolResult(True, f"✓ Local IP: {ip}", {"local_ip": ip})
+        except Exception as e:
+            return ToolResult(False, f"✗ get_local_ip failed: {e}")
+
+    @staticmethod
+    def get_public_ip() -> ToolResult:
+        try:
+            import requests
+            ip = requests.get("https://api.ipify.org", timeout=10).text.strip()
+            return ToolResult(True, f"✓ Public IP: {ip}", {"public_ip": ip})
+        except Exception as e:
+            return ToolResult(False, f"✗ get_public_ip failed: {e}")
+
+    @staticmethod
+    def get_network_interfaces() -> ToolResult:
+        try:
+            import psutil
+            interfaces = {}
+            addrs = psutil.net_if_addrs()
+            stats = psutil.net_if_stats()
+            for name, addr_list in addrs.items():
+                interfaces[name] = {
+                    "addresses": [a._asdict() for a in addr_list],
+                    "is_up":     stats[name].isup if name in stats else False,
+                    "speed":     stats[name].speed if name in stats else 0,
+                }
+            return ToolResult(True, f"✓ {len(interfaces)} network interface(s)", interfaces)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_network_interfaces failed: {e}")
+
+    @staticmethod
+    def check_ssl_certificate(domain: str, port: int = 443) -> ToolResult:
+        try:
+            import ssl, socket
+            ctx = ssl.create_default_context()
+            with ctx.wrap_socket(socket.socket(), server_hostname=domain) as s:
+                s.settimeout(10)
+                s.connect((domain, port))
+                cert = s.getpeercert()
+            return ToolResult(True, f"✓ SSL certificate valid for {domain}", cert)
+        except ssl.SSLCertVerificationError as e:
+            return ToolResult(False, f"✗ SSL verification failed: {e}")
+        except Exception as e:
+            return ToolResult(False, f"✗ check_ssl_certificate failed: {e}")
+
+    @staticmethod
+    def get_ssl_expiry(domain: str, port: int = 443) -> ToolResult:
+        try:
+            import ssl, socket
+            from datetime import datetime
+
+            ctx = ssl.create_default_context()
+            with ctx.wrap_socket(socket.socket(), server_hostname=domain) as s:
+                s.settimeout(10)
+                s.connect((domain, port))
+                cert = s.getpeercert()
+            expiry_str = cert["notAfter"]
+            expiry     = datetime.strptime(expiry_str, "%b %d %H:%M:%S %Y %Z")
+            days_left  = (expiry - datetime.utcnow()).days
+            return ToolResult(True, f"✓ SSL expires in {days_left} days ({expiry_str})", {"expiry": expiry_str, "days_left": days_left})
+        except Exception as e:
+            return ToolResult(False, f"✗ get_ssl_expiry failed: {e}")
+
+    @staticmethod
+    def http_test(
+        url: str,
+        method: str = "GET",
+        headers: dict = None,
+        data: dict = None,
+        timeout: int = 15,
+        follow_redirects: bool = True,
+        verify_ssl: bool = True,
+    ) -> ToolResult:
+        try:
+            import requests
+            fn = getattr(requests, method.lower())
+            r  = fn(url, headers=headers or {}, json=data, timeout=timeout,
+                    allow_redirects=follow_redirects, verify=verify_ssl)
+            return ToolResult(
+                r.status_code < 400,
+                f"✓ {method} {url} → {r.status_code} ({r.elapsed.total_seconds():.3f}s)",
+                {
+                    "status_code":  r.status_code,
+                    "headers":      dict(r.headers),
+                    "elapsed_ms":   round(r.elapsed.total_seconds() * 1000, 1),
+                    "content_type": r.headers.get("Content-Type", ""),
+                    "body_preview": r.text[:500],
+                },
+            )
+        except Exception as e:
+            return ToolResult(False, f"✗ http_test failed: {e}")
+
+    @staticmethod
+    def bandwidth_test(server_url: str = "https://httpbin.org/bytes/1048576", duration: int = 5) -> ToolResult:
+        try:
+            import requests, time
+
+            download_bytes = 0
+            start = time.time()
+            while time.time() - start < duration:
+                r = requests.get(server_url, timeout=10, stream=True)
+                for chunk in r.iter_content(65536):
+                    download_bytes += len(chunk)
+                    if time.time() - start >= duration:
+                        break
+            elapsed = time.time() - start
+            speed_mbps = round((download_bytes * 8) / (elapsed * 1e6), 2)
+            return ToolResult(True, f"✓ Download speed: ~{speed_mbps} Mbps", {"speed_mbps": speed_mbps, "bytes": download_bytes})
+        except Exception as e:
+            return ToolResult(False, f"✗ bandwidth_test failed: {e}")
+
+    @staticmethod
+    def capture_packets(
+        interface: str = "eth0",
+        count: int = 10,
+        filter: str = "",
+        output_pcap: str = "capture.pcap",
+    ) -> ToolResult:
+        try:
+            from scapy.all import sniff, wrpcap
+            packets = sniff(iface=interface, count=count, filter=filter, timeout=30)
+            wrpcap(output_pcap, packets)
+            return ToolResult(True, f"✓ Captured {len(packets)} packets → {output_pcap}", {"count": len(packets)})
+        except Exception as e:
+            return ToolResult(False, f"✗ capture_packets failed: {e}")
+
+    @staticmethod
+    def get_arp_table() -> ToolResult:
+        try:
+            if platform.system() == "Windows":
+                r = subprocess.run(["arp", "-a"], capture_output=True, text=True)
+            else:
+                r = subprocess.run(["arp", "-n"], capture_output=True, text=True)
+            return ToolResult(True, "✓ ARP table fetched", r.stdout.splitlines())
+        except Exception as e:
+            return ToolResult(False, f"✗ get_arp_table failed: {e}")
+
+    @staticmethod
+    def get_routing_table() -> ToolResult:
+        try:
+            if platform.system() == "Windows":
+                r = subprocess.run(["route", "print"], capture_output=True, text=True)
+            else:
+                r = subprocess.run(["netstat", "-rn"], capture_output=True, text=True)
+            return ToolResult(True, "✓ Routing table fetched", r.stdout.splitlines())
+        except Exception as e:
+            return ToolResult(False, f"✗ get_routing_table failed: {e}")
+
+    @staticmethod
+    def set_dns_servers(servers: list, interface: str = "") -> ToolResult:
+        try:
+            os_name = platform.system()
+            if os_name == "Windows":
+                iface = interface or "Ethernet"
+                for i, server in enumerate(servers):
+                    index = "primary" if i == 0 else "secondary"
+                    subprocess.run(
+                        ["netsh", "interface", "ipv4", "set", "dns",
+                         f"name={iface}", "static" if i == 0 else "add", server],
+                        capture_output=True,
+                    )
+            elif os_name == "Darwin":
+                for server in servers:
+                    subprocess.run(
+                        ["networksetup", "-setdnsservers", interface or "Wi-Fi", server],
+                        capture_output=True,
+                    )
+            else:
+                from pathlib import Path
+                content = "\n".join(f"nameserver {s}" for s in servers) + "\n"
+                Path("/etc/resolv.conf").write_text(content)
+            return ToolResult(True, f"✓ DNS servers set: {', '.join(servers)}")
+        except Exception as e:
+            return ToolResult(False, f"✗ set_dns_servers failed: {e}")
+
+    @staticmethod
+    def check_domain_health(domain: str) -> ToolResult:
+        try:
+            import requests, ssl, socket
+
+            results: dict = {}
+            # HTTP reachability
+            try:
+                r = requests.get(f"https://{domain}", timeout=10, verify=True)
+                results["http_status"]   = r.status_code
+                results["https_reachable"] = True
+            except Exception as ex:
+                results["https_reachable"] = False
+                results["http_error"]      = str(ex)
+            # SSL
+            try:
+                from datetime import datetime
+                ctx = ssl.create_default_context()
+                with ctx.wrap_socket(socket.socket(), server_hostname=domain) as s:
+                    s.settimeout(5); s.connect((domain, 443))
+                    cert = s.getpeercert()
+                expiry = datetime.strptime(cert["notAfter"], "%b %d %H:%M:%S %Y %Z")
+                results["ssl_valid"]    = True
+                results["ssl_days_left"] = (expiry - datetime.utcnow()).days
+            except Exception as ex:
+                results["ssl_valid"] = False; results["ssl_error"] = str(ex)
+            # DNS
+            try:
+                socket.gethostbyname(domain)
+                results["dns_resolves"] = True
+            except Exception:
+                results["dns_resolves"] = False
+            return ToolResult(True, f"✓ Domain health check for {domain}", results)
+        except Exception as e:
+            return ToolResult(False, f"✗ check_domain_health failed: {e}")
+
+    @staticmethod
+    def monitor_uptime(
+        url: str,
+        interval: int = 60,
+        alert_threshold: int = 3,
+        callback=None,
+    ) -> ToolResult:
+        try:
+            import threading, requests, time
+
+            failures = [0]
+
+            def _watch():
+                while True:
+                    try:
+                        r = requests.get(url, timeout=10)
+                        if r.status_code >= 400:
+                            failures[0] += 1
+                        else:
+                            failures[0] = 0
+                    except Exception:
+                        failures[0] += 1
+                    if failures[0] >= alert_threshold and callback:
+                        callback({"url": url, "failures": failures[0]})
+                    time.sleep(interval)
+
+            threading.Thread(target=_watch, daemon=True).start()
+            return ToolResult(True, f"✓ Monitoring uptime for {url} every {interval}s")
+        except Exception as e:
+            return ToolResult(False, f"✗ monitor_uptime failed: {e}")
+
+    @staticmethod
+    def create_ssh_tunnel(
+        local_port: int,
+        remote_host: str,
+        remote_port: int,
+        ssh_host: str,
+        ssh_user: str,
+        ssh_key: str = None,
+        cred_key: str = "ssh",
+    ) -> ToolResult:
+        try:
+            import threading
+            import paramiko
+
+            creds   = CredStore.load(cred_key)
+            key_path = ssh_key or creds.get("key_path", None)
+            password = creds.get("password", None)
+
+            transport = paramiko.Transport((ssh_host, 22))
+            if key_path:
+                pkey = paramiko.RSAKey.from_private_key_file(key_path)
+                transport.connect(username=ssh_user, pkey=pkey)
+            else:
+                transport.connect(username=ssh_user, password=password)
+
+            import socket
+
+            def _accept():
+                server = socket.socket()
+                server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                server.bind(("127.0.0.1", local_port))
+                server.listen(5)
+                while True:
+                    client, _ = server.accept()
+                    chan = transport.open_channel("direct-tcpip",
+                                                  (remote_host, remote_port),
+                                                  ("127.0.0.1", local_port))
+                    def bridge(src, dst):
+                        while True:
+                            data = src.recv(1024)
+                            if not data: break
+                            dst.sendall(data)
+                    threading.Thread(target=bridge, args=(client, chan), daemon=True).start()
+                    threading.Thread(target=bridge, args=(chan, client), daemon=True).start()
+
+            threading.Thread(target=_accept, daemon=True).start()
+            return ToolResult(True, f"✓ SSH tunnel: localhost:{local_port} → {remote_host}:{remote_port} via {ssh_host}")
+        except Exception as e:
+            return ToolResult(False, f"✗ create_ssh_tunnel failed: {e}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 3. FileSystemAdvancedTool
+# ─────────────────────────────────────────────────────────────────────────────
+
+class FileSystemAdvancedTool:
+    name = "filesystem_advanced"
+    description = (
+        "Advanced file operations: folder watch/sync, duplicate detection/removal, "
+        "encryption, secure delete, split/join, compression, malware scan, permissions."
+    )
+    use = ("""
+Name of Tool:- FileSystemAdvancedTool
+
+Purpose of Tool:- 
+The FileSystemAdvancedTool provides an advanced and secure interface for complex filesystem management, structural audits, data sanitation, 
+and integrity enforcement. It wraps system-level and library-driven operations into a clean API covering directory event monitoring, automated 
+one-way or bidirectional directory synchronization, cryptographically sound deduplication via hashes, authenticated encryption primitives (AES-GCM), 
+unrecoverable file shredding, chunked file splitting/joining, custom malware pattern filtering, recursive Unix access control modification (chmod/chown), 
+virtual SFTP volume mounting, and massive manifest creation using verifiable checksum fingerprints.
+
+Methods:-
+- watch_folder: Sets up a background monitoring event loop to capture structural modifications under specified directory trees.
+- sync_folders: Performs multi-tier file replication or bidirectional path mirrors across distinct system directory paths.
+- find_duplicates: Sweeps selected directory locations to spot and pool redundant data objects based on hash uniqueness keys.
+- remove_duplicates: Automatically purges duplicate files found inside target structures based on relative indexing order selections.
+- encrypt_file: Derives high-entropy security keys via Scrypt to secure target payloads with robust AES-GCM envelope protections.
+- decrypt_file: Extracts salt and nonce parameters from encrypted blobs to fully reconstruct original unencrypted plaintext contents.
+- secure_delete: Obliterates local file records by executing continuous cryptographically random byte overwrite runs before block unlinking.
+- split_file: Slices large targeted objects into sequentially numbered byte fragments for easy transport.
+- join_files: Combines split part components back into a single operational structural data assembly.
+- compress_folder: Archives complex structured folder nodes into portable, custom-leveled compressed archives like .zip or .tar.gz format packages.
+- scan_for_malware: Runs quick regex matches across local file contents to uncover suspicious strings, shell scripts, or unsafe system commands.
+- find_large_files: Filters file elements by file size boundaries to create sorted breakdowns of massive space-consuming files.
+- change_permissions_recursive: Performs recursive bitwise access control mode alterations across targeted folder structures.
+- change_owner_recursive: Modifies systemic ownership boundaries by calling platform processes recursively on targeted assets.
+- mount_remote_folder: Validates structural connectivity and directory availability metrics against external SFTP nodes over Paramiko transport links.
+- verify_checksum: Recomputes absolute hex digests on files to confirm payload alignment with expected hash profiles.
+- generate_checksum_file: Dispatches validation routines down directory paths to generate comprehensive signature catalogs for mass file verification.
+
+How to use Tool Methods:-
+
+1. watch_folder:
+   - Purpose: Tracks real-time folder mutations (creations, deletions, updates) by spawning a background Watchdog monitoring worker thread.
+   - Arguments:
+     a) path: str - Base folder target path under monitoring surveillance.
+     b) callback: function - Callable execution target triggered upon catching systemic filesystem event types.
+     c) patterns: list (default: None) - Filter matching formats used to flag specific file extensions.
+     d) recursive: bool (default: True) - Controls whether the engine monitors all nested subdirectories.
+     e) ignore_patterns: list (default: None) - File format patterns excluded from monitoring sweeps.
+   - Returns: ToolResult holding background observer validation confirmations.
+   - How to call: FileSystemAdvancedTool.watch_folder(path="/var/www", callback=print, patterns=["*.py"])
+
+2. sync_folders:
+   - Purpose: Replicates data assets between directory nodes with handling options for extra files, mirrors, and dry runs.
+   - Arguments:
+     a) source: str - Root source folder address feeding file states.
+     b) destination: str - Destination tracking workspace targeted for alignment.
+     c) bidirectional: bool (default: False) - Enables concurrent reverse updates back into the source path.
+     d) delete_extra: bool (default: False) - Purges elements within the destination folder that do not exist at the source.
+     e) dry_run: bool (default: False) - Simulates operations to log target changes without writing any changes to disk.
+   - Returns: ToolResult packing final synced transaction statistics.
+   - How to call: FileSystemAdvancedTool.sync_folders(source="./src", destination="./backup", delete_extra=True)
+
+3. find_duplicates:
+   - Purpose: Builds unique hash maps across files to precisely group and expose completely identical data blobs.
+   - Arguments:
+     a) paths: list - Target search folder addresses to look through.
+     b) method: str (default: "md5") - Selection parameter specifying the crypto hashing routine (e.g., "md5", "sha256").
+     c) output: str (default: None) - Optional target output path to dump the duplicate mappings as a JSON file.
+   - Returns: ToolResult detailing duplicate group counts alongside data matrices matching hashes to file path locations.
+   - How to call: FileSystemAdvancedTool.find_duplicates(paths=["/data/docs"], method="sha256")
+
+4. remove_duplicates:
+   - Purpose: Cleans up storage locations by safely deleting identical files uncovered during folder sweeps.
+   - Arguments:
+     a) paths: list - Target target system paths targeted for duplicate removal loops.
+     b) keep: str (default: "first") - Selects which unique variant index to preserve ("first" or "last").
+     c) method: str (default: "md5") - Crypto algorithm choice used to confirm identity match states.
+   - Returns: ToolResult summarizing total file units removed from disk.
+   - How to call: FileSystemAdvancedTool.remove_duplicates(paths=["/home/user/downloads"], keep="first")
+
+5. encrypt_file:
+   - Purpose: Uses strong Scrypt key derivation and AES-GCM authenticated encryption to convert raw files into protected data blobs.
+   - Arguments:
+     a) input: str - Plaintext file source target slated for protection.
+     b) output: str - Destination tracking path where the encrypted file will be saved.
+     c) password: str - Base passphrase text string feeding the key derivation functions.
+     b) algorithm: str (default: "AES") - Underlying security symmetric encryption type framework.
+   - Returns: ToolResult tracking successfully processed secure output states.
+   - How to call: FileSystemAdvancedTool.encrypt_file(input="secret.txt", output="secret.enc", password="SuperSecurePassword123")
+
+6. decrypt_file:
+   - Purpose: Validates envelope headers and decrypts AES-GCM data payloads back into true plaintext.
+   - Arguments:
+     a) input: str - Target path pointing to the valid encrypted file source.
+     b) output: str - Target system destination path where decrypted contents will be written.
+     c) password: str - Passphrase matching the exact key derivation settings used to encrypt the file.
+   - Returns: ToolResult indicating confirmation of safe payload decryption.
+   - How to call: FileSystemAdvancedTool.decrypt_file(input="secret.enc", output="restored.txt", password="SuperSecurePassword123")
+
+7. secure_delete:
+   - Purpose: Shreds data sectors using continuous random byte write buffers to stop file recovery before unlinking records from the OS.
+   - Arguments:
+     a) path: str - Target target file item marked for permanent secure destruction.
+     b) passes: int (default: 3) - The number of random byte overwrite cycles applied across target blocks.
+   - Returns: ToolResult charting deletion confirmations.
+   - How to call: FileSystemAdvancedTool.secure_delete(path="sensitive_data.csv", passes=5)
+
+8. split_file:
+   - Purpose: Slices large structural objects into smaller byte chunks to fit transport size limits.
+   - Arguments:
+     a) path: str - Main file asset scheduled for division.
+     b) chunk_size: int (default: 10485760) - Target byte volume parameter limiting maximum individual chunk splits (defaults to 10 MB).
+     c) output_folder: str (default: None) - Output path destination designated to store the generated partial split fragments.
+   - Returns: ToolResult detailing piece metrics and tracking output destinations.
+   - How to call: FileSystemAdvancedTool.split_file(path="archive.tar", chunk_size=5242880)
+
+9. join_files:
+   - Purpose: Assembles sequenced partial files back into a single unified binary file structure.
+   - Arguments:
+     a) parts_folder: str - Source folder containing the split data chunks.
+     b) output: str - Reconstructed path location mapping where the combined file will be saved.
+     c) extension: str (default: ".part") - Tracking suffix selector used to identify and sort split parts.
+   - Returns: ToolResult providing reconstruction progress statuses.
+   - How to call: FileSystemAdvancedTool.join_files(parts_folder="./archive_parts", output="restored_archive.tar")
+
+10. compress_folder:
+    - Purpose: Bundles entire nested folder tree structures into space-saving compressed archives using custom algorithms.
+    - Arguments:
+      a) path: str - Target folder directory root slated for archiving.
+      b) output: str (default: None) - Desired output archive path name (autocompletes file extensions if blank).
+      c) algorithm: str (default: "zip") - Compression scheme selector flag (options include "zip" or "tar.gz").
+      d) level: int (default: 6) - Numeric scale balancing compression time against final output file size (scale from 1 to 9).
+    - Returns: ToolResult logging the saved output location of the archive.
+    - How to call: FileSystemAdvancedTool.compress_folder(path="./projects", algorithm="tar.gz", level=9)
+
+11. scan_for_malware:
+    - Purpose: Checks file bodies against high-risk regex string signatures to spot potential web shells, injection paths, or backdoors.
+    - Arguments:
+      a) path: str - Target file path or root folder location selected for pattern filtering scans.
+      b) patterns: list (default: None) - Optional array tracking custom suspicious evaluation strings.
+    - Returns: ToolResult charting structural match positions and total high-risk flags identified.
+    - How to call: FileSystemAdvancedTool.scan_for_malware(path="/var/www/html")
+
+12. find_large_files:
+    - Purpose: Crawls file systems to find and catalog space-heavy files that exceed specified size limits.
+    - Arguments:
+      a) path: str - Root location where the size tracking sweep begins.
+      b) min_size_mb: float (default: 100) - Minimum file size ceiling filter value in Megabytes.
+      c) recursive: bool (default: True) - Dictates whether the tool crawls down nested folders.
+    - Returns: ToolResult packing sorted details mapping large file nodes to their respective sizes.
+    - How to call: FileSystemAdvancedTool.find_large_files(path="/var/log", min_size_mb=50.0)
+
+13. change_permissions_recursive:
+    - Purpose: Changes system file access codes recursively across entire directory trees using Unix octal permissions mode formatting.
+    - Arguments:
+      a) path: str - Root folder location targeted for permissions changes.
+      b) mode: int (default: 0o755) - Bitwise permissions mask value passed using standard octal representations.
+    - Returns: ToolResult counting total items adjusted across system tracks.
+    - How to call: FileSystemAdvancedTool.change_permissions_recursive(path="./scripts", mode=0o744)
+
+14. change_owner_recursive:
+    - Purpose: Changes user and group ownership boundaries recursively across target items using platform tools.
+    - Arguments:
+      a) path: str - System file location marked for ownership updates.
+      b) user: str - Account user name mapping the new target owner.
+      c) group: str (default: None) - Intended platform group name string to attach alongside user parameters.
+    - Returns: ToolResult capturing operational return logs from sub-process tasks.
+    - How to call: FileSystemAdvancedTool.change_owner_recursive(path="/var/www", user="www-data", group="www-data")
+
+15. mount_remote_folder:
+    - Purpose: Opens a secure transport connection to check and read from folders on remote SFTP hosts.
+    - Arguments:
+      a) host: str - Intermediary system hostname network target.
+      b) remote_path: str - Folder layout path residing on the target remote server environment.
+      c) local_path: str - Local folder path used as a placeholder target during validation tests.
+      d) credentials: dict (default: None) - Custom authentication login configurations.
+      e) cred_key: str (default: "ssh") - Index key mapping default verification parameters from credential databases.
+    - Returns: ToolResult packing lists tracking files present inside the remote folder target.
+    - How to call: FileSystemAdvancedTool.mount_remote_folder(host="sftp.partner.com", remote_path="/uploads", local_path="./remote_preview")
+
+16. verify_checksum:
+    - Purpose: Compares the computed runtime hash value of a target file directly against an expected hash string to verify file integrity.
+    - Arguments:
+      a) file: str - Target file path targeted for tracking calculations.
+      b) expected: str - Pre-computed verification hash string used to confirm authenticity.
+      c) algorithm: str (default: "sha256") - Selection parameter defining the algorithm used (e.g., "md5", "sha1", "sha256").
+    - Returns: ToolResult storing verification matches along with actual string tracking markers.
+    - How to call: FileSystemAdvancedTool.verify_checksum(file="ubuntu.iso", expected="a3c2...ef45")
+
+17. generate_checksum_file:
+    - Purpose: Crawls directories to map files and write their corresponding cryptographic signatures out into unified manifest index files.
+    - Arguments:
+      a) folder: str - Base folder directory path selected for verification checks.
+      b) algorithm: str (default: "sha256") - Underlying hash algorithm scheme used to generate individual checksums.
+      c) output: str (default: "checksums.txt") - Destination file tracking path where the generated manifest text will be saved.
+    - Returns: ToolResult tracking output confirmations and listing total file counts cataloged.
+    - How to call: FileSystemAdvancedTool.generate_checksum_file(folder="./release_pkg", algorithm="sha256")
+""")
+
+    @staticmethod
+    def watch_folder(
+        path: str,
+        callback,
+        patterns: list = None,
+        recursive: bool = True,
+        ignore_patterns: list = None,
+    ) -> ToolResult:
+        try:
+            import threading
+            from watchdog.observers import Observer
+            from watchdog.events import PatternMatchingEventHandler
+
+            handler = PatternMatchingEventHandler(
+                patterns=patterns or ["*"],
+                ignore_patterns=ignore_patterns or [],
+                ignore_directories=False,
+                case_sensitive=True,
+            )
+            handler.on_any_event = lambda event: callback(event)
+            observer = Observer()
+            observer.schedule(handler, path, recursive=recursive)
+            observer.start()
+            return ToolResult(True, f"✓ Watching folder: {path}")
+        except Exception as e:
+            return ToolResult(False, f"✗ watch_folder failed: {e}")
+
+    @staticmethod
+    def sync_folders(
+        source: str,
+        destination: str,
+        bidirectional: bool = False,
+        delete_extra: bool = False,
+        dry_run: bool = False,
+    ) -> ToolResult:
+        try:
+            import shutil, filecmp
+            from pathlib import Path
+
+            def _sync(src: Path, dst: Path) -> int:
+                dst.mkdir(parents=True, exist_ok=True)
+                count = 0
+                for item in src.iterdir():
+                    d = dst / item.name
+                    if item.is_dir():
+                        count += _sync(item, d)
+                    else:
+                        if not d.exists() or item.stat().st_mtime > d.stat().st_mtime:
+                            if not dry_run:
+                                shutil.copy2(str(item), str(d))
+                            count += 1
+                if delete_extra:
+                    for item in dst.iterdir():
+                        if not (src / item.name).exists():
+                            if not dry_run:
+                                if item.is_dir(): shutil.rmtree(str(item))
+                                else: item.unlink()
+                return count
+
+            src_p = Path(source)
+            dst_p = Path(destination)
+            count = _sync(src_p, dst_p)
+            if bidirectional:
+                count += _sync(dst_p, src_p)
+            mode = "(dry run) " if dry_run else ""
+            return ToolResult(True, f"✓ {mode}Synced {count} file(s)")
+        except Exception as e:
+            return ToolResult(False, f"✗ sync_folders failed: {e}")
+
+    @staticmethod
+    def find_duplicates(
+        paths: list, method: str = "md5", output: str = None
+    ) -> ToolResult:
+        try:
+            import hashlib, json
+            from pathlib import Path
+            from collections import defaultdict
+
+            def file_hash(filepath: str) -> str:
+                h = hashlib.new(method)
+                with open(filepath, "rb") as f:
+                    for chunk in iter(lambda: f.read(65536), b""):
+                        h.update(chunk)
+                return h.hexdigest()
+
+            hashes: dict = defaultdict(list)
+            for path in paths:
+                p = Path(path)
+                for f in (p.rglob("*") if p.is_dir() else [p]):
+                    if f.is_file():
+                        try:
+                            hashes[file_hash(str(f))].append(str(f))
+                        except Exception:
+                            pass
+
+            duplicates = {h: files for h, files in hashes.items() if len(files) > 1}
+            if output:
+                Path(output).write_text(json.dumps(duplicates, indent=2))
+            return ToolResult(True, f"✓ Found {len(duplicates)} duplicate group(s)", duplicates)
+        except Exception as e:
+            return ToolResult(False, f"✗ find_duplicates failed: {e}")
+
+    @staticmethod
+    def remove_duplicates(
+        paths: list, keep: str = "first", method: str = "md5"
+    ) -> ToolResult:
+        try:
+            result = FileSystemAdvancedTool.find_duplicates(paths, method)
+            if not result.success:
+                return result
+            removed = 0
+            for hash_val, files in (result.data or {}).items():
+                to_remove = files[1:] if keep == "first" else files[:-1]
+                for f in to_remove:
+                    from pathlib import Path
+                    Path(f).unlink()
+                    removed += 1
+            return ToolResult(True, f"✓ Removed {removed} duplicate file(s)")
+        except Exception as e:
+            return ToolResult(False, f"✗ remove_duplicates failed: {e}")
+
+    @staticmethod
+    def encrypt_file(
+        input: str,
+        output: str,
+        password: str,
+        algorithm: str = "AES",
+    ) -> ToolResult:
+        try:
+            from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+            from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
+            from pathlib import Path
+            import os
+
+            salt = os.urandom(16)
+            kdf  = Scrypt(salt=salt, length=32, n=2**14, r=8, p=1)
+            key  = kdf.derive(password.encode())
+            nonce = os.urandom(12)
+            aesgcm = AESGCM(key)
+            plaintext  = Path(input).read_bytes()
+            ciphertext = aesgcm.encrypt(nonce, plaintext, None)
+            Path(output).write_bytes(salt + nonce + ciphertext)
+            return ToolResult(True, f"✓ File encrypted: {output}")
+        except Exception as e:
+            return ToolResult(False, f"✗ encrypt_file failed: {e}")
+
+    @staticmethod
+    def decrypt_file(input: str, output: str, password: str) -> ToolResult:
+        try:
+            from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+            from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
+            from pathlib import Path
+
+            data  = Path(input).read_bytes()
+            salt  = data[:16]
+            nonce = data[16:28]
+            ct    = data[28:]
+            kdf   = Scrypt(salt=salt, length=32, n=2**14, r=8, p=1)
+            key   = kdf.derive(password.encode())
+            aesgcm = AESGCM(key)
+            plaintext = aesgcm.decrypt(nonce, ct, None)
+            Path(output).write_bytes(plaintext)
+            return ToolResult(True, f"✓ File decrypted: {output}")
+        except Exception as e:
+            return ToolResult(False, f"✗ decrypt_file failed: {e}")
+
+    @staticmethod
+    def secure_delete(path: str, passes: int = 3) -> ToolResult:
+        try:
+            import os
+            from pathlib import Path
+
+            p = Path(path)
+            if not p.exists():
+                return ToolResult(False, f"✗ File not found: {path}")
+            size = p.stat().st_size
+            with open(path, "r+b") as f:
+                for _ in range(passes):
+                    f.seek(0)
+                    f.write(os.urandom(size))
+                    f.flush()
+            p.unlink()
+            return ToolResult(True, f"✓ Securely deleted: {path} ({passes} passes)")
+        except Exception as e:
+            return ToolResult(False, f"✗ secure_delete failed: {e}")
+
+    @staticmethod
+    def split_file(path: str, chunk_size: int = 10485760, output_folder: str = None) -> ToolResult:
+        try:
+            from pathlib import Path
+
+            src  = Path(path)
+            dest = Path(output_folder) if output_folder else src.parent / (src.stem + "_parts")
+            dest.mkdir(parents=True, exist_ok=True)
+            count = 0
+            with open(path, "rb") as f:
+                while True:
+                    chunk = f.read(chunk_size)
+                    if not chunk:
+                        break
+                    part_path = dest / f"{src.name}.part{count:04d}"
+                    part_path.write_bytes(chunk)
+                    count += 1
+            return ToolResult(True, f"✓ Split into {count} parts in {dest}")
+        except Exception as e:
+            return ToolResult(False, f"✗ split_file failed: {e}")
+
+    @staticmethod
+    def join_files(parts_folder: str, output: str, extension: str = ".part") -> ToolResult:
+        try:
+            from pathlib import Path
+
+            parts = sorted(Path(parts_folder).glob(f"*{extension}*"))
+            if not parts:
+                return ToolResult(False, f"✗ No parts found in {parts_folder}")
+            with open(output, "wb") as out_f:
+                for part in parts:
+                    out_f.write(part.read_bytes())
+            return ToolResult(True, f"✓ Joined {len(parts)} parts → {output}")
+        except Exception as e:
+            return ToolResult(False, f"✗ join_files failed: {e}")
+
+    @staticmethod
+    def compress_folder(
+        path: str, output: str = None, algorithm: str = "zip", level: int = 6
+    ) -> ToolResult:
+        try:
+            import shutil, zipfile, tarfile
+            from pathlib import Path
+
+            src  = Path(path)
+            dest = output or str(src) + (".zip" if algorithm == "zip" else ".tar.gz")
+            if algorithm == "zip":
+                with zipfile.ZipFile(dest, "w", zipfile.ZIP_DEFLATED, compresslevel=level) as zf:
+                    for f in src.rglob("*"):
+                        if f.is_file():
+                            zf.write(f, f.relative_to(src.parent))
+            else:
+                mode = "w:gz" if algorithm in ("gz", "gzip", "tar.gz") else "w:bz2"
+                with tarfile.open(dest, mode) as tf:
+                    tf.add(path, arcname=src.name)
+            return ToolResult(True, f"✓ Compressed to {dest}")
+        except Exception as e:
+            return ToolResult(False, f"✗ compress_folder failed: {e}")
+
+    @staticmethod
+    def scan_for_malware(path: str, patterns: list = None) -> ToolResult:
+        try:
+            from pathlib import Path
+            import re
+
+            suspicious_patterns = patterns or [
+                r"eval\(base64_decode", r"exec\(base64",
+                r"<\?php.*system\(",   r"cmd\.exe /c",
+                r"powershell -enc",    r"wget.*http.*\|.*bash",
+                r"curl.*\|.*sh",       r"rm -rf /",
+                r"nc -e /bin/sh",
+            ]
+            found = []
+            p = Path(path)
+            files = list(p.rglob("*")) if p.is_dir() else [p]
+            for f in files:
+                if not f.is_file():
+                    continue
+                try:
+                    content = f.read_text(errors="replace")
+                    for pattern in suspicious_patterns:
+                        if re.search(pattern, content, re.IGNORECASE):
+                            found.append({"file": str(f), "pattern": pattern})
+                except Exception:
+                    pass
+            return ToolResult(True, f"✓ Scan complete: {len(found)} suspicious match(es)", found)
+        except Exception as e:
+            return ToolResult(False, f"✗ scan_for_malware failed: {e}")
+
+    @staticmethod
+    def find_large_files(
+        path: str, min_size_mb: float = 100, recursive: bool = True
+    ) -> ToolResult:
+        try:
+            from pathlib import Path
+
+            threshold = int(min_size_mb * 1024 * 1024)
+            p      = Path(path)
+            search = p.rglob("*") if recursive else p.glob("*")
+            large  = [
+                {"path": str(f), "size_mb": round(f.stat().st_size / 1e6, 2)}
+                for f in search
+                if f.is_file() and f.stat().st_size >= threshold
+            ]
+            large.sort(key=lambda x: x["size_mb"], reverse=True)
+            return ToolResult(True, f"✓ {len(large)} file(s) >= {min_size_mb} MB", large)
+        except Exception as e:
+            return ToolResult(False, f"✗ find_large_files failed: {e}")
+
+    @staticmethod
+    def change_permissions_recursive(path: str, mode: int = 0o755) -> ToolResult:
+        try:
+            import os
+            from pathlib import Path
+
+            count = 0
+            for f in Path(path).rglob("*"):
+                os.chmod(str(f), mode)
+                count += 1
+            return ToolResult(True, f"✓ Changed permissions on {count} item(s) to {oct(mode)}")
+        except Exception as e:
+            return ToolResult(False, f"✗ change_permissions_recursive failed: {e}")
+
+    @staticmethod
+    def change_owner_recursive(path: str, user: str, group: str = None) -> ToolResult:
+        try:
+            import shutil
+            r = subprocess.run(
+                ["chown", "-R", f"{user}:{group}" if group else user, path],
+                capture_output=True, text=True,
+            )
+            return ToolResult(r.returncode == 0, r.stdout + r.stderr or f"✓ Owner changed to {user}")
+        except Exception as e:
+            return ToolResult(False, f"✗ change_owner_recursive failed: {e}")
+
+    @staticmethod
+    def mount_remote_folder(
+        host: str, remote_path: str, local_path: str, credentials: dict = None, cred_key: str = "ssh"
+    ) -> ToolResult:
+        try:
+            import paramiko, os
+            from pathlib import Path
+
+            Path(local_path).mkdir(parents=True, exist_ok=True)
+            creds    = credentials or CredStore.load(cred_key)
+            transport = paramiko.Transport((host, 22))
+            transport.connect(username=creds.get("user", ""), password=creds.get("password", ""))
+            sftp = paramiko.SFTPClient.from_transport(transport)
+            files = sftp.listdir(remote_path)
+            sftp.close(); transport.close()
+            return ToolResult(True, f"✓ Remote folder accessible: {host}:{remote_path} ({len(files)} items)", files)
+        except Exception as e:
+            return ToolResult(False, f"✗ mount_remote_folder failed: {e}")
+
+    @staticmethod
+    def verify_checksum(file: str, expected: str, algorithm: str = "sha256") -> ToolResult:
+        try:
+            import hashlib
+            h = hashlib.new(algorithm)
+            with open(file, "rb") as f:
+                for chunk in iter(lambda: f.read(65536), b""):
+                    h.update(chunk)
+            actual  = h.hexdigest()
+            matched = actual.lower() == expected.lower()
+            return ToolResult(matched, f"✓ Checksum {'matches' if matched else 'MISMATCH'}: {actual}", {"actual": actual, "expected": expected, "match": matched})
+        except Exception as e:
+            return ToolResult(False, f"✗ verify_checksum failed: {e}")
+
+    @staticmethod
+    def generate_checksum_file(
+        folder: str, algorithm: str = "sha256", output: str = "checksums.txt"
+    ) -> ToolResult:
+        try:
+            import hashlib
+            from pathlib import Path
+
+            lines = []
+            for f in sorted(Path(folder).rglob("*")):
+                if not f.is_file():
+                    continue
+                h = hashlib.new(algorithm)
+                with open(f, "rb") as fh:
+                    for chunk in iter(lambda: fh.read(65536), b""):
+                        h.update(chunk)
+                lines.append(f"{h.hexdigest()}  {f.relative_to(folder)}")
+            Path(output).write_text("\n".join(lines))
+            return ToolResult(True, f"✓ Checksums written for {len(lines)} files → {output}")
+        except Exception as e:
+            return ToolResult(False, f"✗ generate_checksum_file failed: {e}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 4. ProcessAutomationTool
+# ─────────────────────────────────────────────────────────────────────────────
+
+class ProcessAutomationTool:
+    name = "process_automation"
+    description = (
+        "Windows/Mac GUI automation: window management, mouse/keyboard control, "
+        "screen image finding, application control, macro record/play."
+    )
+    use = ("""
+Name of Tool:- ProcessAutomationTool
+
+Purpose of Tool:- 
+The ProcessAutomationTool provides a versatile interface for cross-platform cross-application Graphical User Interface (GUI) 
+automation, application lifestyle control, and macro interaction capture. It utilizes lower-level library drivers to find, 
+manipulate, resize, and prioritize desktop windows, dispatch targeted mouse button actions, text strings, keyboard strokes, 
+and drag-and-drop sequences. It also features spatial image matching routines to anchor executions visually on desktop elements, 
+manages execution run cycles via process identification frameworks, and records or executes structured peripheral event histories (macros).
+
+Methods:-
+- find_window: Queries active operating system layout nodes to locate window states matching titles or process elements.
+- focus_window: Brings a designated target window front and center into operational foreground focus.
+- minimize_window: Visually collapses the targeted active GUI application window.
+- maximize_window: Restores or maximizes targeted system interface panels to fit the full screen area.
+- click_at: Fires precise hardware-level mouse click events at explicit Cartesian pixel coordinates on the active screen workspace.
+- type_text: Emulates user keyboard inputs by transmitting explicit text characters into active input boxes at specific timing intervals.
+- press_key: Simulates explicit single keystrokes or complex compound hotkey modifier variations.
+- drag_and_drop: Automatically handles drag-and-drop pathways by tracking mouse paths from a start point to an end point.
+- scroll: Triggers vertical mouse wheel increments at explicit anchor coordinates.
+- take_screenshot_region: Snippets localized pixel blocks out of the live display surface layout and writes them into image records.
+- find_image_on_screen: Runs spatial template matching passes to locate visual elements matching target asset snapshots.
+- click_image: Coordinates automatic visual targeting routines to spot an image element and center a mouse click right on it.
+- wait_for_image: Sets up a polling validation loop that waits for a specific visual state asset to show up on screen.
+- run_application: Dispatches native background shell creation executions to run third-party software bundles.
+- close_application: Runs system-level process terminations using process IDs or text name lookups to force-close applications.
+- get_active_window: Pulls positioning telemetry details directly from whichever window currently holds active system focus.
+- get_all_windows: Extracts information from all valid workspace application titles open in the operating system architecture.
+- send_hotkey: Interprets localized string formats to execute multi-key combinations quickly.
+- record_macro: Intercepts and logs mouse coordinates and keyboard strokes to record automated macro sequences.
+- play_macro: Replays recorded macro logs to reconstruct original peripheral movements and clicks at chosen speeds.
+
+How to use Tool Methods:-
+
+1. find_window:
+   - Purpose: Searches through active system windows using text matching strings to find specific application layouts.
+   - Arguments:
+     a) title: str (default: "") - Target text string value to search for inside window titles.
+     b) process_name: str (default: "") - Filter parameter string targeting process names.
+   - Returns: ToolResult holding lists filled with window layout data dictionaries.
+   - How to call: ProcessAutomationTool.find_window(title="Notepad")
+
+2. focus_window:
+   - Purpose: Highlights and focuses a chosen application window to prepare it for user input.
+   - Arguments:
+     a) title: str - Exact or partial title string of the window you want to focus.
+   - Returns: ToolResult tracking focus completion states.
+   - How to call: ProcessAutomationTool.focus_window(title="Calculator")
+
+3. minimize_window:
+   - Purpose: Minimizes chosen desktop interface layouts down into the system taskbar.
+   - Arguments:
+     a) title: str - Target title matching strings of the layout window to collapse.
+   - Returns: ToolResult providing verification update logs.
+   - How to call: ProcessAutomationTool.minimize_window(title="Terminal")
+
+4. maximize_window:
+   - Purpose: Expands the dimensions of a targeted window to fill the entire monitor workspace.
+   - Arguments:
+     a) title: str - The window title tracking criteria of the app being targeted.
+   - Returns: ToolResult validating layout alterations.
+   - How to call: ProcessAutomationTool.maximize_window(title="Browser")
+
+5. click_at:
+   - Purpose: Sends native click actions to any coordinate on the screen.
+   - Arguments:
+     a) x: int - Target horizontal pixel coordinate position.
+     b) y: int - Target vertical pixel coordinate position.
+     c) button: str (default: "left") - Button identifier mapping ("left", "right", "middle").
+     d) clicks: int (default: 1) - Frequency count representing how many clicks to execute.
+   - Returns: ToolResult confirming structural interaction metrics.
+   - How to call: ProcessAutomationTool.click_at(x=500, y=400, button="right", clicks=1)
+
+6. type_text:
+   - Purpose: Automates text entry by simulating quick keyboard strokes with adjustable gaps between characters.
+   - Arguments:
+     a) text: str - Payloads containing the text block sequence slated for transmission.
+     b) interval: float (default: 0.05) - Delays measured in seconds inserted between character executions.
+   - Returns: ToolResult capturing character metrics processed.
+   - How to call: ProcessAutomationTool.type_text(text="Hello, World!", interval=0.1)
+
+7. press_key:
+   - Purpose: Automates single key strikes or button shortcuts with attached modifier keys like Shift or Control.
+   - Arguments:
+     a) key: str - Target key value targeted for execution (e.g., "enter", "f5").
+     b) modifiers: list (default: None) - Array tracking wrapping key states (e.g., ["ctrl", "alt"]).
+   - Returns: ToolResult tracking execution state confirmations.
+   - How to call: ProcessAutomationTool.press_key(key="s", modifiers=["ctrl"])
+
+8. drag_and_drop:
+   - Purpose: Moves the cursor to a start position, holds the left click down, and drags over to an end coordinate.
+   - Arguments:
+     a) from_x: int - Original coordinate position horizontal axis location.
+     b) from_y: int - Original coordinate position vertical axis location.
+     c) to_x: int - Terminal point coordinate destination horizontal location.
+     d) to_y: int - Terminal point coordinate destination vertical location.
+     d) duration: float (default: 0.5) - Time span in seconds allocated for cursor movement.
+   - Returns: ToolResult registering successful translation states.
+   - How to call: ProcessAutomationTool.drag_and_drop(from_x=100, from_y=100, to_x=600, to_y=600)
+
+9. scroll:
+   - Purpose: Moves the cursor to selected screen positions and executes vertical wheel scrolling movements.
+   - Arguments:
+     a) x: int - Target coordinate alignment horizontal anchor location.
+     b) y: int - Target coordinate alignment vertical anchor location.
+     c) clicks: int (default: 3) - Volume strength configuration denoting rotational scroll adjustments.
+     d) direction: str (default: "down") - Text flag assigning rotational directional orientation ("up" or "down").
+   - Returns: ToolResult outlining transactional execution summaries.
+   - How to call: ProcessAutomationTool.scroll(x=300, y=300, clicks=10, direction="up")
+
+10. take_screenshot_region:
+    - Purpose: Captures a specific portion of the display bounding box and outputs the slice as a static image file.
+    - Arguments:
+      a) x: int - Top-left bounding box starting horizontal coordinate.
+      b) y: int - Top-left bounding box starting vertical coordinate.
+      c) width: int - Bounding box dimension width across the horizontal plane.
+      d) height: int - Bounding box dimension height down the vertical plane.
+      e) output: str (default: "region.png") - Storage asset path tracking where the PNG file will save.
+    - Returns: ToolResult confirming file generation details on disk.
+    - How to call: ProcessAutomationTool.take_screenshot_region(x=0, y=0, width=1920, height=1080, output="desktop.png")
+
+11. find_image_on_screen:
+    - Purpose: Crawls the display screen interface layout looking for match instances that replicate target image patches.
+    - Arguments:
+      a) image_path: str - Reference image patch asset path targeted for pattern comparison.
+      b) confidence: float (default: 0.8) - Pixel matching tolerance factor required to trigger matching states (scale from 0.0 to 1.0).
+    - Returns: ToolResult identifying coordinate centers and framing boundary rectangles if found.
+    - How to call: ProcessAutomationTool.find_image_on_screen(image_path="submit_btn.png", confidence=0.9)
+
+12. click_image:
+    - Purpose: Combines computer vision matching with hardware interaction by locating a graphic on screen and clicking its center point.
+    - Arguments:
+      a) image_path: str - Local reference asset image file used for structural template searches.
+      b) confidence: float (default: 0.8) - Matching metric thresholds required to validate true matches.
+      c) button: str (default: "left") - Target mouse button chosen for execution once target location is verified.
+    - Returns: ToolResult showing targeted positioning data coordinates.
+    - How to call: ProcessAutomationTool.click_image(image_path="login_icon.png", button="left")
+
+13. wait_for_image:
+    - Purpose: Blocks active execution runs until a target visual element shows up on screen or a timeout limit is reached.
+    - Arguments:
+      a) image_path: str - Asset pattern file checked across the display workspace during polling loops.
+      b) timeout: int (default: 30) - Maximum time allowed in seconds before throwing failure errors.
+      c) confidence: float (default: 0.8) - Precision threshold used to identify valid image matches.
+    - Returns: ToolResult storing center position coordinates once items appear.
+    - How to call: ProcessAutomationTool.wait_for_image(image_path="dashboard_load.png", timeout=15)
+
+14. run_application:
+    - Purpose: Spawns application binaries in the background using optional configuration parameters.
+    - Arguments:
+      a) path_or_name: str - Execution system name or full file path string mapping the app target.
+      b) args: list (default: None) - Appended operational flags passed alongside initialization calls.
+      c) wait: bool (default: False) - Dictates whether execution halts until the application exits.
+    - Returns: ToolResult packing launch confirmations or detailed terminal runtime capture metrics.
+    - How to call: ProcessAutomationTool.run_application(path_or_name="notepad.exe", args=["notes.txt"])
+
+15. close_application:
+    - Purpose: Shuts down active background processes by matching against their process identifier numbers or name strings.
+    - Arguments:
+      a) name_or_pid: Union[int, str] - Target criteria used to search out processes (e.g., "chrome.exe" or 4312).
+    - Returns: ToolResult listing total terminated process instances.
+    - How to call: ProcessAutomationTool.close_application(name_or_pid="excel")
+
+16. get_active_window:
+    - Purpose: Retrieves positional coordinates and title tracking data from whichever window currently holds active desktop focus.
+    - Arguments: None
+    - Returns: ToolResult tracking titles alongside positional geometry specifications.
+    - How to call: ProcessAutomationTool.get_active_window()
+
+17. get_all_windows:
+    - Purpose: Collects a comprehensive list of all active windows with valid titles open across the operating system environment.
+    - Arguments: None
+    - Returns: ToolResult containing arrays populated with spatial positioning dictionaries.
+    - How to call: ProcessAutomationTool.get_all_windows()
+
+18. send_hotkey:
+    - Purpose: Parses simple string syntax expressions to send complex keyboard shortcuts to the system.
+    - Arguments:
+      a) hotkey_string: str - Combination text format linking shortcut strings with plus operators (e.g., "ctrl+alt+delete").
+    - Returns: ToolResult verifying validation deliveries.
+    - How to call: ProcessAutomationTool.send_hotkey(hotkey_string="ctrl+shift+esc")
+
+19. record_macro:
+    - Purpose: Listens to mouse and keyboard events to capture user actions and save them into structured macro files.
+    - Arguments:
+      a) output_file: str - Local JSON target file tracking where the recorded event array will save.
+      b) duration: int (default: 10) - The time limit in seconds that the tool records system peripheral inputs.
+    - Returns: ToolResult summarizing total data events captured.
+    - How to call: ProcessAutomationTool.record_macro(output_file="macro1.json", duration=5)
+
+20. play_macro:
+    - Purpose: Reads structured macro files to replay recorded cursor pathways and inputs at adjustable speeds.
+    - Arguments:
+      a) macro_file: str - Local JSON macro file tracking historical automation operations.
+      b) speed: float (default: 1.0) - Playback speed multiplier (e.g., 2.0 doubles the speed, 0.5 slows it down by half).
+    - Returns: ToolResult mapping validation results and providing execution statistics.
+    - How to call: ProcessAutomationTool.play_macro(macro_file="macro1.json", speed=1.5)
+""")
+
+    @staticmethod
+    def find_window(title: str = "", process_name: str = "") -> ToolResult:
+        try:
+            import pygetwindow as gw
+            windows = gw.getAllWindows()
+            results = []
+            for w in windows:
+                title_match   = title.lower() in w.title.lower() if title else True
+                if title_match:
+                    results.append({"title": w.title, "left": w.left, "top": w.top, "width": w.width, "height": w.height})
+            return ToolResult(bool(results), f"✓ Found {len(results)} window(s)", results)
+        except Exception as e:
+            return ToolResult(False, f"✗ find_window failed: {e}")
+
+    @staticmethod
+    def focus_window(title: str) -> ToolResult:
+        try:
+            import pygetwindow as gw
+            wins = gw.getWindowsWithTitle(title)
+            if not wins:
+                return ToolResult(False, f"✗ Window not found: {title}")
+            wins[0].activate()
+            return ToolResult(True, f"✓ Focused window: {title}")
+        except Exception as e:
+            return ToolResult(False, f"✗ focus_window failed: {e}")
+
+    @staticmethod
+    def minimize_window(title: str) -> ToolResult:
+        try:
+            import pygetwindow as gw
+            wins = gw.getWindowsWithTitle(title)
+            if not wins:
+                return ToolResult(False, f"✗ Window not found: {title}")
+            wins[0].minimize()
+            return ToolResult(True, f"✓ Minimized: {title}")
+        except Exception as e:
+            return ToolResult(False, f"✗ minimize_window failed: {e}")
+
+    @staticmethod
+    def maximize_window(title: str) -> ToolResult:
+        try:
+            import pygetwindow as gw
+            wins = gw.getWindowsWithTitle(title)
+            if not wins:
+                return ToolResult(False, f"✗ Window not found: {title}")
+            wins[0].maximize()
+            return ToolResult(True, f"✓ Maximized: {title}")
+        except Exception as e:
+            return ToolResult(False, f"✗ maximize_window failed: {e}")
+
+    @staticmethod
+    def click_at(
+        x: int, y: int, button: str = "left", clicks: int = 1
+    ) -> ToolResult:
+        try:
+            import pyautogui
+            pyautogui.click(x, y, button=button, clicks=clicks)
+            return ToolResult(True, f"✓ Clicked at ({x}, {y}) with {button} button × {clicks}")
+        except Exception as e:
+            return ToolResult(False, f"✗ click_at failed: {e}")
+
+    @staticmethod
+    def type_text(text: str, interval: float = 0.05) -> ToolResult:
+        try:
+            import pyautogui
+            pyautogui.typewrite(text, interval=interval)
+            return ToolResult(True, f"✓ Typed {len(text)} characters")
+        except Exception as e:
+            return ToolResult(False, f"✗ type_text failed: {e}")
+
+    @staticmethod
+    def press_key(key: str, modifiers: list = None) -> ToolResult:
+        try:
+            import pyautogui
+            if modifiers:
+                pyautogui.hotkey(*modifiers, key)
+            else:
+                pyautogui.press(key)
+            return ToolResult(True, f"✓ Pressed key: {key}")
+        except Exception as e:
+            return ToolResult(False, f"✗ press_key failed: {e}")
+
+    @staticmethod
+    def drag_and_drop(
+        from_x: int, from_y: int, to_x: int, to_y: int, duration: float = 0.5
+    ) -> ToolResult:
+        try:
+            import pyautogui
+            pyautogui.moveTo(from_x, from_y)
+            pyautogui.dragTo(to_x, to_y, duration=duration, button="left")
+            return ToolResult(True, f"✓ Dragged from ({from_x},{from_y}) to ({to_x},{to_y})")
+        except Exception as e:
+            return ToolResult(False, f"✗ drag_and_drop failed: {e}")
+
+    @staticmethod
+    def scroll(x: int, y: int, clicks: int = 3, direction: str = "down") -> ToolResult:
+        try:
+            import pyautogui
+            pyautogui.moveTo(x, y)
+            amount = -clicks if direction == "down" else clicks
+            pyautogui.scroll(amount)
+            return ToolResult(True, f"✓ Scrolled {direction} {abs(clicks)} clicks at ({x},{y})")
+        except Exception as e:
+            return ToolResult(False, f"✗ scroll failed: {e}")
+
+    @staticmethod
+    def take_screenshot_region(
+        x: int, y: int, width: int, height: int, output: str = "region.png"
+    ) -> ToolResult:
+        try:
+            import pyautogui
+            img = pyautogui.screenshot(region=(x, y, width, height))
+            img.save(output)
+            return ToolResult(True, f"✓ Screenshot region saved: {output}")
+        except Exception as e:
+            return ToolResult(False, f"✗ take_screenshot_region failed: {e}")
+
+    @staticmethod
+    def find_image_on_screen(image_path: str, confidence: float = 0.8) -> ToolResult:
+        try:
+            import pyautogui
+            location = pyautogui.locateOnScreen(image_path, confidence=confidence)
+            if location:
+                center = pyautogui.center(location)
+                return ToolResult(True, f"✓ Image found at ({center.x}, {center.y})", {"x": center.x, "y": center.y, "region": location})
+            return ToolResult(False, f"✗ Image not found on screen: {image_path}")
+        except Exception as e:
+            return ToolResult(False, f"✗ find_image_on_screen failed: {e}")
+
+    @staticmethod
+    def click_image(
+        image_path: str, confidence: float = 0.8, button: str = "left"
+    ) -> ToolResult:
+        try:
+            import pyautogui
+            location = pyautogui.locateCenterOnScreen(image_path, confidence=confidence)
+            if not location:
+                return ToolResult(False, f"✗ Image not found: {image_path}")
+            pyautogui.click(location, button=button)
+            return ToolResult(True, f"✓ Clicked image at ({location.x}, {location.y})")
+        except Exception as e:
+            return ToolResult(False, f"✗ click_image failed: {e}")
+
+    @staticmethod
+    def wait_for_image(
+        image_path: str, timeout: int = 30, confidence: float = 0.8
+    ) -> ToolResult:
+        try:
+            import pyautogui, time
+            start = time.time()
+            while time.time() - start < timeout:
+                try:
+                    loc = pyautogui.locateCenterOnScreen(image_path, confidence=confidence)
+                    if loc:
+                        return ToolResult(True, f"✓ Image appeared at ({loc.x}, {loc.y})", {"x": loc.x, "y": loc.y})
+                except Exception:
+                    pass
+                time.sleep(0.5)
+            return ToolResult(False, f"✗ Image not found within {timeout}s: {image_path}")
+        except Exception as e:
+            return ToolResult(False, f"✗ wait_for_image failed: {e}")
+
+    @staticmethod
+    def run_application(
+        path_or_name: str, args: list = None, wait: bool = False
+    ) -> ToolResult:
+        try:
+            cmd = [path_or_name] + (args or [])
+            if wait:
+                r = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+                return ToolResult(r.returncode == 0, r.stdout + r.stderr)
+            subprocess.Popen(cmd)
+            return ToolResult(True, f"✓ Launched: {path_or_name}")
+        except Exception as e:
+            return ToolResult(False, f"✗ run_application failed: {e}")
+
+    @staticmethod
+    def close_application(name_or_pid) -> ToolResult:
+        try:
+            import psutil
+            killed = 0
+            for proc in psutil.process_iter(["pid", "name"]):
+                try:
+                    if str(name_or_pid).isdigit():
+                        if proc.pid == int(name_or_pid):
+                            proc.kill(); killed += 1
+                    else:
+                        if name_or_pid.lower() in proc.name().lower():
+                            proc.kill(); killed += 1
+                except Exception:
+                    pass
+            return ToolResult(killed > 0, f"✓ Closed {killed} process(es) matching '{name_or_pid}'")
+        except Exception as e:
+            return ToolResult(False, f"✗ close_application failed: {e}")
+
+    @staticmethod
+    def get_active_window() -> ToolResult:
+        try:
+            import pygetwindow as gw
+            w = gw.getActiveWindow()
+            if not w:
+                return ToolResult(False, "✗ No active window detected.")
+            return ToolResult(True, f"✓ Active window: {w.title}", {"title": w.title, "left": w.left, "top": w.top})
+        except Exception as e:
+            return ToolResult(False, f"✗ get_active_window failed: {e}")
+
+    @staticmethod
+    def get_all_windows() -> ToolResult:
+        try:
+            import pygetwindow as gw
+            windows = [{"title": w.title, "left": w.left, "top": w.top, "width": w.width, "height": w.height}
+                       for w in gw.getAllWindows() if w.title]
+            return ToolResult(True, f"✓ {len(windows)} windows found", windows)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_all_windows failed: {e}")
+
+    @staticmethod
+    def send_hotkey(hotkey_string: str) -> ToolResult:
+        try:
+            import pyautogui
+            keys = hotkey_string.replace("+", " ").split()
+            pyautogui.hotkey(*keys)
+            return ToolResult(True, f"✓ Hotkey sent: {hotkey_string}")
+        except Exception as e:
+            return ToolResult(False, f"✗ send_hotkey failed: {e}")
+
+    @staticmethod
+    def record_macro(output_file: str, duration: int = 10) -> ToolResult:
+        try:
+            import time, json
+            from pynput import mouse, keyboard
+
+            events = []
+            stop_time = [time.time() + duration]
+
+            def on_click(x, y, button, pressed):
+                if time.time() > stop_time[0]:
+                    return False
+                events.append({"type": "click", "x": x, "y": y, "button": str(button), "pressed": pressed, "time": time.time()})
+
+            def on_press(key):
+                if time.time() > stop_time[0]:
+                    return False
+                try:
+                    events.append({"type": "keypress", "key": key.char, "time": time.time()})
+                except AttributeError:
+                    events.append({"type": "keypress", "key": str(key), "time": time.time()})
+
+            from pynput.mouse import Listener as ML
+            from pynput.keyboard import Listener as KL
+
+            with ML(on_click=on_click), KL(on_press=on_press):
+                time.sleep(duration)
+
+            import json
+            from pathlib import Path
+            Path(output_file).write_text(json.dumps(events, indent=2))
+            return ToolResult(True, f"✓ Macro recorded: {len(events)} events → {output_file}")
+        except Exception as e:
+            return ToolResult(False, f"✗ record_macro failed: {e}")
+
+    @staticmethod
+    def play_macro(macro_file: str, speed: float = 1.0) -> ToolResult:
+        try:
+            import json, time, pyautogui
+            from pathlib import Path
+
+            events = json.loads(Path(macro_file).read_text())
+            for i, event in enumerate(events):
+                if i > 0:
+                    delay = (event["time"] - events[i - 1]["time"]) / speed
+                    time.sleep(max(0, delay))
+                if event["type"] == "click" and event["pressed"]:
+                    pyautogui.click(event["x"], event["y"])
+                elif event["type"] == "keypress":
+                    pyautogui.press(event.get("key", ""))
+            return ToolResult(True, f"✓ Macro played: {len(events)} events at {speed}× speed")
+        except Exception as e:
+            return ToolResult(False, f"✗ play_macro failed: {e}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. PrinterTool
+# ─────────────────────────────────────────────────────────────────────────────
+
+class PrinterTool:
+    name = "printer"
+    description = (
+        "Print management: list printers, print files/PDFs/images, manage print queue, "
+        "cancel jobs, get printer status, install printers, export to PDF."
+    )
+    use = ("""
+Name of Tool:- PrinterTool
+
+Purpose of Tool:- 
+The PrinterTool provides a robust cross-platform interface for local and network print subsystem management, 
+document spooling, queue parsing, device provisioning, and file-to-PDF conversion pipelines. It bridges systemic differences 
+by abstraction layers over the Windows Print Spooler APIs (`win32print`, `win32api`) and POSIX Common Unix Printing Systems 
+(CUPS command utilities like `lp`, `lpstat`, `lpq`, `cancel`, and `lpadmin`). This allows applications to uniformly programmatically 
+discover devices, audit real-time diagnostic status metrics, enqueue file variations (raw text, structured PDFs, binary images), 
+purge stalled spool jobs, provision fresh drivers, or render headless documents into fixed-layout PDF variants.
+
+Methods:-
+- list_printers: Queries the active platform sub-layer to discover all locally or networks attached printable hardware destinations.
+- get_default_printer: Evaluates fallback routing states to output the hardware device currently designated as the primary target.
+- set_default_printer: Overrides global system preferences to lock down a target printing node for headless dispatch queues.
+- print_file: Routes raw text or structured document objects through the system printing stack using optional parameters.
+- print_pdf: dispatches precise multipage PDF streams into target spoolers while respecting pagination limits and layout constraints.
+- print_image: Transmits graphic binaries (PNG, JPEG, etc.) directly into local imaging targets, supporting aspect scaling configurations.
+- get_print_queue: Audits hardware device backlogs to parse, snapshot, and structure data blocks representing waiting jobs.
+- cancel_job: Issues immediate abort commands down targeted system rails to pull stalled data streams from device queues.
+- get_printer_status: Connects directly with device configurations to parse current operational states and active workloads.
+- install_printer: Deploys virtual or physical endpoint print pathways into device trees using hardware address ports and drivers.
+- export_to_pdf: Leverages headless sub-processes (Word COM blocks, cupsfilters, or LibreOffice engines) to render layout assets into PDFs.
+
+How to use Tool Methods:-
+
+1. list_printers:
+   - Purpose: Crawls system registry pathways or local daemon services to discover all operational printer layouts.
+   - Arguments: None
+   - Returns: ToolResult holding lists filled with discovered printer string name targets.
+   - How to call: PrinterTool.list_printers()
+
+2. get_default_printer:
+   - Purpose: Checks system environment defaults to identify which printer acts as the automatic target when none is specified.
+   - Arguments: None
+   - Returns: ToolResult containing data matrices detailing the default printer name.
+   - How to call: PrinterTool.get_default_printer()
+
+3. set_default_printer:
+   - Purpose: Changes system-wide preferences to assign a chosen printer as the automatic primary target.
+   - Arguments:
+     a) name: str - Target printer identifier name string slated for focus allocation.
+   - Returns: ToolResult tracking routing completion states.
+   - How to call: PrinterTool.set_default_printer(name="Office_Laser_Jet")
+
+4. print_file:
+   - Purpose: Dispatches native text or documents to chosen hardware destinations with optional formatting controls.
+   - Arguments:
+     a) file_path: str - Target document or text file asset path slated for hardware translation.
+     b) printer: str (default: None) - Name of the device target (falls back to system default if empty).
+     c) copies: int (default: 1) - Quantitative volume metric specifying total printouts to produce.
+     d) orientation: str (default: "portrait") - Layout design routing parameter selection ("portrait" or "landscape").
+     e) paper_size: str (default: "A4") - Target size constraint formatting (e.g., "A4", "Letter").
+     f) duplex: bool (default: False) - Enables double-sided printing modes on supporting hardware.
+   - Returns: ToolResult validating spool transmission confirmations.
+   - How to call: PrinterTool.print_file(file_path="invoice.txt", printer="DeskJet_110", copies=2)
+
+5. print_pdf:
+   - Purpose: Processes PDF files through system print stacks with specialized page selection and fit parameters.
+   - Arguments:
+     a) pdf_path: str - Local target PDF file path scheduled for physical printing.
+     b) printer: str (default: None) - System identifier mapping the targeted printer destination.
+     c) pages: str (default: None) - Explicit layout range boundaries targeted for rendering (e.g., "1-3, 5").
+     d) copies: int (default: 1) - Frequency count representing how many duplicates to print.
+     b) fit_to_page: bool (default: True) - Automatically resizes document bounds to match media dimensions.
+   - Returns: ToolResult tracking successful job submission events.
+   - How to call: PrinterTool.print_pdf(pdf_path="report.pdf", pages="1, 3-5", fit_to_page=True)
+
+6. print_image:
+   - Purpose: Passes raw binary graphic files directly to printing layout arrays.
+   - Arguments:
+     a) image_path: str - Path directing the engine to the target graphics file asset (e.g., "photo.jpg").
+     b) printer: str (default: None) - Hardware address label mapping the target print station.
+     c) copies: int (default: 1) - Total number of physical print executions requested.
+     d) fit: bool (default: True) - Forces image boundaries to conform smoothly to printable area footprints.
+   - Returns: ToolResult indicating confirmation of safe transaction handoffs.
+   - How to call: PrinterTool.print_image(image_path="schematic.png", printer="Plotter_01", fit=True)
+
+7. get_print_queue:
+   - Purpose: Inspects active hardware print buffers to pull a detailed log of all queued or stuck print jobs.
+   - Arguments:
+     a) printer: str (default: None) - Target printer name string chosen for verification checks (defaults to primary if blank).
+   - Returns: ToolResult packing lists tracking queued task structures, IDs, and ownership properties.
+   - How to call: PrinterTool.get_print_queue(printer="Office_Laser_Jet")
+
+8. cancel_job:
+   - Purpose: Purges stalled, corrupted, or unwanted print tasks using explicit task tracking codes.
+   - Arguments:
+     a) job_id: str - Explicit operational task sequence number targeted for deletion.
+     b) printer: str (default: None) - Host printer device label where the job is currently queued.
+   - Returns: ToolResult confirming queue eviction results.
+   - How to call: PrinterTool.cancel_job(job_id="104", printer="Office_Laser_Jet")
+
+9. get_printer_status:
+   - Purpose: Connects with active peripheral devices to report status details and current task load metrics.
+   - Arguments:
+     a) printer: str - The specific target printer name string selected for diagnostic screening.
+   - Returns: ToolResult detailing systemic status codes alongside current task backlogs.
+   - How to call: PrinterTool.get_printer_status(printer="HP_PageWide")
+
+10. install_printer:
+    - Purpose: Registers a new printer connection with the operating system using selected communication ports and drivers.
+    - Arguments:
+      a) name: str - Appointed friendly tracking label assigned to define the new printer.
+      b) driver: str (default: "") - Specific system architecture driver string model registration.
+      c) port: str (default: "USB001") - Virtual or physical connector channel map matching the hardware link (e.g., "LPT1", "192.168.1.50").
+    - Returns: ToolResult providing hardware initialization status profiles.
+    - How to call: PrinterTool.install_printer(name="Label_Printer", driver="Zebra Generic", port="USB002")
+
+11. export_to_pdf:
+    - Purpose: Triggers background document conversion pipelines to transform files like .docx or .txt into standardized PDF format packages.
+    - Arguments:
+      a) file_path: str - Target source file path chosen for fixed-layout PDF rebuilding.
+      b) output: str (default: None) - Explicit destination save path (autocompletes a matching name with a .pdf extension if blank).
+    - Returns: ToolResult logging the saved output location of the generated PDF file.
+    - How to call: PrinterTool.export_to_pdf(file_path="draft.docx", output="final_release.pdf")
+""")
+
+    @staticmethod
+    def list_printers() -> ToolResult:
+        try:
+            os_name = platform.system()
+            if os_name == "Windows":
+                import win32print
+                printers = [p[2] for p in win32print.EnumPrinters(win32print.PRINTER_ENUM_LOCAL)]
+            elif os_name == "Darwin":
+                r = subprocess.run(["lpstat", "-p"], capture_output=True, text=True)
+                printers = [l.split()[1] for l in r.stdout.splitlines() if l.startswith("printer")]
+            else:
+                r = subprocess.run(["lpstat", "-p"], capture_output=True, text=True)
+                printers = [l.split()[1] for l in r.stdout.splitlines() if l.startswith("printer")]
+            return ToolResult(True, f"✓ {len(printers)} printer(s) found", printers)
+        except Exception as e:
+            return ToolResult(False, f"✗ list_printers failed: {e}")
+
+    @staticmethod
+    def get_default_printer() -> ToolResult:
+        try:
+            os_name = platform.system()
+            if os_name == "Windows":
+                import win32print
+                printer = win32print.GetDefaultPrinter()
+            else:
+                r = subprocess.run(["lpstat", "-d"], capture_output=True, text=True)
+                printer = r.stdout.strip().split(":")[-1].strip()
+            return ToolResult(True, f"✓ Default printer: {printer}", {"printer": printer})
+        except Exception as e:
+            return ToolResult(False, f"✗ get_default_printer failed: {e}")
+
+    @staticmethod
+    def set_default_printer(name: str) -> ToolResult:
+        try:
+            os_name = platform.system()
+            if os_name == "Windows":
+                import win32print
+                win32print.SetDefaultPrinter(name)
+            else:
+                subprocess.run(["lpoptions", "-d", name], capture_output=True)
+            return ToolResult(True, f"✓ Default printer set to: {name}")
+        except Exception as e:
+            return ToolResult(False, f"✗ set_default_printer failed: {e}")
+
+    @staticmethod
+    def print_file(
+        file_path: str,
+        printer: str = None,
+        copies: int = 1,
+        orientation: str = "portrait",
+        paper_size: str = "A4",
+        duplex: bool = False,
+    ) -> ToolResult:
+        try:
+            os_name = platform.system()
+            if os_name == "Windows":
+                import win32print, win32api
+                printer_name = printer or win32print.GetDefaultPrinter()
+                win32api.ShellExecute(0, "print", file_path, f'/d:"{printer_name}"', ".", 0)
+            else:
+                cmd = ["lp"]
+                if printer:  cmd += ["-d", printer]
+                if copies > 1: cmd += ["-n", str(copies)]
+                cmd.append(file_path)
+                subprocess.run(cmd, capture_output=True)
+            return ToolResult(True, f"✓ Print job sent: {file_path}")
+        except Exception as e:
+            return ToolResult(False, f"✗ print_file failed: {e}")
+
+    @staticmethod
+    def print_pdf(
+        pdf_path: str,
+        printer: str = None,
+        pages: str = None,
+        copies: int = 1,
+        fit_to_page: bool = True,
+    ) -> ToolResult:
+        try:
+            os_name = platform.system()
+            if os_name == "Windows":
+                import win32print, win32api
+                printer_name = printer or win32print.GetDefaultPrinter()
+                win32api.ShellExecute(0, "print", pdf_path, f'/d:"{printer_name}"', ".", 0)
+            else:
+                cmd = ["lp"]
+                if printer:  cmd += ["-d", printer]
+                if copies > 1: cmd += ["-n", str(copies)]
+                if pages:    cmd += ["-P", pages]
+                if fit_to_page: cmd += ["-o", "fit-to-page"]
+                cmd.append(pdf_path)
+                subprocess.run(cmd, capture_output=True)
+            return ToolResult(True, f"✓ PDF print job sent: {pdf_path}")
+        except Exception as e:
+            return ToolResult(False, f"✗ print_pdf failed: {e}")
+
+    @staticmethod
+    def print_image(
+        image_path: str, printer: str = None, copies: int = 1, fit: bool = True
+    ) -> ToolResult:
+        try:
+            cmd = ["lp"]
+            if printer:  cmd += ["-d", printer]
+            if copies > 1: cmd += ["-n", str(copies)]
+            if fit:      cmd += ["-o", "fit-to-page"]
+            cmd.append(image_path)
+            r = subprocess.run(cmd, capture_output=True, text=True)
+            return ToolResult(r.returncode == 0, f"✓ Image print job sent: {image_path}")
+        except Exception as e:
+            return ToolResult(False, f"✗ print_image failed: {e}")
+
+    @staticmethod
+    def get_print_queue(printer: str = None) -> ToolResult:
+        try:
+            if platform.system() == "Windows":
+                import win32print
+                pname = printer or win32print.GetDefaultPrinter()
+                hPrinter = win32print.OpenPrinter(pname)
+                jobs = win32print.EnumJobs(hPrinter, 0, -1, 1)
+                win32print.ClosePrinter(hPrinter)
+                return ToolResult(True, f"✓ {len(jobs)} job(s) in queue", jobs)
+            else:
+                cmd = ["lpq"] + (["-P", printer] if printer else [])
+                r   = subprocess.run(cmd, capture_output=True, text=True)
+                return ToolResult(True, "✓ Print queue fetched", r.stdout.splitlines())
+        except Exception as e:
+            return ToolResult(False, f"✗ get_print_queue failed: {e}")
+
+    @staticmethod
+    def cancel_job(job_id: str, printer: str = None) -> ToolResult:
+        try:
+            if platform.system() == "Windows":
+                import win32print
+                pname = printer or win32print.GetDefaultPrinter()
+                hPrinter = win32print.OpenPrinter(pname)
+                win32print.SetJob(hPrinter, int(job_id), 0, None, win32print.JOB_CONTROL_DELETE)
+                win32print.ClosePrinter(hPrinter)
+            else:
+                r = subprocess.run(["cancel", job_id] + (["-P", printer] if printer else []),
+                                   capture_output=True, text=True)
+            return ToolResult(True, f"✓ Job {job_id} cancelled")
+        except Exception as e:
+            return ToolResult(False, f"✗ cancel_job failed: {e}")
+
+    @staticmethod
+    def get_printer_status(printer: str) -> ToolResult:
+        try:
+            if platform.system() == "Windows":
+                import win32print
+                h = win32print.OpenPrinter(printer)
+                info = win32print.GetPrinter(h, 2)
+                win32print.ClosePrinter(h)
+                return ToolResult(True, f"✓ Printer status fetched", {"status": info["Status"], "jobs": info["cJobs"]})
+            else:
+                r = subprocess.run(["lpstat", "-p", printer], capture_output=True, text=True)
+                return ToolResult(True, "✓ Printer status fetched", r.stdout.strip())
+        except Exception as e:
+            return ToolResult(False, f"✗ get_printer_status failed: {e}")
+
+    @staticmethod
+    def install_printer(name: str, driver: str = "", port: str = "USB001") -> ToolResult:
+        try:
+            if platform.system() == "Windows":
+                r = subprocess.run(
+                    ["rundll32", "printui.dll,PrintUIEntry", "/if", "/b", name, "/r", port, "/m", driver],
+                    capture_output=True, text=True,
+                )
+                return ToolResult(r.returncode == 0, r.stdout + r.stderr)
+            else:
+                r = subprocess.run(["lpadmin", "-p", name, "-E", "-v", port] + (["-m", driver] if driver else []),
+                                   capture_output=True, text=True)
+                return ToolResult(r.returncode == 0, f"✓ Printer '{name}' installed")
+        except Exception as e:
+            return ToolResult(False, f"✗ install_printer failed: {e}")
+
+    @staticmethod
+    def export_to_pdf(file_path: str, output: str = None) -> ToolResult:
+        try:
+            from pathlib import Path
+            dest = output or str(Path(file_path).with_suffix(".pdf"))
+            os_name = platform.system()
+            if os_name == "Windows":
+                r = subprocess.run(
+                    ["powershell", "-Command",
+                     f'$word = New-Object -ComObject Word.Application; $doc = $word.Documents.Open("{file_path}"); $doc.ExportAsFixedFormat("{dest}", 17); $word.Quit()'],
+                    capture_output=True, text=True,
+                )
+            elif os_name == "Darwin":
+                r = subprocess.run(["cupsfilter", file_path, "-o", dest], capture_output=True, text=True)
+            else:
+                r = subprocess.run(["libreoffice", "--headless", "--convert-to", "pdf", file_path, "--outdir", str(Path(dest).parent)],
+                                   capture_output=True, text=True)
+            return ToolResult(True, f"✓ Exported to PDF: {dest}")
+        except Exception as e:
+            return ToolResult(False, f"✗ export_to_pdf failed: {e}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 6. ClipboardAdvancedTool
+# ─────────────────────────────────────────────────────────────────────────────
+
+class ClipboardAdvancedTool:
+    name = "clipboard_advanced"
+    description = (
+        "Advanced clipboard: text, image, files, HTML, history, monitoring, "
+        "formatted tables, rich text, and clipboard transforms."
+    )
+    use = ("""
+Name of Tool:- ClipboardAdvancedTool
+
+Purpose of Tool:- 
+The ClipboardAdvancedTool offers a cross-platform programmatic interface for manipulating, monitoring, and converting 
+operating system clipboard data. Beyond managing standard plain text transfers via `pyperclip`, it handles multimedia payloads 
+(extracting and injecting images across Windows, macOS, and Linux formats), parses system-level file-drop streams, and reads raw 
+HTML clipboard segments. Additionally, the tool provides real-time active clipboard monitoring via background threads, tracks 
+transaction histories, formats tabular arrays into spreadsheet-compatible tab-separated values, and performs structural text string 
+transformations (such as line deduplication, regex stripping, and structural statistical mapping) directly within the clipboard buffer.
+
+Methods:-
+- get_text: Extracts the current plain text string payload sitting in the system clipboard buffer.
+- set_text: Commits a designated text string directly into the primary system clipboard and logs it to local history.
+- get_image: Pulls rasterized graphic objects out of the current clipboard and commits the snapshot data to disk as a file.
+- set_image: Registers a local graphic asset directly into the system clipboard via operating system-specific binary streams.
+- get_files: Evaluates Windows drop-file storage arrays to recover absolute file paths currently staged for copy/paste actions.
+- set_files: Concatenates an array of absolute file pathways into a newline-delimited text block and writes it to the clipboard.
+- get_html: Reads raw structural HTML data blocks from the active system clipboard data exchange channels.
+- set_html: Places raw HTML code text arrays onto the standard plain-text clipboard buffer interface.
+- monitor: Spawns an asynchronous tracking daemon thread to actively log changes to the system clipboard plain text data.
+- get_history: Returns a localized, chronological collection of text elements modified or intercepted by the tool framework.
+- clear_history: Completely flushes the localized internal memory tracking collection array.
+- copy_formatted_table: Transforms matrix tables or dictionaries into tab-separated spreadsheets and copies the string layout.
+- copy_rich_text: Places strings onto the system clipboard buffer to serve as targets for generic formatting transfers.
+- paste_as_plain_text: Uses regular expressions to clean HTML or markup tags from clipboard content and saves the text back.
+- transform_clipboard: Executes text mutations (e.g., casing, sorting, analytics) on the text payload inside the clipboard.
+
+How to use Tool Methods:-
+
+1. get_text:
+   - Purpose: Grabs whatever plain text string is currently held inside the shared system clipboard space.
+   - Arguments: None
+   - Returns: ToolResult holding the complete extracted text data.
+   - How to call: ClipboardAdvancedTool.get_text()
+
+2. set_text:
+   - Purpose: Copies a new plain text string into the system clipboard and appends it to the session history array.
+   - Arguments:
+     a) text: str - The specific text string payload to be copied into active clipboard memory.
+   - Returns: ToolResult reflecting successful text injection metrics.
+   - How to call: ClipboardAdvancedTool.set_text(text="Staged configuration data string.")
+
+3. get_image:
+   - Purpose: Captures image binaries residing on the clipboard and saves the matrix output to a local image file.
+   - Arguments:
+     a) output: str (default: "clipboard_image.png") - The file path location where the PNG image will be saved.
+   - Returns: ToolResult showing destination file paths upon validation.
+   - How to call: ClipboardAdvancedTool.get_image(output="assets/extracted_blueprint.png")
+
+4. set_image:
+   - Purpose: Lowers local graphic assets directly into OS clipboard interfaces (`CF_DIB`, `osascript`, or `xclip`).
+   - Arguments:
+     a) path: str - Target local image asset file path slated for injection into clipboard memory.
+   - Returns: ToolResult indicating completion of platform-specific binary writing workflows.
+   - How to call: ClipboardAdvancedTool.set_image(path="branding/logo.png")
+
+5. get_files:
+   - Purpose: Decodes file object paths currently marked for transfer in the active Windows copy buffer.
+   - Arguments: None
+   - Returns: ToolResult enclosing lists of verified target absolute file paths (Supported on Windows).
+   - How to call: ClipboardAdvancedTool.get_files()
+
+6. set_files:
+   - Purpose: Links collections of file paths together into a unified text block and writes it to the clipboard.
+   - Arguments:
+     a) paths: list - An array containing target system file paths meant for string copy procedures.
+   - Returns: ToolResult validating array compilation parameters.
+   - How to call: ClipboardAdvancedTool.set_files(paths=["/var/log/sys.log", "/var/log/auth.log"])
+
+7. get_html:
+   - Purpose: Accesses rich structural HTML source blocks straight out of active system transfer registers.
+   - Arguments: None
+   - Returns: ToolResult embedding raw markup string payload results (Supported on Windows).
+   - How to call: ClipboardAdvancedTool.get_html()
+
+8. set_html:
+   - Purpose: Passes target HTML strings out onto standard text targets as plain code scripts.
+   - Arguments:
+     a) html: str - The raw code or markup source blocks targeted for plain text copy execution.
+   - Returns: ToolResult tracking buffer operational status alerts.
+   - How to call: ClipboardAdvancedTool.set_html(html="<div><p>Formatted Export</p></div>")
+
+9. monitor:
+   - Purpose: Spawns a polling daemon thread that monitors the clipboard and fires a callback whenever changes are found.
+   - Arguments:
+     a) callback: function - An executable function tracking parameters triggered on found string alterations.
+     b) interval: float (default: 1.0) - The pause span in seconds executed between active clipboard state queries.
+   - Returns: ToolResult tracking successful initialization profiles.
+   - How to call: ClipboardAdvancedTool.monitor(callback=print, interval=0.5)
+
+10. get_history:
+    - Purpose: Extracts a subset array tracking structural clipboard logs collected during active tool operation.
+    - Arguments:
+      a) limit: int (default: 20) - Max array slice limit boundary count tracking requested historical logs.
+    - Returns: ToolResult containing arrays populated with transaction record dictionaries.
+    - How to call: ClipboardAdvancedTool.get_history(limit=5)
+
+11. clear_history:
+    - Purpose: Empties out historical cache records saved inside memory tracking arrays during active runtime operations.
+    - Arguments: None
+    - Returns: ToolResult confirming data array erasure transformations.
+    - How to call: ClipboardAdvancedTool.clear_history()
+
+12. copy_formatted_table:
+    - Purpose: Formats multi-dimensional matrix entries or dictionaries into tab-delimited text blocks for spreadsheet apps.
+    - Arguments:
+      a) data: list - Multi-dimensional array tracking database rows targeted for string serialization.
+      b) headers: list (default: None) - String array tracking column descriptors added to row layouts.
+    - Returns: ToolResult summarizing dimension properties processed.
+    - How to call: ClipboardAdvancedTool.copy_formatted_table(data=[[1, "Alice"], [2, "Bob"]], headers=["ID", "Name"])
+
+13. copy_rich_text:
+    - Purpose: Simulates plain data copy protocols across clipboard targets using standard string variables.
+    - Arguments:
+      a) text: str - The text payload slated for basic system clip registration.
+      b) formatting: dict (default: None) - Placeholder mapping parameters reserved for expanded style profiles.
+    - Returns: ToolResult detailing simple data transmission sizes.
+    - How to call: ClipboardAdvancedTool.copy_rich_text(text="Target payload information text.")
+
+14. paste_as_plain_text:
+    - Purpose: Extracts clipboard content, strips out markup tags using regex, and copies the clean plain text back.
+    - Arguments: None
+    - Returns: ToolResult enclosing structural plain text strings devoid of code fragments.
+    - How to call: ClipboardAdvancedTool.paste_as_plain_text()
+
+15. transform_clipboard:
+    - Purpose: Performs immediate structural text string modifications directly on the current clipboard payload.
+    - Arguments:
+      a) operation: str - Type of change requested. Options include:
+         * "upper": Forces all alphabet letters into matching uppercase structures.
+         * "lower": Shrinks strings down entirely to generic lowercase configurations.
+         * "title": Shifts word capitalization alignments to match title rules.
+         * "strip": Trims leading or trailing whitespace chunks.
+         * "reverse": Reverses the direction of the string characters.
+         * "word_count": Computes the total number of individual words found.
+         * "char_count": Counts the total number of characters in the string.
+         * "lines": Returns the total line count metric.
+         * "dedup_lines": Deletes repeating lines while keeping the original order.
+    - Returns: ToolResult capturing operational tracking results or analytical counters.
+    - How to call: ClipboardAdvancedTool.transform_clipboard(operation="dedup_lines")
+""")
+
+    _history: list = []
+
+    @staticmethod
+    def get_text() -> ToolResult:
+        try:
+            import pyperclip
+            text = pyperclip.paste()
+            return ToolResult(True, f"✓ Clipboard text: {len(text)} chars", text)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_text failed: {e}")
+
+    @staticmethod
+    def set_text(text: str) -> ToolResult:
+        try:
+            import pyperclip
+            pyperclip.copy(text)
+            ClipboardAdvancedTool._history.append({"type": "text", "content": text[:200]})
+            return ToolResult(True, f"✓ Text copied to clipboard ({len(text)} chars)")
+        except Exception as e:
+            return ToolResult(False, f"✗ set_text failed: {e}")
+
+    @staticmethod
+    def get_image(output: str = "clipboard_image.png") -> ToolResult:
+        try:
+            from PIL import ImageGrab
+            img = ImageGrab.grabclipboard()
+            if img is None:
+                return ToolResult(False, "✗ No image in clipboard.")
+            img.save(output)
+            return ToolResult(True, f"✓ Clipboard image saved: {output}", {"path": output})
+        except Exception as e:
+            return ToolResult(False, f"✗ get_image failed: {e}")
+
+    @staticmethod
+    def set_image(path: str) -> ToolResult:
+        try:
+            os_name = platform.system()
+            if os_name == "Windows":
+                import win32clipboard
+                from PIL import Image
+                import io
+                img = Image.open(path).convert("RGB")
+                buf = io.BytesIO()
+                img.save(buf, format="BMP")
+                data = buf.getvalue()[14:]
+                win32clipboard.OpenClipboard()
+                win32clipboard.EmptyClipboard()
+                win32clipboard.SetClipboardData(win32clipboard.CF_DIB, data)
+                win32clipboard.CloseClipboard()
+            elif os_name == "Darwin":
+                r = subprocess.run(["osascript", "-e",
+                                    f'set the clipboard to (read (POSIX file "{path}") as JPEG picture)'],
+                                   capture_output=True, text=True)
+            else:
+                r = subprocess.run(["xclip", "-selection", "clipboard", "-t", "image/png", "-i", path],
+                                   capture_output=True, text=True)
+            return ToolResult(True, f"✓ Image copied to clipboard: {path}")
+        except Exception as e:
+            return ToolResult(False, f"✗ set_image failed: {e}")
+
+    @staticmethod
+    def get_files() -> ToolResult:
+        try:
+            os_name = platform.system()
+            if os_name == "Windows":
+                import win32clipboard
+                win32clipboard.OpenClipboard()
+                try:
+                    files = win32clipboard.GetClipboardData(win32clipboard.CF_HDROP)
+                finally:
+                    win32clipboard.CloseClipboard()
+                return ToolResult(True, f"✓ {len(files)} file(s) in clipboard", list(files))
+            return ToolResult(False, "✗ get_files only supported on Windows currently.")
+        except Exception as e:
+            return ToolResult(False, f"✗ get_files failed: {e}")
+
+    @staticmethod
+    def set_files(paths: list) -> ToolResult:
+        try:
+            import pyperclip
+            pyperclip.copy("\n".join(paths))
+            return ToolResult(True, f"✓ {len(paths)} file path(s) copied to clipboard")
+        except Exception as e:
+            return ToolResult(False, f"✗ set_files failed: {e}")
+
+    @staticmethod
+    def get_html() -> ToolResult:
+        try:
+            os_name = platform.system()
+            if os_name == "Windows":
+                import win32clipboard
+                HTML_FORMAT = win32clipboard.RegisterClipboardFormat("HTML Format")
+                win32clipboard.OpenClipboard()
+                try:
+                    html = win32clipboard.GetClipboardData(HTML_FORMAT).decode("utf-8", errors="replace")
+                finally:
+                    win32clipboard.CloseClipboard()
+                return ToolResult(True, "✓ HTML clipboard content fetched", html)
+            return ToolResult(False, "✗ get_html only supported on Windows currently.")
+        except Exception as e:
+            return ToolResult(False, f"✗ get_html failed: {e}")
+
+    @staticmethod
+    def set_html(html: str) -> ToolResult:
+        try:
+            import pyperclip
+            pyperclip.copy(html)
+            return ToolResult(True, "✓ HTML copied to clipboard (as plain text)")
+        except Exception as e:
+            return ToolResult(False, f"✗ set_html failed: {e}")
+
+    @staticmethod
+    def monitor(callback, interval: float = 1.0) -> ToolResult:
+        try:
+            import threading, pyperclip
+
+            last = [pyperclip.paste()]
+
+            def _watch():
+                while True:
+                    import time
+                    time.sleep(interval)
+                    current = pyperclip.paste()
+                    if current != last[0]:
+                        last[0] = current
+                        ClipboardAdvancedTool._history.append({"type": "text", "content": current[:200]})
+                        if callback:
+                            callback(current)
+
+            threading.Thread(target=_watch, daemon=True).start()
+            return ToolResult(True, f"✓ Clipboard monitor started (interval={interval}s)")
+        except Exception as e:
+            return ToolResult(False, f"✗ monitor failed: {e}")
+
+    @staticmethod
+    def get_history(limit: int = 20) -> ToolResult:
+        try:
+            hist = ClipboardAdvancedTool._history[-limit:]
+            return ToolResult(True, f"✓ {len(hist)} clipboard history item(s)", hist)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_history failed: {e}")
+
+    @staticmethod
+    def clear_history() -> ToolResult:
+        try:
+            ClipboardAdvancedTool._history.clear()
+            return ToolResult(True, "✓ Clipboard history cleared")
+        except Exception as e:
+            return ToolResult(False, f"✗ clear_history failed: {e}")
+
+    @staticmethod
+    def copy_formatted_table(data: list, headers: list = None) -> ToolResult:
+        try:
+            import pyperclip
+            if headers:
+                rows = ["\t".join(str(h) for h in headers)]
+            else:
+                rows = []
+            for row in data:
+                if isinstance(row, dict):
+                    rows.append("\t".join(str(v) for v in row.values()))
+                else:
+                    rows.append("\t".join(str(v) for v in row))
+            text = "\n".join(rows)
+            pyperclip.copy(text)
+            return ToolResult(True, f"✓ Table copied ({len(data)} rows, {len(rows[0].split(chr(9)))} cols)")
+        except Exception as e:
+            return ToolResult(False, f"✗ copy_formatted_table failed: {e}")
+
+    @staticmethod
+    def copy_rich_text(text: str, formatting: dict = None) -> ToolResult:
+        try:
+            import pyperclip
+            pyperclip.copy(text)
+            return ToolResult(True, f"✓ Rich text copied ({len(text)} chars)")
+        except Exception as e:
+            return ToolResult(False, f"✗ copy_rich_text failed: {e}")
+
+    @staticmethod
+    def paste_as_plain_text() -> ToolResult:
+        try:
+            import pyperclip, re
+            text = pyperclip.paste()
+            plain = re.sub(r"<[^>]+>", "", text)
+            pyperclip.copy(plain)
+            return ToolResult(True, f"✓ Pasted as plain text ({len(plain)} chars)", plain)
+        except Exception as e:
+            return ToolResult(False, f"✗ paste_as_plain_text failed: {e}")
+
+    @staticmethod
+    def transform_clipboard(operation: str) -> ToolResult:
+        try:
+            import pyperclip
+            text = pyperclip.paste()
+            ops = {
+                "upper":      text.upper(),
+                "lower":      text.lower(),
+                "title":      text.title(),
+                "strip":      text.strip(),
+                "reverse":    text[::-1],
+                "word_count": str(len(text.split())),
+                "char_count": str(len(text)),
+                "lines":      str(len(text.splitlines())),
+                "dedup_lines": "\n".join(dict.fromkeys(text.splitlines())),
+            }
+            if operation not in ops:
+                return ToolResult(False, f"✗ Unknown operation: {operation}. Available: {list(ops.keys())}")
+            result = ops[operation]
+            if operation not in ("word_count", "char_count", "lines"):
+                pyperclip.copy(result)
+            return ToolResult(True, f"✓ Clipboard transformed: {operation}", result)
+        except Exception as e:
+            return ToolResult(False, f"✗ transform_clipboard failed: {e}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 7. HardwareMonitorTool
+# ─────────────────────────────────────────────────────────────────────────────
+
+class HardwareMonitorTool:
+    name = "hardware_monitor"
+    description = (
+        "Deep hardware monitoring: CPU/GPU/disk temperatures, fans, voltages, power, "
+        "memory slots, SMART data, benchmarks, event log, threshold monitoring."
+    )
+    use = ("""
+Name of Tool:- HardwareMonitorTool
+
+Purpose of Tool:- 
+The HardwareMonitorTool provides a comprehensive, cross-platform interface for auditing system hardware sensors,
+measuring component performance, and monitoring real-time system stability thresholds. By bridging python libraries (`psutil`, `GPUtil`) 
+with low-level operating system diagnostic binaries (`smartctl`, `dmidecode`, `lm-sensors`, PowerShell WMI interfaces, and `journalctl`), 
+it abstracts telemetry parsing across varying architectures. The tool empowers applications to query thermal metrics (CPU, GPU, and storage arrays), 
+track mechanical fan tachometers, extract input voltages or power states, map physical memory slot allocations, run targeted internal component 
+benchmarks (processing, memory bandwidth, and disk I/O), filter system error event logs, and configure asynchronous threshold alert loops.
+
+Methods:-
+- get_cpu_temperature: Parses thermal sensors to collect individual processor or core temperatures.
+- get_gpu_temperature: Communicates with graphics interfaces to aggregate telemetry on GPU load, thermals, and memory allocations.
+- get_disk_temperature: Extracts physical non-volatile storage temperature readings via direct hardware sensors or SMART utilities.
+- get_fan_speeds: Queries cooling fan subsystems to measure rotational speeds in RPM.
+- get_voltages: Interfaces with motherboard hardware controllers to evaluate active component voltage feeds.
+- get_power_consumption: Pulls diagnostic metrics relative to battery charge profiles and active watt consumption properties.
+- get_memory_slots: Inspects physical memory configurations to generate detailed profiles of installed RAM sticks and empty slots.
+- get_storage_devices_smart: Calls low-level disk diagnostic subsystems to pull full S.M.A.R.T. self-monitoring data grids.
+- benchmark_cpu: Runs localized arithmetic loops over a timed interval to gauge mathematical compute rates.
+- benchmark_memory: Executes direct bytearray reads and writes to measure active RAM throughput performance.
+- benchmark_disk: Generates and reads temporary garbage data chunks to gauge storage drive read/write bandwidth velocities.
+- get_system_events_log: Examines operating system log aggregators to pull back recent system crashes or critical device failures.
+- monitor_thresholds: Initializes an asynchronous tracking thread that alerts a callback routine if resource limits are exceeded.
+
+How to use Tool Methods:-
+
+1. get_cpu_temperature:
+   - Purpose: Discovers and reports current operational temperature statistics across available central processor cores.
+   - Arguments: None
+   - Returns: ToolResult enclosing data matrices populated with dictionary thermal profiles.
+   - How to call: HardwareMonitorTool.get_cpu_temperature()
+
+2. get_gpu_temperature:
+   - Purpose: Connects with graphics adapters to inventory processing load, active temps, and memory constraints.
+   - Arguments: None
+   - Returns: ToolResult tracking lists populated with discrete graphic processing unit information sets.
+   - How to call: HardwareMonitorTool.get_gpu_temperature()
+
+3. get_disk_temperature:
+   - Purpose: Probes active NVMe or SATA controllers to evaluate physical storage medium thermals.
+   - Arguments: None
+   - Returns: ToolResult holding extracted drive array temperatures.
+   - How to call: HardwareMonitorTool.get_disk_temperature()
+
+4. get_fan_speeds:
+   - Purpose: Checks hardware monitoring arrays to extract cooling fan activity metrics.
+   - Arguments: None
+   - Returns: ToolResult encapsulating tachometer speed maps (measured in RPM).
+   - How to call: HardwareMonitorTool.get_fan_speeds()
+
+5. get_voltages:
+   - Purpose: Returns motherboard voltage lines to track power distribution health.
+   - Arguments: None
+   - Returns: ToolResult housing string lists of mapped voltage readings (Supported on Linux).
+   - How to call: HardwareMonitorTool.get_voltages()
+
+6. get_power_consumption:
+   - Purpose: Aggregates battery life remaining alongside systemic physical wattage draws.
+   - Arguments: None
+   - Returns: ToolResult packing a dictionary containing localized power line parameters.
+   - How to call: HardwareMonitorTool.get_power_consumption()
+
+7. get_memory_slots:
+   - Purpose: Queries system hardware databases to outline the speed, size, and manufacturing info of installed RAM.
+   - Arguments: None
+   - Returns: ToolResult exposing structural JSON or array list items breaking down active storage lanes.
+   - How to call: HardwareMonitorTool.get_memory_slots()
+
+8. get_storage_devices_smart:
+   - Purpose: Extracts historical reliability indices and self-test failure reports from physical hard disks.
+   - Arguments:
+     a) drive: str (default: "/dev/sda") - Target physical storage node string tracking requested diagnostic scopes.
+   - Returns: ToolResult enclosing structural string line feedback grids from the smartctl subsystem.
+   - How to call: HardwareMonitorTool.get_storage_devices_smart(drive="/dev/nvme0n1")
+
+9. benchmark_cpu:
+   - Purpose: Quantifies mathematical execution capabilities by counting raw square-root loops completed per second.
+   - Arguments:
+     a) duration: int (default: 5) - Target execution monitoring ceiling window specified in seconds.
+   - Returns: ToolResult charting measured computational execution loops per second (in millions).
+   - How to call: HardwareMonitorTool.benchmark_cpu(duration=3)
+
+10. benchmark_memory:
+    - Purpose: Profiles memory communication limits by tracking sequential data allocations.
+    - Arguments: None
+    - Returns: ToolResult tracking throughput metrics written out in megabytes per second (MB/s).
+    - How to call: HardwareMonitorTool.benchmark_memory()
+
+11. benchmark_disk:
+    - Purpose: Performs sequential raw read/write processes against designated directories to verify I/O bounds.
+    - Arguments:
+      a) path: str (default: "/tmp") - Target folder path designated to host temporary benchmarking operations.
+    - Returns: ToolResult tracking disk bandwidth velocity limits.
+    - How to call: HardwareMonitorTool.benchmark_disk(path="./test_vault")
+
+12. get_system_events_log:
+    - Purpose: Inspects core OS event frameworks to find structural hardware faults or driver initialization failures.
+    - Arguments:
+      a) level: str (default: "ERROR") - Severity target criterion classification filters (e.g., "CRITICAL", "ERROR").
+      b) count: int (default: 50) - Maximum historical event line items returned during structural filtering.
+      c) source: str (default: "") - Specific driver system hardware component tracking filter tag string.
+      d) hours_back: int (default: 24) - Time tracking window boundaries applied on Linux journal logs.
+    - Returns: ToolResult encapsulating aggregated system fault alerts.
+    - How to call: HardwareMonitorTool.get_system_events_log(level="WARNING", count=10)
+
+13. monitor_thresholds:
+    - Purpose: Sets up a continuous background tracking thread to monitor utilization bounds across core resources.
+    - Arguments:
+      a) thresholds: dict - Mapping configuration dictionary indicating alert ceilings (e.g., `{"cpu_percent": 85.0}`).
+      b) interval: int (default: 30) - Sleep delay time sequence parameters executed between validation checks.
+      c) alert_callback: function (default: None) - Trigger routine fired when a resource breaches specified limits.
+    - Returns: ToolResult tracking registration setup operations.
+    - How to call: HardwareMonitorTool.monitor_thresholds(thresholds={"cpu_percent": 90, "memory_percent": 95}, interval=10, alert_callback=print)
+""")
+
+    @staticmethod
+    def get_cpu_temperature() -> ToolResult:
+        try:
+            import psutil
+            temps = psutil.sensors_temperatures()
+            if not temps:
+                return ToolResult(False, "✗ Temperature sensors not available.")
+            cpu_keys = [k for k in temps if "cpu" in k.lower() or "core" in k.lower() or "k10" in k.lower()]
+            data = {}
+            for k in (cpu_keys or list(temps.keys())[:2]):
+                data[k] = [t._asdict() for t in temps[k]]
+            return ToolResult(True, "✓ CPU temperatures fetched", data)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_cpu_temperature failed: {e}")
+
+    @staticmethod
+    def get_gpu_temperature() -> ToolResult:
+        try:
+            import GPUtil
+            gpus = GPUtil.getGPUs()
+            if not gpus:
+                return ToolResult(False, "✗ No GPU detected by GPUtil.")
+            data = [{"id": g.id, "name": g.name, "temperature": g.temperature, "load": g.load, "memory_used": g.memoryUsed} for g in gpus]
+            return ToolResult(True, f"✓ {len(data)} GPU(s) found", data)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_gpu_temperature failed: {e}")
+
+    @staticmethod
+    def get_disk_temperature() -> ToolResult:
+        try:
+            import psutil
+            temps = psutil.sensors_temperatures() or {}
+            disk_keys = [k for k in temps if "nvme" in k.lower() or "disk" in k.lower() or "ssd" in k.lower()]
+            if disk_keys:
+                data = {k: [t._asdict() for t in temps[k]] for k in disk_keys}
+                return ToolResult(True, "✓ Disk temperatures fetched", data)
+            r = subprocess.run(["smartctl", "-A", "/dev/sda"], capture_output=True, text=True)
+            lines = [l for l in r.stdout.splitlines() if "Temperature" in l]
+            return ToolResult(bool(lines), "✓ Disk temperatures (SMART)" if lines else "✗ No disk temp data", lines)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_disk_temperature failed: {e}")
+
+    @staticmethod
+    def get_fan_speeds() -> ToolResult:
+        try:
+            import psutil
+            fans = psutil.sensors_fans() or {}
+            if not fans:
+                return ToolResult(False, "✗ Fan sensors not available on this system.")
+            data = {k: [f._asdict() for f in v] for k, v in fans.items()}
+            return ToolResult(True, "✓ Fan speeds fetched", data)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_fan_speeds failed: {e}")
+
+    @staticmethod
+    def get_voltages() -> ToolResult:
+        try:
+            r = subprocess.run(["sensors"], capture_output=True, text=True)
+            voltage_lines = [l for l in r.stdout.splitlines() if "V" in l and ("+" in l or "-" in l)]
+            return ToolResult(bool(voltage_lines), "✓ Voltages read", voltage_lines)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_voltages failed: {e}")
+
+    @staticmethod
+    def get_power_consumption() -> ToolResult:
+        try:
+            import psutil
+            battery = psutil.sensors_battery()
+            data: dict = {}
+            if battery:
+                data["battery_percent"] = battery.percent
+                data["plugged_in"]      = battery.power_plugged
+            r = subprocess.run(["sensors"], capture_output=True, text=True)
+            power_lines = [l for l in r.stdout.splitlines() if "Watt" in l or "watt" in l or "power" in l.lower()]
+            data["power_lines"] = power_lines
+            return ToolResult(True, "✓ Power consumption data fetched", data)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_power_consumption failed: {e}")
+
+    @staticmethod
+    def get_memory_slots() -> ToolResult:
+        try:
+            os_name = platform.system()
+            if os_name == "Windows":
+                r = subprocess.run(
+                    ["powershell", "-Command",
+                     "Get-WmiObject Win32_PhysicalMemory | Select-Object DeviceLocator,Capacity,Speed,Manufacturer | ConvertTo-Json"],
+                    capture_output=True, text=True,
+                )
+                import json
+                try:
+                    data = json.loads(r.stdout)
+                    return ToolResult(True, "✓ Memory slots fetched", data)
+                except Exception:
+                    return ToolResult(True, "✓ Memory info", r.stdout.splitlines())
+            else:
+                r = subprocess.run(["dmidecode", "-t", "17"], capture_output=True, text=True)
+                slots = [l.strip() for l in r.stdout.splitlines() if any(k in l for k in ["Size", "Speed", "Manufacturer", "Locator"])]
+                return ToolResult(True, "✓ Memory slots fetched", slots)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_memory_slots failed: {e}")
+
+    @staticmethod
+    def get_storage_devices_smart(drive: str = "/dev/sda") -> ToolResult:
+        try:
+            r = subprocess.run(["smartctl", "-a", drive], capture_output=True, text=True)
+            if r.returncode not in (0, 4):
+                return ToolResult(False, f"✗ SMART failed: {r.stderr}")
+            lines = r.stdout.splitlines()
+            return ToolResult(True, f"✓ SMART data for {drive}", lines)
+        except Exception as e:
+            return ToolResult(False, f"✗ get_storage_devices_smart failed: {e}")
+
+    @staticmethod
+    def benchmark_cpu(duration: int = 5) -> ToolResult:
+        try:
+            import time, math
+
+            ops = 0
+            start = time.time()
+            while time.time() - start < duration:
+                for i in range(10000):
+                    math.sqrt(i * 3.14159)
+                ops += 10000
+            elapsed = time.time() - start
+            rate = round(ops / elapsed / 1e6, 2)
+            return ToolResult(True, f"✓ CPU benchmark: {rate}M ops/sec over {duration}s", {"ops_per_sec_m": rate})
+        except Exception as e:
+            return ToolResult(False, f"✗ benchmark_cpu failed: {e}")
+
+    @staticmethod
+    def benchmark_memory() -> ToolResult:
+        try:
+            import time
+
+            size    = 100 * 1024 * 1024
+            data    = bytearray(size)
+            start   = time.time()
+            for i in range(0, size, 4096):
+                data[i] = (i % 256)
+            write_time = time.time() - start
+            start = time.time()
+            _ = sum(data[i] for i in range(0, size, 4096))
+            read_time = time.time() - start
+            write_mbps = round((size / 1e6) / write_time, 1)
+            read_mbps  = round((size / 1e6) / read_time, 1)
+            return ToolResult(True, f"✓ Memory: write {write_mbps} MB/s, read {read_mbps} MB/s", {"write_mbps": write_mbps, "read_mbps": read_mbps})
+        except Exception as e:
+            return ToolResult(False, f"✗ benchmark_memory failed: {e}")
+
+    @staticmethod
+    def benchmark_disk(path: str = "/tmp") -> ToolResult:
+        try:
+            import time, os
+            from pathlib import Path
+
+            test_file = Path(path) / "npm_disk_bench.tmp"
+            data = os.urandom(50 * 1024 * 1024)
+
+            start = time.time()
+            test_file.write_bytes(data)
+            write_time = time.time() - start
+
+            start = time.time()
+            _ = test_file.read_bytes()
+            read_time = time.time() - start
+
+            test_file.unlink(missing_ok=True)
+            write_mbps = round(50 / write_time, 1)
+            read_mbps  = round(50 / read_time,  1)
+            return ToolResult(True, f"✓ Disk: write {write_mbps} MB/s, read {read_mbps} MB/s", {"write_mbps": write_mbps, "read_mbps": read_mbps})
+        except Exception as e:
+            return ToolResult(False, f"✗ benchmark_disk failed: {e}")
+
+    @staticmethod
+    def get_system_events_log(
+        level: str = "ERROR", count: int = 50, source: str = "", hours_back: int = 24
+    ) -> ToolResult:
+        try:
+            os_name = platform.system()
+            if os_name == "Windows":
+                r = subprocess.run(
+                    ["powershell", "-Command",
+                     f'Get-EventLog -LogName System -Newest {count} -EntryType {level} | Select-Object TimeGenerated,Source,Message | ConvertTo-Json'],
+                    capture_output=True, text=True,
+                )
+                import json
+                try:
+                    return ToolResult(True, "✓ Event log fetched", json.loads(r.stdout))
+                except Exception:
+                    return ToolResult(True, "✓ Event log fetched", r.stdout.splitlines())
+            else:
+                r = subprocess.run(
+                    ["journalctl", f"-p", level.lower(), f"--since={hours_back} hours ago", f"-n", str(count), "--no-pager"],
+                    capture_output=True, text=True,
+                )
+                return ToolResult(True, f"✓ {len(r.stdout.splitlines())} log lines", r.stdout.splitlines())
+        except Exception as e:
+            return ToolResult(False, f"✗ get_system_events_log failed: {e}")
+
+    @staticmethod
+    def monitor_thresholds(
+        thresholds: dict,
+        interval: int = 30,
+        alert_callback=None,
+    ) -> ToolResult:
+        try:
+            import threading, psutil, time
+
+            def _watch():
+                while True:
+                    alerts = []
+                    cpu = psutil.cpu_percent(interval=1)
+                    if "cpu_percent" in thresholds and cpu > thresholds["cpu_percent"]:
+                        alerts.append({"metric": "cpu_percent", "value": cpu, "threshold": thresholds["cpu_percent"]})
+                    vm = psutil.virtual_memory()
+                    if "memory_percent" in thresholds and vm.percent > thresholds["memory_percent"]:
+                        alerts.append({"metric": "memory_percent", "value": vm.percent, "threshold": thresholds["memory_percent"]})
+                    for part in psutil.disk_partitions():
+                        try:
+                            usage = psutil.disk_usage(part.mountpoint)
+                            if "disk_percent" in thresholds and usage.percent > thresholds["disk_percent"]:
+                                alerts.append({"metric": "disk_percent", "mountpoint": part.mountpoint, "value": usage.percent})
+                        except Exception:
+                            pass
+                    if alerts and alert_callback:
+                        alert_callback(alerts)
+                    time.sleep(interval)
+
+            threading.Thread(target=_watch, daemon=True).start()
+            return ToolResult(True, f"✓ Hardware threshold monitoring started (interval={interval}s)", thresholds)
+        except Exception as e:
+            return ToolResult(False, f"✗ monitor_thresholds failed: {e}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 8. RaspberryPiTool
+# ─────────────────────────────────────────────────────────────────────────────
+
+class RaspberryPiTool:
+    name = "raspberry_pi"
+    description = (
+        "Full RPi GPIO and hardware: pin setup/read/write, PWM, I2C, SPI, "
+        "sensors, servo, stepper, ultrasonic, LCD, buttons, camera."
+    )
+    use = ("""
+Name of Tool:- HardwareMonitorTool
+
+Purpose of Tool:- 
+The HardwareMonitorTool provides a comprehensive, cross-platform interface for auditing system hardware sensors,
+measuring component performance, and monitoring real-time system stability thresholds. By bridging python libraries (`psutil`, `GPUtil`) 
+with low-level operating system diagnostic binaries (`smartctl`, `dmidecode`, `lm-sensors`, PowerShell WMI interfaces, and `journalctl`), 
+it abstracts telemetry parsing across varying architectures. The tool empowers applications to query thermal metrics (CPU, GPU, and storage arrays), 
+track mechanical fan tachometers, extract input voltages or power states, map physical memory slot allocations, run targeted internal component 
+benchmarks (processing, memory bandwidth, and disk I/O), filter system error event logs, and configure asynchronous threshold alert loops.
+
+Methods:-
+- get_cpu_temperature: Parses thermal sensors to collect individual processor or core temperatures.
+- get_gpu_temperature: Communicates with graphics interfaces to aggregate telemetry on GPU load, thermals, and memory allocations.
+- get_disk_temperature: Extracts physical non-volatile storage temperature readings via direct hardware sensors or SMART utilities.
+- get_fan_speeds: Queries cooling fan subsystems to measure rotational speeds in RPM.
+- get_voltages: Interfaces with motherboard hardware controllers to evaluate active component voltage feeds.
+- get_power_consumption: Pulls diagnostic metrics relative to battery charge profiles and active watt consumption properties.
+- get_memory_slots: Inspects physical memory configurations to generate detailed profiles of installed RAM sticks and empty slots.
+- get_storage_devices_smart: Calls low-level disk diagnostic subsystems to pull full S.M.A.R.T. self-monitoring data grids.
+- benchmark_cpu: Runs localized arithmetic loops over a timed interval to gauge mathematical compute rates.
+- benchmark_memory: Executes direct bytearray reads and writes to measure active RAM throughput performance.
+- benchmark_disk: Generates and reads temporary garbage data chunks to gauge storage drive read/write bandwidth velocities.
+- get_system_events_log: Examines operating system log aggregators to pull back recent system crashes or critical device failures.
+- monitor_thresholds: Initializes an asynchronous tracking thread that alerts a callback routine if resource limits are exceeded.
+
+How to use Tool Methods:-
+
+1. get_cpu_temperature:
+   - Purpose: Discovers and reports current operational temperature statistics across available central processor cores.
+   - Arguments: None
+   - Returns: ToolResult enclosing data matrices populated with dictionary thermal profiles.
+   - How to call: HardwareMonitorTool.get_cpu_temperature()
+
+2. get_gpu_temperature:
+   - Purpose: Connects with graphics adapters to inventory processing load, active temps, and memory constraints.
+   - Arguments: None
+   - Returns: ToolResult tracking lists populated with discrete graphic processing unit information sets.
+   - How to call: HardwareMonitorTool.get_gpu_temperature()
+
+3. get_disk_temperature:
+   - Purpose: Probes active NVMe or SATA controllers to evaluate physical storage medium thermals.
+   - Arguments: None
+   - Returns: ToolResult holding extracted drive array temperatures.
+   - How to call: HardwareMonitorTool.get_disk_temperature()
+
+4. get_fan_speeds:
+   - Purpose: Checks hardware monitoring arrays to extract cooling fan activity metrics.
+   - Arguments: None
+   - Returns: ToolResult encapsulating tachometer speed maps (measured in RPM).
+   - How to call: HardwareMonitorTool.get_fan_speeds()
+
+5. get_voltages:
+   - Purpose: Returns motherboard voltage lines to track power distribution health.
+   - Arguments: None
+   - Returns: ToolResult housing string lists of mapped voltage readings (Supported on Linux).
+   - How to call: HardwareMonitorTool.get_voltages()
+
+6. get_power_consumption:
+   - Purpose: Aggregates battery life remaining alongside systemic physical wattage draws.
+   - Arguments: None
+   - Returns: ToolResult packing a dictionary containing localized power line parameters.
+   - How to call: HardwareMonitorTool.get_power_consumption()
+
+7. get_memory_slots:
+   - Purpose: Queries system hardware databases to outline the speed, size, and manufacturing info of installed RAM.
+   - Arguments: None
+   - Returns: ToolResult exposing structural JSON or array list items breaking down active storage lanes.
+   - How to call: HardwareMonitorTool.get_memory_slots()
+
+8. get_storage_devices_smart:
+   - Purpose: Extracts historical reliability indices and self-test failure reports from physical hard disks.
+   - Arguments:
+     a) drive: str (default: "/dev/sda") - Target physical storage node string tracking requested diagnostic scopes.
+   - Returns: ToolResult enclosing structural string line feedback grids from the smartctl subsystem.
+   - How to call: HardwareMonitorTool.get_storage_devices_smart(drive="/dev/nvme0n1")
+
+9. benchmark_cpu:
+   - Purpose: Quantifies mathematical execution capabilities by counting raw square-root loops completed per second.
+   - Arguments:
+     a) duration: int (default: 5) - Target execution monitoring ceiling window specified in seconds.
+   - Returns: ToolResult charting measured computational execution loops per second (in millions).
+   - How to call: HardwareMonitorTool.benchmark_cpu(duration=3)
+
+10. benchmark_memory:
+    - Purpose: Profiles memory communication limits by tracking sequential data allocations.
+    - Arguments: None
+    - Returns: ToolResult tracking throughput metrics written out in megabytes per second (MB/s).
+    - How to call: HardwareMonitorTool.benchmark_memory()
+
+11. benchmark_disk:
+    - Purpose: Performs sequential raw read/write processes against designated directories to verify I/O bounds.
+    - Arguments:
+      a) path: str (default: "/tmp") - Target folder path designated to host temporary benchmarking operations.
+    - Returns: ToolResult tracking disk bandwidth velocity limits.
+    - How to call: HardwareMonitorTool.benchmark_disk(path="./test_vault")
+
+12. get_system_events_log:
+    - Purpose: Inspects core OS event frameworks to find structural hardware faults or driver initialization failures.
+    - Arguments:
+      a) level: str (default: "ERROR") - Severity target criterion classification filters (e.g., "CRITICAL", "ERROR").
+      b) count: int (default: 50) - Maximum historical event line items returned during structural filtering.
+      c) source: str (default: "") - Specific driver system hardware component tracking filter tag string.
+      d) hours_back: int (default: 24) - Time tracking window boundaries applied on Linux journal logs.
+    - Returns: ToolResult encapsulating aggregated system fault alerts.
+    - How to call: HardwareMonitorTool.get_system_events_log(level="WARNING", count=10)
+
+13. monitor_thresholds:
+    - Purpose: Sets up a continuous background tracking thread to monitor utilization bounds across core resources.
+    - Arguments:
+      a) thresholds: dict - Mapping configuration dictionary indicating alert ceilings (e.g., `{"cpu_percent": 85.0}`).
+      b) interval: int (default: 30) - Sleep delay time sequence parameters executed between validation checks.
+      c) alert_callback: function (default: None) - Trigger routine fired when a resource breaches specified limits.
+    - Returns: ToolResult tracking registration setup operations.
+    - How to call: HardwareMonitorTool.monitor_thresholds(thresholds={"cpu_percent": 90, "memory_percent": 95}, interval=10, alert_callback=print)
+""")
+
+    _pwm_channels: dict = {}
+
+    @staticmethod
+    def _gpio():
+        try:
+            import RPi.GPIO as GPIO
+            return GPIO
+        except ImportError:
+            raise ImportError("RPi.GPIO not available. This tool requires a Raspberry Pi.")
+
+    @staticmethod
+    def setup_pin(pin: int, mode: str = "OUT", pull_up_down: str = "OFF") -> ToolResult:
+        try:
+            GPIO = RaspberryPiTool._gpio()
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setwarnings(False)
+            direction = GPIO.OUT if mode.upper() == "OUT" else GPIO.IN
+            pud_map   = {"UP": GPIO.PUD_UP, "DOWN": GPIO.PUD_DOWN, "OFF": GPIO.PUD_OFF}
+            pud       = pud_map.get(pull_up_down.upper(), GPIO.PUD_OFF)
+            GPIO.setup(pin, direction, pull_up_down=pud)
+            return ToolResult(True, f"✓ Pin {pin} set as {mode}")
+        except Exception as e:
+            return ToolResult(False, f"✗ setup_pin failed: {e}")
+
+    @staticmethod
+    def read_pin(pin: int) -> ToolResult:
+        try:
+            GPIO = RaspberryPiTool._gpio()
+            value = GPIO.input(pin)
+            return ToolResult(True, f"✓ Pin {pin} = {value}", {"pin": pin, "value": value})
+        except Exception as e:
+            return ToolResult(False, f"✗ read_pin failed: {e}")
+
+    @staticmethod
+    def write_pin(pin: int, value: int) -> ToolResult:
+        try:
+            GPIO = RaspberryPiTool._gpio()
+            GPIO.output(pin, value)
+            return ToolResult(True, f"✓ Pin {pin} set to {value}")
+        except Exception as e:
+            return ToolResult(False, f"✗ write_pin failed: {e}")
+
+    @staticmethod
+    def setup_pwm(pin: int, frequency: float = 50.0) -> ToolResult:
+        try:
+            GPIO = RaspberryPiTool._gpio()
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(pin, GPIO.OUT)
+            pwm = GPIO.PWM(pin, frequency)
+            pwm.start(0)
+            RaspberryPiTool._pwm_channels[pin] = pwm
+            return ToolResult(True, f"✓ PWM started on pin {pin} at {frequency} Hz")
+        except Exception as e:
+            return ToolResult(False, f"✗ setup_pwm failed: {e}")
+
+    @staticmethod
+    def set_pwm_duty(pin: int, duty_cycle: float) -> ToolResult:
+        try:
+            pwm = RaspberryPiTool._pwm_channels.get(pin)
+            if not pwm:
+                return ToolResult(False, f"✗ PWM not set up on pin {pin}. Call setup_pwm first.")
+            pwm.ChangeDutyCycle(max(0, min(100, duty_cycle)))
+            return ToolResult(True, f"✓ PWM duty cycle on pin {pin} set to {duty_cycle}%")
+        except Exception as e:
+            return ToolResult(False, f"✗ set_pwm_duty failed: {e}")
+
+    @staticmethod
+    def read_i2c(device_address: int, register: int, length: int = 1) -> ToolResult:
+        try:
+            import smbus2
+            bus  = smbus2.SMBus(1)
+            data = bus.read_i2c_block_data(device_address, register, length)
+            bus.close()
+            return ToolResult(True, f"✓ I2C read from 0x{device_address:02X} reg 0x{register:02X}", data)
+        except Exception as e:
+            return ToolResult(False, f"✗ read_i2c failed: {e}")
+
+    @staticmethod
+    def write_i2c(device_address: int, register: int, data: list) -> ToolResult:
+        try:
+            import smbus2
+            bus = smbus2.SMBus(1)
+            bus.write_i2c_block_data(device_address, register, data)
+            bus.close()
+            return ToolResult(True, f"✓ I2C write to 0x{device_address:02X} reg 0x{register:02X}: {data}")
+        except Exception as e:
+            return ToolResult(False, f"✗ write_i2c failed: {e}")
+
+    @staticmethod
+    def read_spi(device: int = 0, speed: int = 500000, mode: int = 0, length: int = 4) -> ToolResult:
+        try:
+            import spidev
+            spi = spidev.SpiDev()
+            spi.open(0, device)
+            spi.max_speed_hz = speed
+            spi.mode = mode
+            data = spi.readbytes(length)
+            spi.close()
+            return ToolResult(True, f"✓ SPI read: {data}", data)
+        except Exception as e:
+            return ToolResult(False, f"✗ read_spi failed: {e}")
+
+    @staticmethod
+    def write_spi(device: int = 0, speed: int = 500000, mode: int = 0, data: list = None) -> ToolResult:
+        try:
+            import spidev
+            spi = spidev.SpiDev()
+            spi.open(0, device)
+            spi.max_speed_hz = speed
+            spi.mode = mode
+            spi.xfer2(data or [0x00])
+            spi.close()
+            return ToolResult(True, f"✓ SPI write: {data}")
+        except Exception as e:
+            return ToolResult(False, f"✗ write_spi failed: {e}")
+
+    @staticmethod
+    def read_temperature_sensor(sensor_id: str = "28-", protocol: str = "1wire") -> ToolResult:
+        try:
+            if protocol == "1wire":
+                from pathlib import Path
+                base = Path("/sys/bus/w1/devices")
+                sensors = list(base.glob(f"{sensor_id}*"))
+                if not sensors:
+                    return ToolResult(False, f"✗ No 1-wire sensor found matching '{sensor_id}'")
+                raw = (sensors[0] / "w1_slave").read_text()
+                temp_line = [l for l in raw.splitlines() if "t=" in l]
+                if not temp_line:
+                    return ToolResult(False, "✗ Could not parse temperature.")
+                temp_c = int(temp_line[0].split("t=")[1]) / 1000.0
+                return ToolResult(True, f"✓ Temperature: {temp_c}°C", {"celsius": temp_c, "fahrenheit": round(temp_c * 9/5 + 32, 1)})
+            return ToolResult(False, f"✗ Protocol not supported: {protocol}")
+        except Exception as e:
+            return ToolResult(False, f"✗ read_temperature_sensor failed: {e}")
+
+    @staticmethod
+    def control_servo(pin: int, angle: float) -> ToolResult:
+        try:
+            if pin not in RaspberryPiTool._pwm_channels:
+                RaspberryPiTool.setup_pwm(pin, 50)
+            duty = 2.5 + (angle / 180.0) * 10.0
+            RaspberryPiTool._pwm_channels[pin].ChangeDutyCycle(duty)
+            return ToolResult(True, f"✓ Servo on pin {pin} moved to {angle}°")
+        except Exception as e:
+            return ToolResult(False, f"✗ control_servo failed: {e}")
+
+    @staticmethod
+    def control_stepper(
+        pins: list, steps: int, direction: int = 1, speed: float = 0.001
+    ) -> ToolResult:
+        try:
+            import time
+            GPIO = RaspberryPiTool._gpio()
+            GPIO.setmode(GPIO.BCM)
+            for p in pins:
+                GPIO.setup(p, GPIO.OUT)
+            seq = [
+                [1, 0, 0, 1], [1, 0, 0, 0], [1, 1, 0, 0],
+                [0, 1, 0, 0], [0, 1, 1, 0], [0, 0, 1, 0],
+                [0, 0, 1, 1], [0, 0, 0, 1],
+            ]
+            for _ in range(steps):
+                for step in (seq if direction == 1 else seq[::-1]):
+                    for i, p in enumerate(pins):
+                        GPIO.output(p, step[i % len(step)])
+                    time.sleep(speed)
+            return ToolResult(True, f"✓ Stepper moved {steps} steps {'CW' if direction == 1 else 'CCW'}")
+        except Exception as e:
+            return ToolResult(False, f"✗ control_stepper failed: {e}")
+
+    @staticmethod
+    def read_hcsr04_distance(trig: int, echo: int) -> ToolResult:
+        try:
+            import time
+            GPIO = RaspberryPiTool._gpio()
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(trig, GPIO.OUT)
+            GPIO.setup(echo, GPIO.IN)
+            GPIO.output(trig, False)
+            time.sleep(0.2)
+            GPIO.output(trig, True)
+            time.sleep(0.00001)
+            GPIO.output(trig, False)
+            timeout = time.time() + 1
+            pulse_start = time.time()
+            while GPIO.input(echo) == 0:
+                pulse_start = time.time()
+                if time.time() > timeout: break
+            pulse_end = time.time()
+            while GPIO.input(echo) == 1:
+                pulse_end = time.time()
+                if time.time() > timeout: break
+            distance_cm = round((pulse_end - pulse_start) * 17150, 2)
+            return ToolResult(True, f"✓ Distance: {distance_cm} cm", {"cm": distance_cm, "inches": round(distance_cm / 2.54, 2)})
+        except Exception as e:
+            return ToolResult(False, f"✗ read_hcsr04_distance failed: {e}")
+
+    @staticmethod
+    def display_on_lcd(i2c_address: int, text: str, row: int = 0) -> ToolResult:
+        try:
+            import smbus2, time
+            bus = smbus2.SMBus(1)
+
+            def _write_byte(data):
+                bus.write_byte(i2c_address, data)
+                time.sleep(0.0001)
+
+            def _write_cmd(cmd):
+                _write_byte(cmd & 0xF0 | 0x04)
+                _write_byte(cmd & 0xF0)
+                _write_byte((cmd << 4) & 0xF0 | 0x04)
+                _write_byte((cmd << 4) & 0xF0)
+
+            def _write_char(char):
+                _write_byte(ord(char) & 0xF0 | 0x05)
+                _write_byte(ord(char) & 0xF0 | 0x01)
+                _write_byte((ord(char) << 4) & 0xF0 | 0x05)
+                _write_byte((ord(char) << 4) & 0xF0 | 0x01)
+
+            row_offsets = [0x00, 0x40]
+            _write_cmd(0x80 | (row_offsets[row % len(row_offsets)]))
+            for char in text[:16]:
+                _write_char(char)
+            bus.close()
+            return ToolResult(True, f"✓ LCD row {row}: '{text[:16]}'")
+        except Exception as e:
+            return ToolResult(False, f"✗ display_on_lcd failed: {e}")
+
+    @staticmethod
+    def read_button(pin: int, debounce: float = 0.05) -> ToolResult:
+        try:
+            import time
+            GPIO = RaspberryPiTool._gpio()
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            pressed = GPIO.input(pin) == GPIO.LOW
+            if pressed:
+                time.sleep(debounce)
+                pressed = GPIO.input(pin) == GPIO.LOW
+            return ToolResult(True, f"✓ Button on pin {pin}: {'PRESSED' if pressed else 'RELEASED'}", {"pressed": pressed})
+        except Exception as e:
+            return ToolResult(False, f"✗ read_button failed: {e}")
+
+    @staticmethod
+    def capture_camera(
+        output: str = "photo.jpg", width: int = 1920, height: int = 1080, duration: int = 0
+    ) -> ToolResult:
+        try:
+            if duration > 0:
+                r = subprocess.run(["raspivid", "-o", output, "-t", str(duration * 1000),
+                                    "-w", str(width), "-h", str(height)], capture_output=True)
+            else:
+                r = subprocess.run(["libcamera-still", "-o", output, "--width", str(width), "--height", str(height)],
+                                   capture_output=True)
+            return ToolResult(r.returncode == 0, f"✓ Camera capture saved: {output}")
+        except Exception as e:
+            return ToolResult(False, f"✗ capture_camera failed: {e}")
+
+    @staticmethod
+    def stream_camera(port: int = 8080) -> ToolResult:
+        try:
+            proc = subprocess.Popen(
+                ["libcamera-vid", "-t", "0", "--inline", "--listen", "-o", f"tcp://0.0.0.0:{port}"],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            )
+            return ToolResult(True, f"✓ Camera streaming on port {port} (PID: {proc.pid})", {"pid": proc.pid})
+        except Exception as e:
+            return ToolResult(False, f"✗ stream_camera failed: {e}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 9. MQTTIoTTool
+# ─────────────────────────────────────────────────────────────────────────────
+
+class MQTTIoTTool:
+    name = "mqtt_iot"
+    description = (
+        "IoT communication via MQTT: connect, publish/subscribe, JSON payloads, "
+        "sensor data, device commands, Home Assistant, automations, log replay."
+    )
+    use = ("""
+Name of Tool:- MQTTIoTTool
+
+Purpose of Tool:- 
+The MQTTIoTTool provides a centralized abstraction layer for orchestrating Internet of Things (IoT) hardware over the MQTT 
+(Message Queuing Telemetry Transport) protocol. By wrapping the `paho-mqtt` ecosystem alongside underlying REST adapters, this tool 
+simplifies machine-to-machine telemetry streams. It allows developers to register long-lived network client connections, issue real-time 
+sensor publications, manage state tracking pipelines, establish persistent event-driven message loops, map dynamic raw JSON values to 
+external brokers, listen on specific message threads with timeouts, write structured diagnostic telemetry scripts, send custom device 
+commands, route integration commands to Home Assistant smart home engines, build automated conditional response flows, and capture or 
+replay hardware log events.
+
+Methods:-
+- connect: Establishes a long-running client thread to a targeted central MQTT broker with secure credential mappings.
+- publish: Dispatches a raw text string payload out to a designated topic network vector channel.
+- subscribe: Registers a listener on designated message streams and sets an optional callback routine to parse incoming packets.
+- publish_json: Converts structured Python data configurations into serialized strings before publishing them over a topic vector.
+- listen_once: Monopolizes a single routing path until a packet matches the topic or a timeout ceiling triggers.
+- publish_sensor_data: Structures real-time environment metrics with device IDs and timestamps into standard telemetry schemas.
+- send_command: Issues control instructions or JSON parameter blocks directly down target execution channels.
+- get_device_state: Publishes a query request to a device topic, then waits to intercept its structural status payload.
+- control_home_assistant_entity: Targets Home Assistant platform domains via REST API backends to toggle smart appliances or automations.
+- create_automation: Links a conditional sub-routine that publishes a specific response when a target keyword is read on a monitored topic.
+- monitor_topics: Starts a background logger that appends incoming bus events to a local JSON Lines (JSONL) storage file.
+- replay_messages: Reads captured telemetry history logs and sequentially republishes them to reconstruct specific system scenarios.
+
+How to use Tool Methods:-
+
+1. connect:
+   - Purpose: Establishes an active network session with a local or cloud-hosted MQTT broker server.
+   - Arguments:
+     a) broker: str - The network hostname or IP address pointing to the active message broker node.
+     b) port: int (default: 1883) - The target TCP network port used to route data traffic.
+     c) username: str (default: None) - Authentication user identifier token (overrides CredStore settings).
+     d) password: str (default: None) - Verification passkey token tied to the user profile string.
+     e) client_id: str (default: "npm_agent") - The unique client identifier string registered on the broker.
+     f) tls: bool (default: False) - Configures SSL/TLS cryptographic connection parameters when set to True.
+     g) cred_key: str (default: "mqtt") - Storage lookup key used to pull credentials from an internal vault.
+   - Returns: ToolResult tracking successful connection parameters.
+   - How to call: MQTTIoTTool.connect(broker="192.168.1.50", port=1883, client_id="living_room_agent")
+
+2. publish:
+   - Purpose: Publishes text messages across specified network channels to alert listening nodes.
+   - Arguments:
+     a) topic: str - The hierarchical message routing channel path string (e.g., "home/living_room/temp").
+     b) payload: str - The core raw text message body being transmitted to subscribers.
+     c) qos: int (default: 0) - Quality of Service delivery guarantee metric flags (0, 1, or 2).
+     d) retain: bool (default: False) - Instructs the broker to save this message as the valid reference for future subscribers.
+     e) client_id: str (default: "npm_agent") - The identifier matching the specific active connection instance to use.
+   - Returns: ToolResult verifying successful socket delivery.
+   - How to call: MQTTIoTTool.publish(topic="home/garden/valve", payload="ON", qos=1, retain=True)
+
+3. subscribe:
+   - Purpose: Instructs the broker to route real-time message streams from chosen paths into the client message loop.
+   - Arguments:
+     a) topics: list - An array of routing filter path strings (supports wildcards like `+` or `#`).
+     b) callback: function (default: None) - The processing routine triggered when a new message is intercepted.
+     c) qos: int (default: 0) - The requested maximum Quality of Service protocol delivery constraint flag.
+     d) client_id: str (default: "npm_agent") - Target client tracker registry identifier mapping.
+   - Returns: ToolResult logging subscription validation tokens.
+   - How to call: MQTTIoTTool.subscribe(topics=["home/kitchen/#", "home/status"], callback=print)
+
+4. publish_json:
+   - Purpose: Serializes dictionary data into a clean JSON string format before publishing it to the broker.
+   - Arguments:
+     a) topic: str - Hierarchical destination communication channel pathway string.
+     b) data: dict - Structural key-value configuration payload data slated for serialization.
+     c) qos: int (default: 0) - Transmission quality profile reliability level indicator.
+     d) client_id: str (default: "npm_agent") - Active connection client map index string.
+   - Returns: ToolResult tracking communication status metrics.
+   - How to call: MQTTIoTTool.publish_json(topic="home/hvac/config", data={"target_temp": 22.5, "mode": "cool"})
+
+5. listen_once:
+   - Purpose: Blocks or monitors a target channel path to intercept a single incoming message payload before a timeout clears.
+   - Arguments:
+     a) topic: str - The specific structural data topic string tracked during listening cycles.
+     b) timeout: int (default: 10) - Maximum window threshold in seconds allocated to wait for incoming bytes.
+     c) client_id: str (default: "npm_agent") - Specific active broker connector instance target key.
+   - Returns: ToolResult containing dictionary logs detailing the intercepted message topic and payload.
+   - How to call: MQTTIoTTool.listen_once(topic="home/garage/door/feedback", timeout=5)
+
+6. publish_sensor_data:
+   - Purpose: Packages numerical telemetry readings into a standard ISO timestamped format for tracking dashboards.
+   - Arguments:
+     a) topic: str - Telemetry ingestion pathway target string.
+     b) sensor_type: str - Classification token defining the physical metric (e.g., "humidity", "lux").
+     b) value: float - Numerical engineering unit value reflecting physical environment sensor telemetry.
+     c) unit: str - Suffix mapping indicating unit frameworks (e.g., "%", "lx", "C").
+     d) device_id: str - Hardware MAC or custom identifier tracking the physical transmitter.
+     e) client_id: str (default: "npm_agent") - Connection routing tag key map identifier.
+   - Returns: ToolResult verifying transmission status logs.
+   - How to call: MQTTIoTTool.publish_sensor_data(topic="sensors/weather", sensor_type="temperature", value=24.7, unit="C", device_id="esp32_north")
+
+7. send_command:
+   - Purpose: Forces downstream hardware systems to execute instructions by appending parameters to command sub-channels.
+   - Arguments:
+     a) device_topic: str - Core root directory location referencing target physical hardware arrays.
+     b) command: str - Target operation label string directing actions (e.g., "reboot", "toggle_lock").
+     c) params: dict (default: None) - Configuration properties containing variable instruction bounds.
+     d) client_id: str (default: "npm_agent") - Client target locator tracking network routing options.
+   - Returns: ToolResult logging transaction confirmations.
+   - How to call: MQTTIoTTool.send_command(device_topic="devices/blinds", command="set_position", params={"open_percent": 45})
+
+8. get_device_state:
+   - Purpose: Triggers a state update request on a remote device, then catches and returns its quick status response.
+   - Arguments:
+     a) device_topic: str - Root identifier topic pathway corresponding to the targeted remote hardware device.
+     b) timeout: int (default: 5) - Processing wait window limit in seconds allocated to hook returned results.
+     c) client_id: str (default: "npm_agent") - Specific communication interface key registration map tag.
+   - Returns: ToolResult tracking the returned status message values.
+   - How to call: MQTTIoTTool.get_device_state(device_topic="devices/power_meter", timeout=3)
+
+9. control_home_assistant_entity:
+   - Purpose: Bypasses direct broker topics to interact with standard smart home systems using native API bearer tokens.
+   - Arguments:
+     a) entity_id: str - Unique target home assistant entity lookup string identifier (e.g., "light.backyard_flood").
+     b) action: str - Operation tracking identifier routing request methods (e.g., "turn_on", "toggle").
+     c) attributes: dict (default: None) - Variable parameter maps matching target setup demands (e.g., brightness levels).
+     d) cred_key: str (default: "home_assistant") - Core configuration key matching stored platform addresses and secrets.
+   - Returns: ToolResult enclosing structural tracking data returned by target systems.
+   - How to call: MQTTIoTTool.control_home_assistant_entity(entity_id="climate.main_floor", action="set_temperature", attributes={"temperature": 21})
+
+10. create_automation:
+    - Purpose: Sets up a simple on-device automation that checks incoming traffic and triggers a secondary message response when matched.
+    - Arguments:
+      a) trigger_topic: str - Monitored interface stream route channel targeted for verification checks.
+      b) trigger_value: str - Target keyword or parameter flag scanned within the message string payload.
+      c) action_topic: str - Destination response channel routed to receive automated outbound notifications.
+      d) action_payload: str - Core text block dispatched down the secondary lane when criteria are successfully met.
+      e) client_id: str (default: "npm_agent") - Local network route mapping index tracker.
+    - Returns: ToolResult confirming operational subscription handler registrations.
+    - How to call: MQTTIoTTool.create_automation(trigger_topic="home/leak_sensor", trigger_value="leak_detected", action_topic="home/main_valve", action_payload="CLOSE")
+
+11. monitor_topics:
+    - Purpose: Logs background bus traffic for a set duration, writing the telemetry data out to structured log files.
+    - Arguments:
+      a) topics: list - Array tracking requested target path patterns slated for log parsing.
+      b) log_file: str (default: "mqtt_log.jsonl") - File path location designated to receive log entries.
+      c) duration: int (default: 60) - Logging window timeframe constraints specified in seconds.
+      d) client_id: str (default: "npm_agent") - Core infrastructure network reference connection link index.
+    - Returns: ToolResult indicating the background logging thread has initialized.
+    - How to call: MQTTIoTTool.monitor_topics(topics=["tele/#"], log_file="debug_dump.jsonl", duration=120)
+
+12. replay_messages:
+    - Purpose: Reads captured system log lines and publishes them step-by-step to test system configurations or replay events.
+    - Arguments:
+      a) log_file: str - Target data log file reference tracking source playback strings.
+      b) broker: str - Network host domain address hosting diagnostic routing target runs.
+      c) port: int (default: 1883) - Connection configuration routing access door interface numbers.
+      d) client_id: str (default: "replayer") - Isolated identity profile tracking player operation frameworks.
+    - Returns: ToolResult confirming the total number of replayed message payloads processed.
+    - How to call: MQTTIoTTool.replay_messages(log_file="debug_dump.jsonl", broker="localhost")
+""")
+
+    _clients: dict = {}
+    _messages: list = []
+
+    @staticmethod
+    def connect(
+        broker: str,
+        port: int = 1883,
+        username: str = None,
+        password: str = None,
+        client_id: str = "npm_agent",
+        tls: bool = False,
+        cred_key: str = "mqtt",
+    ) -> ToolResult:
+        try:
+            import paho.mqtt.client as mqtt
+
+            creds = CredStore.load(cred_key)
+            user  = username or creds.get("username", "")
+            pwd   = password or creds.get("password", "")
+
+            client = mqtt.Client(client_id=client_id)
+            if user:
+                client.username_pw_set(user, pwd)
+            if tls:
+                client.tls_set()
+
+            client.connect(broker, port, keepalive=60)
+            client.loop_start()
+            MQTTIoTTool._clients[client_id] = client
+            return ToolResult(True, f"✓ MQTT connected to {broker}:{port} as '{client_id}'", {"client_id": client_id})
+        except Exception as e:
+            return ToolResult(False, f"✗ MQTT connect failed: {e}")
+
+    @staticmethod
+    def publish(
+        topic: str,
+        payload: str,
+        qos: int = 0,
+        retain: bool = False,
+        client_id: str = "npm_agent",
+    ) -> ToolResult:
+        try:
+            client = MQTTIoTTool._clients.get(client_id)
+            if not client:
+                return ToolResult(False, f"✗ No MQTT client '{client_id}'. Call connect() first.")
+            result = client.publish(topic, payload, qos=qos, retain=retain)
+            return ToolResult(result.rc == 0, f"✓ Published to '{topic}': {str(payload)[:80]}")
+        except Exception as e:
+            return ToolResult(False, f"✗ MQTT publish failed: {e}")
+
+    @staticmethod
+    def subscribe(
+        topics: list,
+        callback=None,
+        qos: int = 0,
+        client_id: str = "npm_agent",
+    ) -> ToolResult:
+        try:
+            client = MQTTIoTTool._clients.get(client_id)
+            if not client:
+                return ToolResult(False, f"✗ No MQTT client '{client_id}'. Call connect() first.")
+
+            def _on_message(cl, userdata, msg):
+                entry = {"topic": msg.topic, "payload": msg.payload.decode("utf-8", errors="replace"), "qos": msg.qos}
+                MQTTIoTTool._messages.append(entry)
+                if callback:
+                    callback(entry)
+
+            client.on_message = _on_message
+            for topic in topics:
+                client.subscribe(topic, qos)
+            return ToolResult(True, f"✓ Subscribed to {topics}")
+        except Exception as e:
+            return ToolResult(False, f"✗ MQTT subscribe failed: {e}")
+
+    @staticmethod
+    def publish_json(
+        topic: str, data: dict, qos: int = 0, client_id: str = "npm_agent"
+    ) -> ToolResult:
+        try:
+            import json
+            return MQTTIoTTool.publish(topic, json.dumps(data), qos=qos, client_id=client_id)
+        except Exception as e:
+            return ToolResult(False, f"✗ MQTT publish_json failed: {e}")
+
+    @staticmethod
+    def listen_once(
+        topic: str, timeout: int = 10, client_id: str = "npm_agent"
+    ) -> ToolResult:
+        try:
+            import paho.mqtt.subscribe as subscribe
+
+            client_info = MQTTIoTTool._clients.get(client_id)
+            if not client_info:
+                return ToolResult(False, f"✗ No MQTT client '{client_id}'.")
+            received = [None]
+            original_msg_handler = client_info._on_message
+
+            def _once(cl, userdata, msg):
+                received[0] = {"topic": msg.topic, "payload": msg.payload.decode("utf-8", errors="replace")}
+
+            client_info.message_callback_add(topic, _once)
+            import time
+            start = time.time()
+            while received[0] is None and time.time() - start < timeout:
+                time.sleep(0.1)
+            client_info.message_callback_remove(topic)
+            if received[0]:
+                return ToolResult(True, f"✓ Received on '{topic}'", received[0])
+            return ToolResult(False, f"✗ No message received on '{topic}' within {timeout}s")
+        except Exception as e:
+            return ToolResult(False, f"✗ MQTT listen_once failed: {e}")
+
+    @staticmethod
+    def publish_sensor_data(
+        topic: str,
+        sensor_type: str,
+        value: float,
+        unit: str,
+        device_id: str,
+        client_id: str = "npm_agent",
+    ) -> ToolResult:
+        try:
+            from datetime import datetime
+            import json
+
+            payload = {
+                "device_id":   device_id,
+                "sensor_type": sensor_type,
+                "value":       value,
+                "unit":        unit,
+                "timestamp":   datetime.utcnow().isoformat() + "Z",
+            }
+            return MQTTIoTTool.publish(topic, json.dumps(payload), client_id=client_id)
+        except Exception as e:
+            return ToolResult(False, f"✗ MQTT publish_sensor_data failed: {e}")
+
+    @staticmethod
+    def send_command(
+        device_topic: str,
+        command: str,
+        params: dict = None,
+        client_id: str = "npm_agent",
+    ) -> ToolResult:
+        try:
+            import json
+            payload = {"command": command, "params": params or {}}
+            return MQTTIoTTool.publish(f"{device_topic}/command", json.dumps(payload), client_id=client_id)
+        except Exception as e:
+            return ToolResult(False, f"✗ MQTT send_command failed: {e}")
+
+    @staticmethod
+    def get_device_state(
+        device_topic: str, timeout: int = 5, client_id: str = "npm_agent"
+    ) -> ToolResult:
+        try:
+            MQTTIoTTool.publish(f"{device_topic}/get", "state", client_id=client_id)
+            return MQTTIoTTool.listen_once(f"{device_topic}/state", timeout=timeout, client_id=client_id)
+        except Exception as e:
+            return ToolResult(False, f"✗ MQTT get_device_state failed: {e}")
+
+    @staticmethod
+    def control_home_assistant_entity(
+        entity_id: str,
+        action: str,
+        attributes: dict = None,
+        cred_key: str = "home_assistant",
+    ) -> ToolResult:
+        try:
+            import requests
+            creds   = CredStore.load(cred_key)
+            base_url = creds.get("base_url", "http://homeassistant.local:8123")
+            token    = creds.get("token", "")
+            headers  = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+            domain   = entity_id.split(".")[0]
+            payload  = {"entity_id": entity_id, **(attributes or {})}
+            r = requests.post(f"{base_url}/api/services/{domain}/{action}", headers=headers, json=payload, timeout=10)
+            return ToolResult(r.status_code < 300, f"✓ HA entity '{entity_id}' action '{action}' sent", r.json() if r.content else {})
+        except Exception as e:
+            return ToolResult(False, f"✗ MQTT control_home_assistant_entity failed: {e}")
+
+    @staticmethod
+    def create_automation(
+        trigger_topic: str,
+        trigger_value: str,
+        action_topic: str,
+        action_payload: str,
+        client_id: str = "npm_agent",
+    ) -> ToolResult:
+        try:
+            def _on_trigger(msg):
+                payload = msg.get("payload", "")
+                if trigger_value in payload:
+                    MQTTIoTTool.publish(action_topic, action_payload, client_id=client_id)
+
+            MQTTIoTTool.subscribe([trigger_topic], callback=_on_trigger, client_id=client_id)
+            return ToolResult(True, f"✓ Automation created: '{trigger_topic}' → '{action_topic}'")
+        except Exception as e:
+            return ToolResult(False, f"✗ MQTT create_automation failed: {e}")
+
+    @staticmethod
+    def monitor_topics(
+        topics: list, log_file: str = "mqtt_log.jsonl", duration: int = 60, client_id: str = "npm_agent"
+    ) -> ToolResult:
+        try:
+            import threading, time, json
+            from pathlib import Path
+
+            stop_event = threading.Event()
+
+            def _log(msg):
+                with open(log_file, "a") as f:
+                    f.write(json.dumps(msg) + "\n")
+
+            MQTTIoTTool.subscribe(topics, callback=_log, client_id=client_id)
+
+            def _stop():
+                time.sleep(duration)
+                stop_event.set()
+
+            threading.Thread(target=_stop, daemon=True).start()
+            return ToolResult(True, f"✓ Monitoring {topics} for {duration}s → {log_file}")
+        except Exception as e:
+            return ToolResult(False, f"✗ MQTT monitor_topics failed: {e}")
+
+    @staticmethod
+    def replay_messages(
+        log_file: str,
+        broker: str,
+        port: int = 1883,
+        client_id: str = "replayer",
+    ) -> ToolResult:
+        try:
+            import json, time
+            from pathlib import Path
+
+            lines = Path(log_file).read_text().splitlines()
+            if not lines:
+                return ToolResult(False, "✗ Log file is empty.")
+            connect_result = MQTTIoTTool.connect(broker, port, client_id=client_id)
+            if not connect_result.success:
+                return connect_result
+            count = 0
+            for line in lines:
+                try:
+                    msg = json.loads(line)
+                    MQTTIoTTool.publish(msg["topic"], msg["payload"], client_id=client_id)
+                    count += 1
+                    time.sleep(0.05)
+                except Exception:
+                    pass
+            return ToolResult(True, f"✓ Replayed {count} messages from {log_file}")
+        except Exception as e:
+            return ToolResult(False, f"✗ MQTT replay_messages failed: {e}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 10. VirtualizationTool
+# ─────────────────────────────────────────────────────────────────────────────
+
+class VirtualizationTool:
+    name = "virtualization"
+    description = (
+        "VM management: list, start/stop/restart/suspend/resume VMs, snapshots, "
+        "info, resources, clone, export, run commands in VM, copy files to VM. "
+        "Supports VirtualBox, libvirt/KVM, and VMware."
+    )
+    use = ("""
+Name of Tool:- VirtualizationTool
+
+Purpose of Tool:- 
+The VirtualizationTool provides a generalized programmatic interface to automate and orchestrate Virtual Machines (VMs) 
+across multiple hypervisors including Oracle VirtualBox, libvirt/KVM, and VMware. By executing lower-level binary wrapper commands 
+(`VBoxManage`, `vmrun`, `virt-install`, `virt-clone`, `virsh`) and leveraging target platform bindings (`libvirt`), it allows developers 
+to perform automated infrastructure tasks. These include querying running VM inventories, provisioning new guest operating systems with custom hardware resource limits, adjusting hardware envelopes on the fly, toggling system execution life-cycles, manipulating state restoration points (snapshots), copying operational assets directly into internal guest storage spaces, or issuing headless runtime instructions remotely over automated local test environments.
+
+Methods:-
+- list_vms: Scans the target hypervisor ecosystem to pull back an inventory list of existing virtual machine configurations.
+- start_vm: Signals the hypervisor to initialize and run a target guest virtual machine (by default in a headless context).
+- stop_vm: Instructs a target guest virtual machine to execute a safe ACPI shutdown cycle or forces an immediate power-off.
+- restart_vm: Sequentially runs a shutdown command followed by an initialization routine to perform a full system reboot loop.
+- suspend_vm: Pauses active processor states and saves guest system memory to a local persistent disk state file.
+- resume_vm: Wakes up a suspended guest machine by reloading its cached RAM memory mapping back into active execution cycles.
+- create_snapshot: Takes a baseline recovery capture point of a virtual machine's current state disk blocks and runtime metadata.
+- restore_snapshot: Reverts a guest virtual machine's current operational volume back to a previously defined recovery snapshot point.
+- delete_snapshot: Permanently purges an explicit snapshot capture chain entry to consolidate modified disk blocks.
+- list_snapshots: Inspects a designated virtual machine configuration to return all associated state snapshots.
+- get_vm_info: Extracts low-level properties including network addresses, CPU count, RAM sizes, and runtime attributes.
+- set_vm_resources: Modifies hardware resource limits such as CPU core allocations and system memory ceilings.
+- clone_vm: Creates an exact standalone copy of a source virtual machine configuration onto a new target registration block.
+- export_vm: Bundles a virtual machine's logical volume configurations and disks into universally portable schemas like OVA metadata files.
+- run_in_vm: Invokes guest execution layers to execute system bash commands directly inside an active virtual guest instance.
+- copy_to_vm: Transfers folders or separate local file units into a designated directory tree deep inside the target virtual machine.
+- create_vm: Assembles hardware properties to build a brand new bare virtual machine with assigned storage controllers and installation media.
+
+How to use Tool Methods:-
+
+1. list_vms:
+   - Purpose: Retrieves all virtual machines registered on a specific hypervisor engine.
+   - Arguments:
+     a) hypervisor: str (default: "virtualbox") - The target virtualization framework name string ("virtualbox", "libvirt", or "vmware").
+   - Returns: ToolResult containing an array of available virtual machine names or tracking state blocks.
+   - How to call: VirtualizationTool.list_vms(hypervisor="libvirt")
+
+2. start_vm:
+   - Purpose: Powers up a configured guest virtual machine instance.
+   - Arguments:
+     a) name: str - The specific target registration name identifier of the virtual machine.
+     b) hypervisor: str (default: "virtualbox") - Hypervisor ecosystem engine selector choice.
+   - Returns: ToolResult logging the boot initialization success state.
+   - How to call: VirtualizationTool.start_vm(name="ubuntu-server-22", hypervisor="virtualbox")
+
+3. stop_vm:
+   - Purpose: Safely halts guest operations or immediately drops machine power connections.
+   - Arguments:
+     a) name: str - Target identifier label mapping the guest machine instance.
+     b) hypervisor: str (default: "virtualbox") - Target virtualization module driver key.
+     c) force: bool (default: False) - Forces immediate power-off when True, bypassing standard operating system shutdown procedures.
+   - Returns: ToolResult verifying execution termination.
+   - How to call: VirtualizationTool.stop_vm(name="debian-test", hypervisor="vmware", force=True)
+
+4. restart_vm:
+   - Purpose: Cycles a machine through a power shutdown phase before bringing it back up.
+   - Arguments:
+     a) name: str - Identification name string value referencing the targeted virtual node.
+     b) hypervisor: str (default: "virtualbox") - Operational platform engine target key.
+   - Returns: ToolResult validating the boot re-initialization pipeline.
+   - How to call: VirtualizationTool.restart_vm(name="web-app-node", hypervisor="virtualbox")
+
+5. suspend_vm:
+   - Purpose: Freezes a guest virtual machine's active state and saves its memory to disk.
+   - Arguments:
+     a) name: str - Unique virtual target identity token name string.
+     b) hypervisor: str (default: "virtualbox") - Hypervisor framework interface engine selector.
+   - Returns: ToolResult tracking machine operational state transitions.
+   - How to call: VirtualizationTool.suspend_vm(name="win11-sandbox", hypervisor="libvirt")
+
+6. resume_vm:
+   - Purpose: Returns a frozen or suspended virtual machine back to an active running state.
+   - Arguments:
+     a) name: str - Identification registration tag mapping the target guest machine.
+     b) hypervisor: str (default: "virtualbox") - Infrastructure framework platform engine key string.
+   - Returns: ToolResult detailing execution state confirmations.
+   - How to call: VirtualizationTool.resume_vm(name="win11-sandbox", hypervisor="libvirt")
+
+7. create_snapshot:
+   - Purpose: Saves a specific recovery checkpoint state for a chosen virtual machine.
+   - Arguments:
+     a) name: str - The virtual machine name identifier to capture.
+     b) snapshot_name: str - A user-defined string label for tracking this snapshot entry.
+     c) hypervisor: str (default: "virtualbox") - Core architectural platform engine provider flag.
+   - Returns: ToolResult detailing snapshot processing success metrics.
+   - How to call: VirtualizationTool.create_snapshot(name="kali-linux", snapshot_name="pre-exploit-clean", hypervisor="virtualbox")
+
+8. restore_snapshot:
+   - Purpose: Reverts a virtual machine back to a specified snapshot state, discarding any changes made since it was taken.
+   - Arguments:
+     a) name: str - Core targeted guest hardware registration identity name string.
+     b) snapshot_name: str - Tracking title label pointing to the target restoration index.
+     c) hypervisor: str (default: "virtualbox") - Infrastructure platform controller layout tag.
+   - Returns: ToolResult tracking volume adjustment results.
+   - How to call: VirtualizationTool.restore_snapshot(name="kali-linux", snapshot_name="pre-exploit-clean", hypervisor="virtualbox")
+
+9. delete_snapshot:
+   - Purpose: Deletes a snapshot checkpoint from a virtual machine's history chain to clean up disk space.
+   - Arguments:
+     a) name: str - Targeted virtual system tracking configuration label string.
+     b) snapshot_name: str - Explicit tracking tag identifying the snapshot to delete.
+     c) hypervisor: str (default: "virtualbox") - Virtualization core execution profile indicator.
+   - Returns: ToolResult logging chain deletion confirmations.
+   - How to call: VirtualizationTool.delete_snapshot(name="ubuntu-server-22", snapshot_name="old-patch-state", hypervisor="vmware")
+
+10. list_snapshots:
+    - Purpose: Lists all historical snapshots recorded for a specific virtual machine.
+    - Arguments:
+      a) name: str - The specific target virtual engine node label identity string.
+      b) hypervisor: str (default: "virtualbox") - Operational layout management engine reference.
+    - Returns: ToolResult holding structural lists tracking active snapshot history records.
+    - How to call: VirtualizationTool.list_snapshots(name="database-replica", hypervisor="libvirt")
+
+11. get_vm_info:
+    - Purpose: Collects details about a virtual machine's hardware settings, state, and network properties.
+    - Arguments:
+      a) name: str - Reference identity name mapping target system parameters.
+      b) hypervisor: str (default: "virtualbox") - Underlying hypervisor configuration target key string.
+    - Returns: ToolResult containing an information dictionary detailing memory sizes, CPU cores, and IP configurations.
+    - How to call: VirtualizationTool.get_vm_info(name="gateway-router", hypervisor="virtualbox")
+
+12. set_vm_resources:
+    - Purpose: Dynamically reconfigures a virtual machine's allocated CPU cores and RAM size.
+    - Arguments:
+      a) name: str - Selected infrastructure target machine tracking identifier.
+      b) cpus: int (default: None) - Total processing core limits allocated to run within guest environments.
+      c) memory_mb: int (default: None) - Capacity allocation limits defined in Megabytes mapping active RAM boundaries.
+      d) hypervisor: str (default: "virtualbox") - Platform software interface control switch.
+    - Returns: ToolResult confirming structural property adjustments.
+    - How to call: VirtualizationTool.set_vm_resources(name="compile-box", cpus=8, memory_mb=16384, hypervisor="virtualbox")
+
+13. clone_vm:
+    - Purpose: Creates a duplicate copy of an existing virtual machine to quickly spin up new nodes.
+    - Arguments:
+      a) source: str - Original baseline machine registration master identification string.
+      b) destination: str - Desired allocation tracking identity string for the new clone.
+      c) hypervisor: str (default: "virtualbox") - Target virtualization framework runtime platform selector.
+    - Returns: ToolResult documenting creation validations.
+    - How to call: VirtualizationTool.clone_vm(source="ubuntu-base-template", destination="web-node-01", hypervisor="libvirt")
+
+14. export_vm:
+    - Purpose: Compiles a virtual machine and its virtual disk drives into a single portable distribution file.
+    - Arguments:
+      a) name: str - Virtual registration source identity tracking label.
+      b) output_path: str - File system location path destination string where the export will be saved.
+      c) format: str (default: "ova") - Extensible storage archive format layout structure selector.
+      d) hypervisor: str (default: "virtualbox") - Execution platform context provider.
+    - Returns: ToolResult validating export pipeline completions.
+    - How to call: VirtualizationTool.export_vm(name="stage-db", output_path="/backups/stage-db.ova", hypervisor="virtualbox")
+
+15. run_in_vm:
+    - Purpose: Executes bash scripts or system commands directly inside an active guest operating system.
+    - Arguments:
+      a) name: str - Target host machine identity label reference string.
+      b) command: str - Raw command string payload targeted for guest execution.
+      c) hypervisor: str (default: "virtualbox") - Framework execution wrapper driver platform selector.
+    - Returns: ToolResult containing standard output data or error strings returned by the guest system.
+    - How to call: VirtualizationTool.run_in_vm(name="centos-worker", command="systemctl restart nginx", hypervisor="virtualbox")
+
+16. copy_to_vm:
+    - Purpose: Copies files or folders from the host system directly into a running virtual machine's file system.
+    - Arguments:
+      a) name: str - Destination machine profile indexing tag name string.
+      b) local_path: str - Source asset file path location string residing on the host side.
+      c) vm_path: str - Bounded absolute directory target location destination string inside the guest system.
+      d) hypervisor: str (default: "virtualbox") - Framework application driver switch layer tracker.
+    - Returns: ToolResult checking task confirmation codes.
+    - How to call: VirtualizationTool.copy_to_vm(name="centos-worker", local_path="./app.conf", vm_path="/etc/app.conf", hypervisor="virtualbox")
+
+17. create_vm:
+    - Purpose: Automates building a brand new virtual machine from scratch, setting up its virtual disk, RAM, and boot ISO.
+    - Arguments:
+      a) name: str - Unique label identifier string indicating the target virtual engine registration node name.
+      b) os: str (default: "Ubuntu_64") - Guest OS template classification profile tag.
+      c) cpus: int (default: 2) - Core count capacity tracking limits.
+      d) memory: int (default: 2048) - Volatile RAM memory block limits mapped in Megabytes.
+      d) disk_size: int (default: 20000) - Disk drive capacity limit values assigned in Megabytes.
+      e) iso_path: str (default: "") - File path location referencing an operating system installation ISO image file.
+      f) hypervisor: str (default: "virtualbox") - Core hypervisor execution interface management driver string.
+    - Returns: ToolResult logging full assembly and verification metrics.
+    - How to call: VirtualizationTool.create_vm(name="arch-dev", os="ArchLinux_64", cpus=4, memory=4096, iso_path="/iso/arch.iso")
+""")
+
+    @staticmethod
+    def _vbox(cmd: list) -> tuple:
+        r = subprocess.run(["VBoxManage"] + cmd, capture_output=True, text=True)
+        return r.returncode, r.stdout + r.stderr
+
+    @staticmethod
+    def _libvirt_conn(uri: str = "qemu:///system"):
+        import libvirt
+        conn = libvirt.open(uri)
+        if not conn:
+            raise RuntimeError("Failed to open libvirt connection.")
+        return conn
+
+    @staticmethod
+    def list_vms(hypervisor: str = "virtualbox") -> ToolResult:
+        try:
+            if hypervisor == "virtualbox":
+                rc, out = VirtualizationTool._vbox(["list", "vms"])
+                vms = [line.split('"')[1] for line in out.splitlines() if '"' in line]
+                return ToolResult(rc == 0, f"✓ {len(vms)} VirtualBox VM(s)", vms)
+            elif hypervisor == "libvirt":
+                conn = VirtualizationTool._libvirt_conn()
+                domains = conn.listAllDomains()
+                vms = [{"name": d.name(), "state": d.isActive()} for d in domains]
+                conn.close()
+                return ToolResult(True, f"✓ {len(vms)} libvirt VM(s)", vms)
+            elif hypervisor == "vmware":
+                r = subprocess.run(["vmrun", "list"], capture_output=True, text=True)
+                return ToolResult(True, "✓ VMware VMs listed", r.stdout.splitlines())
+            return ToolResult(False, f"✗ Unknown hypervisor: {hypervisor}")
+        except Exception as e:
+            return ToolResult(False, f"✗ list_vms failed: {e}")
+
+    @staticmethod
+    def start_vm(name: str, hypervisor: str = "virtualbox") -> ToolResult:
+        try:
+            if hypervisor == "virtualbox":
+                rc, out = VirtualizationTool._vbox(["startvm", name, "--type", "headless"])
+            elif hypervisor == "libvirt":
+                conn = VirtualizationTool._libvirt_conn()
+                dom  = conn.lookupByName(name)
+                rc   = dom.create()
+                out  = f"libvirt start returned {rc}"
+                conn.close()
+            elif hypervisor == "vmware":
+                r  = subprocess.run(["vmrun", "start", name, "nogui"], capture_output=True, text=True)
+                rc, out = r.returncode, r.stdout + r.stderr
+            else:
+                return ToolResult(False, f"✗ Unknown hypervisor: {hypervisor}")
+            return ToolResult(rc == 0, f"✓ Started VM: {name}" if rc == 0 else out.strip())
+        except Exception as e:
+            return ToolResult(False, f"✗ start_vm failed: {e}")
+
+    @staticmethod
+    def stop_vm(name: str, hypervisor: str = "virtualbox", force: bool = False) -> ToolResult:
+        try:
+            if hypervisor == "virtualbox":
+                action = "poweroff" if force else "acpipowerbutton"
+                rc, out = VirtualizationTool._vbox(["controlvm", name, action])
+            elif hypervisor == "libvirt":
+                conn = VirtualizationTool._libvirt_conn()
+                dom  = conn.lookupByName(name)
+                rc   = dom.destroy() if force else dom.shutdown()
+                out  = ""
+                conn.close()
+            elif hypervisor == "vmware":
+                mode = "hard" if force else "soft"
+                r  = subprocess.run(["vmrun", "stop", name, mode], capture_output=True, text=True)
+                rc, out = r.returncode, r.stdout + r.stderr
+            else:
+                return ToolResult(False, f"✗ Unknown hypervisor: {hypervisor}")
+            return ToolResult(rc == 0, f"✓ Stopped VM: {name}")
+        except Exception as e:
+            return ToolResult(False, f"✗ stop_vm failed: {e}")
+
+    @staticmethod
+    def restart_vm(name: str, hypervisor: str = "virtualbox") -> ToolResult:
+        try:
+            VirtualizationTool.stop_vm(name, hypervisor)
+            import time; time.sleep(3)
+            return VirtualizationTool.start_vm(name, hypervisor)
+        except Exception as e:
+            return ToolResult(False, f"✗ restart_vm failed: {e}")
+
+    @staticmethod
+    def suspend_vm(name: str, hypervisor: str = "virtualbox") -> ToolResult:
+        try:
+            if hypervisor == "virtualbox":
+                rc, out = VirtualizationTool._vbox(["controlvm", name, "savestate"])
+            elif hypervisor == "libvirt":
+                conn = VirtualizationTool._libvirt_conn()
+                dom  = conn.lookupByName(name)
+                dom.managedSave()
+                conn.close(); rc = 0; out = ""
+            elif hypervisor == "vmware":
+                r  = subprocess.run(["vmrun", "suspend", name], capture_output=True, text=True)
+                rc, out = r.returncode, r.stdout
+            else:
+                return ToolResult(False, f"✗ Unknown hypervisor: {hypervisor}")
+            return ToolResult(rc == 0, f"✓ Suspended VM: {name}")
+        except Exception as e:
+            return ToolResult(False, f"✗ suspend_vm failed: {e}")
+
+    @staticmethod
+    def resume_vm(name: str, hypervisor: str = "virtualbox") -> ToolResult:
+        try:
+            if hypervisor == "virtualbox":
+                rc, out = VirtualizationTool._vbox(["startvm", name, "--type", "headless"])
+            elif hypervisor == "libvirt":
+                conn = VirtualizationTool._libvirt_conn()
+                dom  = conn.lookupByName(name)
+                dom.create()
+                conn.close(); rc = 0; out = ""
+            elif hypervisor == "vmware":
+                r  = subprocess.run(["vmrun", "start", name], capture_output=True, text=True)
+                rc, out = r.returncode, r.stdout
+            else:
+                return ToolResult(False, f"✗ Unknown hypervisor: {hypervisor}")
+            return ToolResult(rc == 0, f"✓ Resumed VM: {name}")
+        except Exception as e:
+            return ToolResult(False, f"✗ resume_vm failed: {e}")
+
+    @staticmethod
+    def create_snapshot(
+        name: str, snapshot_name: str, hypervisor: str = "virtualbox"
+    ) -> ToolResult:
+        try:
+            if hypervisor == "virtualbox":
+                rc, out = VirtualizationTool._vbox(["snapshot", name, "take", snapshot_name])
+            elif hypervisor == "libvirt":
+                import xml.etree.ElementTree as ET
+                conn = VirtualizationTool._libvirt_conn()
+                dom  = conn.lookupByName(name)
+                snap_xml = f"<domainsnapshot><name>{snapshot_name}</name></domainsnapshot>"
+                dom.snapshotCreateXML(snap_xml, 0)
+                conn.close(); rc = 0; out = ""
+            elif hypervisor == "vmware":
+                r  = subprocess.run(["vmrun", "snapshot", name, snapshot_name], capture_output=True, text=True)
+                rc, out = r.returncode, r.stdout
+            else:
+                return ToolResult(False, f"✗ Unknown hypervisor: {hypervisor}")
+            return ToolResult(rc == 0, f"✓ Snapshot '{snapshot_name}' created for VM '{name}'")
+        except Exception as e:
+            return ToolResult(False, f"✗ create_snapshot failed: {e}")
+
+    @staticmethod
+    def restore_snapshot(
+        name: str, snapshot_name: str, hypervisor: str = "virtualbox"
+    ) -> ToolResult:
+        try:
+            if hypervisor == "virtualbox":
+                rc, out = VirtualizationTool._vbox(["snapshot", name, "restore", snapshot_name])
+            elif hypervisor == "libvirt":
+                conn = VirtualizationTool._libvirt_conn()
+                dom  = conn.lookupByName(name)
+                snap = dom.snapshotLookupByName(snapshot_name, 0)
+                dom.revertToSnapshot(snap, 0)
+                conn.close(); rc = 0; out = ""
+            elif hypervisor == "vmware":
+                r  = subprocess.run(["vmrun", "revertToSnapshot", name, snapshot_name], capture_output=True, text=True)
+                rc, out = r.returncode, r.stdout
+            else:
+                return ToolResult(False, f"✗ Unknown hypervisor: {hypervisor}")
+            return ToolResult(rc == 0, f"✓ Restored snapshot '{snapshot_name}' for VM '{name}'")
+        except Exception as e:
+            return ToolResult(False, f"✗ restore_snapshot failed: {e}")
+
+    @staticmethod
+    def delete_snapshot(
+        name: str, snapshot_name: str, hypervisor: str = "virtualbox"
+    ) -> ToolResult:
+        try:
+            if hypervisor == "virtualbox":
+                rc, out = VirtualizationTool._vbox(["snapshot", name, "delete", snapshot_name])
+            elif hypervisor == "libvirt":
+                conn = VirtualizationTool._libvirt_conn()
+                dom  = conn.lookupByName(name)
+                snap = dom.snapshotLookupByName(snapshot_name, 0)
+                snap.delete(0)
+                conn.close(); rc = 0; out = ""
+            elif hypervisor == "vmware":
+                r  = subprocess.run(["vmrun", "deleteSnapshot", name, snapshot_name], capture_output=True, text=True)
+                rc, out = r.returncode, r.stdout
+            else:
+                return ToolResult(False, f"✗ Unknown hypervisor: {hypervisor}")
+            return ToolResult(rc == 0, f"✓ Snapshot '{snapshot_name}' deleted")
+        except Exception as e:
+            return ToolResult(False, f"✗ delete_snapshot failed: {e}")
+
+    @staticmethod
+    def list_snapshots(name: str, hypervisor: str = "virtualbox") -> ToolResult:
+        try:
+            if hypervisor == "virtualbox":
+                rc, out = VirtualizationTool._vbox(["snapshot", name, "list"])
+                return ToolResult(rc == 0, f"✓ Snapshots for '{name}'", out.splitlines())
+            elif hypervisor == "libvirt":
+                conn = VirtualizationTool._libvirt_conn()
+                dom  = conn.lookupByName(name)
+                snaps = [s.getName() for s in dom.listAllSnapshots()]
+                conn.close()
+                return ToolResult(True, f"✓ {len(snaps)} snapshot(s)", snaps)
+            elif hypervisor == "vmware":
+                r  = subprocess.run(["vmrun", "listSnapshots", name], capture_output=True, text=True)
+                return ToolResult(True, "✓ Snapshots listed", r.stdout.splitlines())
+            return ToolResult(False, f"✗ Unknown hypervisor: {hypervisor}")
+        except Exception as e:
+            return ToolResult(False, f"✗ list_snapshots failed: {e}")
+
+    @staticmethod
+    def get_vm_info(name: str, hypervisor: str = "virtualbox") -> ToolResult:
+        try:
+            if hypervisor == "virtualbox":
+                rc, out = VirtualizationTool._vbox(["showvminfo", name, "--machinereadable"])
+                info = dict(line.split("=", 1) for line in out.splitlines() if "=" in line)
+                return ToolResult(rc == 0, f"✓ VM info: {name}", info)
+            elif hypervisor == "libvirt":
+                conn = VirtualizationTool._libvirt_conn()
+                dom  = conn.lookupByName(name)
+                info = {"name": dom.name(), "state": dom.isActive(), "max_memory": dom.maxMemory(), "vcpus": dom.maxVcpus()}
+                conn.close()
+                return ToolResult(True, f"✓ VM info: {name}", info)
+            elif hypervisor == "vmware":
+                r  = subprocess.run(["vmrun", "getGuestIPAddress", name], capture_output=True, text=True)
+                return ToolResult(True, "✓ VM info", {"ip": r.stdout.strip()})
+            return ToolResult(False, f"✗ Unknown hypervisor: {hypervisor}")
+        except Exception as e:
+            return ToolResult(False, f"✗ get_vm_info failed: {e}")
+
+    @staticmethod
+    def set_vm_resources(
+        name: str, cpus: int = None, memory_mb: int = None, hypervisor: str = "virtualbox"
+    ) -> ToolResult:
+        try:
+            if hypervisor == "virtualbox":
+                if cpus:
+                    VirtualizationTool._vbox(["modifyvm", name, "--cpus", str(cpus)])
+                if memory_mb:
+                    VirtualizationTool._vbox(["modifyvm", name, "--memory", str(memory_mb)])
+            elif hypervisor == "libvirt":
+                conn = VirtualizationTool._libvirt_conn()
+                dom  = conn.lookupByName(name)
+                if memory_mb:
+                    dom.setMaxMemory(memory_mb * 1024)
+                    dom.setMemory(memory_mb * 1024)
+                if cpus:
+                    dom.setVcpus(cpus)
+                conn.close()
+            elif hypervisor == "vmware":
+                if cpus:
+                    subprocess.run(["vmrun", "writeVariable", name, "runtimeConfig", "numvcpus", str(cpus)], capture_output=True)
+            return ToolResult(True, f"✓ VM resources updated: {name} (CPU={cpus}, RAM={memory_mb}MB)")
+        except Exception as e:
+            return ToolResult(False, f"✗ set_vm_resources failed: {e}")
+
+    @staticmethod
+    def clone_vm(
+        source: str, destination: str, hypervisor: str = "virtualbox"
+    ) -> ToolResult:
+        try:
+            if hypervisor == "virtualbox":
+                rc, out = VirtualizationTool._vbox(["clonevm", source, "--name", destination, "--register"])
+            elif hypervisor == "libvirt":
+                r  = subprocess.run(["virt-clone", "--original", source, "--name", destination, "--auto-clone"], capture_output=True, text=True)
+                rc, out = r.returncode, r.stdout + r.stderr
+            else:
+                return ToolResult(False, f"✗ clone_vm not supported for {hypervisor}")
+            return ToolResult(rc == 0, f"✓ Cloned '{source}' → '{destination}'")
+        except Exception as e:
+            return ToolResult(False, f"✗ clone_vm failed: {e}")
+
+    @staticmethod
+    def export_vm(
+        name: str,
+        output_path: str,
+        format: str = "ova",
+        hypervisor: str = "virtualbox",
+    ) -> ToolResult:
+        try:
+            if hypervisor == "virtualbox":
+                rc, out = VirtualizationTool._vbox(["export", name, "--output", output_path])
+            elif hypervisor == "libvirt":
+                r  = subprocess.run(
+                    ["virsh", "dumpxml", name], capture_output=True, text=True
+                )
+                from pathlib import Path
+                Path(output_path).write_text(r.stdout)
+                rc, out = r.returncode, output_path
+            else:
+                return ToolResult(False, f"✗ export_vm not supported for {hypervisor}")
+            return ToolResult(rc == 0, f"✓ VM '{name}' exported to {output_path}")
+        except Exception as e:
+            return ToolResult(False, f"✗ export_vm failed: {e}")
+
+    @staticmethod
+    def run_in_vm(name: str, command: str, hypervisor: str = "virtualbox") -> ToolResult:
+        try:
+            if hypervisor == "virtualbox":
+                rc, out = VirtualizationTool._vbox([
+                    "guestcontrol", name, "run",
+                    "--exe", "/bin/bash", "--", "bash", "-c", command,
+                ])
+            elif hypervisor == "vmware":
+                creds  = CredStore.load("vmware")
+                r  = subprocess.run(
+                    ["vmrun", "-gu", creds.get("user", ""), "-gp", creds.get("password", ""),
+                     "runProgramInGuest", name, "/bin/bash", "-c", command],
+                    capture_output=True, text=True,
+                )
+                rc, out = r.returncode, r.stdout + r.stderr
+            else:
+                return ToolResult(False, f"✗ run_in_vm not supported for {hypervisor}")
+            return ToolResult(rc == 0, f"✓ Command ran in VM '{name}'", out.strip())
+        except Exception as e:
+            return ToolResult(False, f"✗ run_in_vm failed: {e}")
+
+    @staticmethod
+    def copy_to_vm(
+        name: str, local_path: str, vm_path: str, hypervisor: str = "virtualbox"
+    ) -> ToolResult:
+        try:
+            if hypervisor == "virtualbox":
+                rc, out = VirtualizationTool._vbox([
+                    "guestcontrol", name, "copyto", local_path, vm_path, "--recursive",
+                ])
+            elif hypervisor == "vmware":
+                creds  = CredStore.load("vmware")
+                r  = subprocess.run(
+                    ["vmrun", "-gu", creds.get("user", ""), "-gp", creds.get("password", ""),
+                     "copyFileFromHostToGuest", name, local_path, vm_path],
+                    capture_output=True, text=True,
+                )
+                rc, out = r.returncode, r.stdout + r.stderr
+            else:
+                return ToolResult(False, f"✗ copy_to_vm not supported for {hypervisor}")
+            return ToolResult(rc == 0, f"✓ Copied '{local_path}' to VM '{name}':{vm_path}")
+        except Exception as e:
+            return ToolResult(False, f"✗ copy_to_vm failed: {e}")
+
+    @staticmethod
+    def create_vm(
+        name: str,
+        os: str = "Ubuntu_64",
+        cpus: int = 2,
+        memory: int = 2048,
+        disk_size: int = 20000,
+        iso_path: str = "",
+        hypervisor: str = "virtualbox",
+    ) -> ToolResult:
+        try:
+            if hypervisor == "virtualbox":
+                for cmd in [
+                    ["createvm", "--name", name, "--ostype", os, "--register"],
+                    ["modifyvm", name, "--memory", str(memory), "--cpus", str(cpus), "--nic1", "nat"],
+                    ["createhd", "--filename", f"{name}.vdi", "--size", str(disk_size)],
+                    ["storagectl", name, "--name", "SATA", "--add", "sata"],
+                    ["storageattach", name, "--storagectl", "SATA", "--port", "0", "--type", "hdd", "--medium", f"{name}.vdi"],
+                ]:
+                    rc, out = VirtualizationTool._vbox(cmd)
+                    if rc != 0:
+                        return ToolResult(False, f"✗ VBox create_vm step failed: {out}")
+                if iso_path:
+                    VirtualizationTool._vbox([
+                        "storageattach", name, "--storagectl", "SATA",
+                        "--port", "1", "--type", "dvddrive", "--medium", iso_path,
+                    ])
+            elif hypervisor == "libvirt":
+                r  = subprocess.run([
+                    "virt-install", "--name", name, "--memory", str(memory),
+                    "--vcpus", str(cpus), "--disk", f"size={disk_size // 1024}",
+                    "--os-type", "linux", "--os-variant", os.lower(),
+                    "--noautoconsole",
+                ] + (["--cdrom", iso_path] if iso_path else ["--import"]),
+                    capture_output=True, text=True,
+                )
+                return ToolResult(r.returncode == 0, r.stdout + r.stderr)
+            else:
+                return ToolResult(False, f"✗ create_vm not supported for {hypervisor}")
+            return ToolResult(True, f"✓ VM '{name}' created ({os}, {cpus} CPUs, {memory}MB RAM, {disk_size}MB disk)")
+        except Exception as e:
+            return ToolResult(False, f"✗ create_vm failed: {e}")
+
+
 ######################################################################################################################################
 """ TOOLS"""
 #####################################################################################################################################
