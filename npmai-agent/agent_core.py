@@ -449,7 +449,7 @@ class AgentBrain(ensure):
                 break
             elif i:
                 if not isinstance(i, LLMBackend):
-                    raise TypeError("planner must implement LLMBackend (i.e. have .invoke(prompt)->str)")
+                    raise TypeError(f"{i} must implement LLMBackend (i.e. have .invoke(prompt)->str)")
             
         self.planner   = planner or Ollama(model="llama3.2:3b", temperature=0.2,
                                                    change=True, Models=["mistral:7b"])
@@ -464,6 +464,7 @@ class AgentBrain(ensure):
         self.chatter   = chatter or Ollama(model="granite3.3:2b", temperature=0.7,
                                                    change=True, Models=["llama3.2:1b"])
         self.mem_plan  = Memory("agent_plan")
+        self.tool_manager = Memory("agent_plan")
         self.mem_code  = Memory("agent_code")
         self.mem_chat  = Memory("agent_chat")
         self.mem_tasks = Memory("agent_tasks")
@@ -494,6 +495,15 @@ Assistant:"""
         resp = self.chatter.invoke(prompt)
         self.mem_chat.save_context("assistant", resp)
         return resp
+
+    def tool_manager(self, task:str) -> str:
+        self.tool_manager.save_context("task", task)f
+        hist = self.tool_manager.load_memory_variables()
+        prompt = f"""You are NPMAI Agent, an advanced AI assistant powered by NPMAI ECOSYSTEM.
+        You help w
+
+        #UNDER DEVELOPMENT 
+        """
 
     def plan(self, task:str) -> list:
         ws = self.workspace.context_summary()
