@@ -1,3 +1,4 @@
+from npmai import Ollama, Memory
 import os, sys, json, re, shutil, subprocess, tempfile, traceback
 import threading, time, smtplib, imaplib, email as email_lib
 import hashlib, base64, platform, glob, zipfile, tarfile
