@@ -40,6 +40,238 @@ class GitTool:
         "Full local Git operations: init, clone, commit, push, pull, branch, "
         "merge, rebase, stash, tag, diff, log, blame, cherry-pick, submodules"
     )
+    use = ("""
+Name of Tool:- GitTool
+
+Purpose of Tool:- 
+The GitTool provides a localized abstraction interface over the Git distributed version control system. By wrapping core shell-level 
+binary tracking loops via explicit `subprocess` plumbing, it translates raw git repository commands into structured automation components. 
+This enables agents or localized programs to dynamically spin up empty tracking environments, capture distributed remote source codebases, 
+inspect unstaged modified paths, stage specific code snapshots, capture revision history baselines, reconcile diverged network heads via push, 
+pull, or fetch mechanisms, branch off independent testing configurations, merge development histories, modify baseline tracking logs through rebase or reset 
+actions, preserve temporary modifications safely inside stash frames, apply diagnostic authorship profiles with blame audits, pluck isolated commits, 
+and configure embedded submodule dependency nodes.
+
+Methods:-
+- init: Initializes a brand-new local Git repository layout on a given target disk path.
+- clone: Duplicates a remote source code tracking repository into a fresh local directory structure.
+- status: Evaluates the current state of a repo, showing untracked, modified, or staged system changes.
+- add: Transitions specific target file footprints out of raw working storage and into the active Git staging area.
+- commit: Locks active staged changes into a formal cryptographic revision node complete with a tracking message.
+- push: Transfers local commit historical sequences up to designated upstream server nodes.
+- pull: Fetches and integrates remote branch sequences directly into the active local branch instance.
+- fetch: Downloads historical updates and reference tags from a remote repository without altering current local file structures.
+- create_branch: Spins out a new isolated development path and immediately shifts the active repository target onto it.
+- checkout: Swaps the active working directory context over to an existing tracking branch or commit reference.
+- merge: Aggregates historical change paths from an external branch directly into the active local branch.
+- log: Extracts a chronological array tracking summary profiles of recent historical repository changes.
+- diff: Audits uncommitted textual adjustments made between target file paths and active repository references.
+- stash: Temporarily captures and shelves modified working tree states to clean up active development directories.
+- stash_pop: Extracts and restores the latest stashed set of modifications back out into the active working tree.
+- tag: Pins a named label or release tag onto the current head revision location.
+- reset: Rewinds repository head indicators to historic boundaries, shifting staged index arrays or local files along with it.
+- rebase: Reapplies local commits on top of another base branch tip to build a clean, linear commit history.
+- cherry_pick: Isolates and applies the exact changes from a single specific commit onto the active local branch.
+- blame: Maps file lines to their author, commit hash, and timestamp for revision tracking and auditing.
+- show: Inspects specific target commit hashes to extract detailed metadata and comprehensive file modification history.
+- remote_add: Establishes a named pointer reference link targeting a remote upstream repository host server.
+- remote_list: Lists all currently registered upstream repository pointer lines configured inside local configurations.
+- submodule_init: Registers and pulls dependencies from nested downstream repository submodules mapped within code structures.
+
+How to use Tool Methods:-
+
+1. init:
+   - Purpose: Creates a brand-new local repository space, setting up essential tracking sub-folders on disk.
+   - Arguments:
+     a) path: str - Target file path directory location slated to house the initialized repo layout.
+   - Returns: ToolResult tracking registration validation confirmation strings.
+   - How to call: GitTool.init(path="/home/user/projects/new_app")
+
+2. clone:
+   - Purpose: Pulls down a complete copy of an external remote repository structure into a new local directory.
+   - Arguments:
+     a) url: str - Source host network link endpoint reference (HTTPS or SSH protocol string).
+     b) dest: str - Local destination folder tracking target path destination bounds.
+   - Returns: ToolResult reporting repository cloning execution success flags.
+   - How to call: GitTool.clone(url="https://github.com/user/repo.git", dest="/home/user/repo")
+
+3. status:
+   - Purpose: Performs a quick audit on the active working folder to detect modified or untracked changes.
+   - Arguments:
+     a) path: str - Target file directory locating the active tracking repository root block.
+   - Returns: ToolResult outlining short-form version modifications or clean state validation lines.
+   - How to call: GitTool.status(path="/home/user/repo")
+
+4. add:
+   - Purpose: Moves changes from the local working directory into the staging area to prepare them for a commit.
+   - Arguments:
+     a) path: str - Repository root directory path target identifier.
+     b) files: str or list (default: ".") - File path strings or arrays pointing to targeted modification zones.
+   - Returns: ToolResult logging successful file staging steps.
+   - How to call: GitTool.add(path="/home/user/repo", files=["src/main.py", "README.md"])
+
+5. commit:
+   - Purpose: Saves staged snapshots into a permanent history commit node, complete with tracking metadata.
+   - Arguments:
+     a) path: str - Local file repository location string reference.
+     b) message: str - Explanatory context note detailing tracking alterations applied in this run.
+     b) all: bool (default: True) - Automatically stages modified tracking files when flagged True (skips untracked assets).
+   - Returns: ToolResult verifying successful commit serialization logs.
+   - How to call: GitTool.commit(path="/home/user/repo", message="feat: add core API handlers", all=True)
+
+6. push:
+   - Purpose: Publishes local commit history records up to shared central repositories.
+   - Arguments:
+     a) path: str - Local file tracking directory path target reference.
+     b) remote: str (default: "origin") - Named pointer targeting upstream server connection links.
+     c) branch: str (default: "main") - Selected branch channel name targeted to receive data sets.
+   - Returns: ToolResult validating successful network sync loops.
+   - How to call: GitTool.push(path="/home/user/repo", remote="origin", branch="feature-login")
+
+7. pull:
+   - Purpose: Fetches the latest updates from a remote repository and immediately merges them into the active local branch.
+   - Arguments:
+     a) path: str - Root repository storage folder configuration path.
+     b) remote: str (default: "origin") - Targeted remote pointer tracking source nodes.
+     c) branch: str (default: "main") - Upstream reference target tracking source branch channels.
+   - Returns: ToolResult tracking successful extraction and integration executions.
+   - How to call: GitTool.pull(path="/home/user/repo", remote="origin", branch="main")
+
+8. fetch:
+   - Purpose: Downloads historical updates from remote tracking locations without modifying active local files.
+   - Arguments:
+     a) path: str - Core repository location path reference on disk.
+     b) remote: str (default: "origin") - Selected network tracking target target identifier pointer.
+   - Returns: ToolResult confirming structural history frame synchronization updates.
+   - How to call: GitTool.fetch(path="/home/user/repo", remote="upstream")
+
+9. create_branch:
+   - Purpose: Creates a new independent development timeline and immediately switches the working directory over to it.
+   - Arguments:
+     a) path: str - Active local tracking repository storage location reference.
+     b) name: str - Operational tracking label identifying the new target branch channel.
+   - Returns: ToolResult detailing context shift tracking flags.
+   - How to call: GitTool.create_branch(path="/home/user/repo", name="bugfix/auth-leak")
+
+10. checkout:
+    - Purpose: Switches the active working workspace back and forth between existing branch lines or specific commit hashes.
+    - Arguments:
+      a) path: str - Target repo root location tracking active assets.
+      b) branch: str - Targeted identifier name string or commit reference targeted for checkouts.
+    - Returns: ToolResult confirming operational workspace redirection.
+    - How to call: GitTool.checkout(path="/home/user/repo", branch="main")
+
+11. merge:
+    - Purpose: Merges history streams from an external branch directly into the active local development line.
+    - Arguments:
+      a) path: str - File location configuration tracking target repositories.
+      b) branch: str - Target source branch whose historical steps are pulled for merge processes.
+    - Returns: ToolResult confirming the historical merge state results.
+    - How to call: GitTool.merge(path="/home/user/repo", branch="feature-login")
+
+12. log:
+    - Purpose: Extracts a list summarizing recent repository commits to trace development history.
+    - Arguments:
+      a) path: str - Repository tracking context identifier path.
+      b) n: int (default: 10) - Maximum commit tracking history entries extracted in the log slice.
+    - Returns: ToolResult holding list structures containing short-form revision indicators.
+    - How to call: GitTool.log(path="/home/user/repo", n=5)
+
+13. diff:
+    - Purpose: Highlights line-by-line file differences between local modifications and the latest committed baseline.
+    - Arguments:
+      a) path: str - Root repository target track folder identifier on disk.
+      b) file: str (default: None) - Optional path target limiting diff reviews to a single specific asset.
+    - Returns: ToolResult encapsulating raw line modification text outputs.
+    - How to call: GitTool.diff(path="/home/user/repo", file="src/utils.py")
+
+14. stash:
+    - Purpose: Temporarily saves uncommitted changes to a secure sidebar space, rolling back local modifications to clean up the workspace.
+    - Arguments:
+      a) path: str - Active working directory context identifying targeted repository scopes.
+    - Returns: ToolResult recording context reservation properties.
+    - How to call: GitTool.stash(path="/home/user/repo")
+
+15. stash_pop:
+    - Purpose: Re-applies the most recently stashed set of hidden changes back out onto active file structures.
+    - Arguments:
+      a) path: str - Active repository layout identification location folder tracker.
+    - Returns: ToolResult logging the restoration of cached development changes.
+    - How to call: GitTool.stash_pop(path="/home/user/repo")
+
+16. tag:
+    - Purpose: Applies an annotated text tag or release indicator onto the current branch tip.
+    - Arguments:
+      a) path: str - Repository root track space lookup identifier path.
+      b) name: str - Version marker identifier string (e.g., "v1.0.4").
+      c) message: str (default: "") - Description context notes embedded alongside the version tag.
+    - Returns: ToolResult tracking tag assignment confirmation states.
+    - How to call: GitTool.tag(path="/home/user/repo", name="v1.0.0", message="Production Release Baseline")
+
+17. reset:
+    - Purpose: Rewinds the active branch history pointer to a specific target commit, allowing you to modify your staging or working directory states.
+    - Arguments:
+      a) path: str - Target local tracking project path location pointer.
+      b) mode: str (default: "--soft") - Structural depth control modifiers, matching "--soft", "--mixed", or "--hard".
+      c) commit: str (default: "HEAD~1") - History target locator destination reference identifier hash.
+    - Returns: ToolResult verifying context alignment alterations.
+    - How to call: GitTool.reset(path="/home/user/repo", mode="--hard", commit="HEAD~2")
+
+18. rebase:
+    - Purpose: Rewrites branch history by picking up local commits and reapplying them sequentially on top of another base branch tip.
+    - Arguments:
+      a) path: str - Target directory path location identifying repositories undergoing history adjustments.
+      b) branch: str - Base repository target lineage chosen to anchor historical operations.
+    - Returns: ToolResult detailing execution state logs.
+    - How to call: GitTool.rebase(path="/home/user/repo", branch="main")
+
+19. cherry_pick:
+    - Purpose: Grabs a single specific commit change node from an external branch timeline and applies it onto the current branch.
+    - Arguments:
+      a) path: str - Core repository system base target tracker folder path.
+      b) commit: str - Target cryptographic revision identity string hash chosen for application.
+    - Returns: ToolResult validating individual revision integrations.
+    - How to call: GitTool.cherry_pick(path="/home/user/repo", commit="a1b2c3d")
+
+20. blame:
+    - Purpose: Looks up authorship history for a file line-by-line, showing exactly who modified it and when.
+    - Arguments:
+      a) path: str - Repository tracker base location space.
+      b) file: str - Target file asset path undergoing line history investigation loops.
+    - Returns: ToolResult enclosing comprehensive porcelain-formatted history logs.
+    - How to call: GitTool.blame(path="/home/user/repo", file="src/auth.py")
+
+21. show:
+    - Purpose: Inspects a specific commit hash to display its full log details and line-by-line code changes.
+    - Arguments:
+      a) path: str - Target local database instance root tracking layout.
+      b) commit: str - High-level target revision index reference locator hash string.
+    - Returns: ToolResult containing truncated commit structural definition logs.
+    - How to call: GitTool.show(path="/home/user/repo", commit="e5f6g7h")
+
+22. remote_add:
+    - Purpose: Registers a new remote repository tracking link shortcut key mapping under local repository configuration files.
+    - Arguments:
+      a) path: str - Target repository directory baseline trace reference.
+      b) name: str - Local tracking shortcut key identity designation token (e.g., "upstream").
+      c) url: str - Target network platform location indicator string.
+    - Returns: ToolResult logging link configuration updates.
+    - How to call: GitTool.remote_add(path="/home/user/repo", name="upstream", url="https://github.com/org/core-repo.git")
+
+23. remote_list:
+    - Purpose: Gathers all upstream remote repository reference addresses currently configured inside the local project environment.
+    - Arguments:
+      a) path: str - Main repository frame locator folder link path.
+    - Returns: ToolResult containing arrays listing active remote names and target URL links.
+    - How to call: GitTool.remote_list(path="/home/user/repo")
+
+24. submodule_init:
+    - Purpose: Registers and updates nested dependent repository nodes mapped within active repository configuration files.
+    - Arguments:
+      a) path: str - Main layout parent tracking directory infrastructure reference.
+    - Returns: ToolResult logging downstream submodule population loops.
+    - How to call: GitTool.submodule_init(path="/home/user/repo")
+""")
 
     # ── helpers ────────────────────────────────────────────────────────────────
     @staticmethod
