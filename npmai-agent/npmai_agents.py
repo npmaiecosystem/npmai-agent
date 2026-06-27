@@ -83,38 +83,6 @@ class AgentBrain(ensure):
     """
     PARSER = StrOutputParser()
 
-    def build_tool_registry():
-    """
-    Dynamically imports all 10 tool files and builds a flat {ClassName: Class} dict.
-    Add this to AgentBrain.__init__ as self.tool_registry = build_tool_registry()
-    If you are forking or cloning locally then  remember of these files otherwise 
-    it will not work and you will face problem that you cannot solve until you will have these files
-    and you will be stuck in errors you wil get so remember of this.
-    """
-    import importlib, inspect
-    registry = {}
-    modules = [
-        "Tools_Developer_CLI",
-        "Tools_business",
-        "Tools_cloud_devops",
-        "Tools_communication_extended",
-        "Tools_creative",
-        "Tools_data_research",
-        "Tools_media",
-        "Tools_productivity",
-        "Tools_security_ai",
-        "Tools_system_hardware",
-    ]
-    for mod_name in modules:
-        try:
-            mod = importlib.import_module(mod_name)
-            for name, obj in inspect.getmembers(mod, inspect.isclass):
-                if name.endswith('Tool'):
-                    registry[name] = obj
-        except ImportError:
-            pass  
-    return registry
-    
     """ This TOOLS_SUMMARY was defined for 0.0.1 but because we do developments in this repo therefore for future uses we
     are not removing this
     
@@ -285,7 +253,32 @@ class AgentBrain(ensure):
 100.VirtualizationTool: VM management — list/start/stop/snapshot VMs, clone, export, run commands in VM, set resources
 """.strip()
 
-    def build_planner_prompt(task: str, workspace_summary: str) -> str:
+    def build_tool_registry(self):
+        import importlib, inspect
+        registry = {}
+        modules = [
+            "Tools_Developer_CLI",
+            "Tools_business",
+            "Tools_cloud_devops",
+            "Tools_communication_extended",
+            "Tools_creative",
+            "Tools_data_research",
+            "Tools_media",
+            "Tools_productivity",
+            "Tools_security_ai",
+            "Tools_system_hardware",
+        ]
+        for mod_name in modules:
+            try:
+                mod = importlib.import_module(mod_name)
+                for name, obj in inspect.getmembers(mod, inspect.isclass):
+                    if name.endswith('Tool'):
+                        registry[name] = obj
+            except ImportError:
+                pass  
+        return registry
+    
+    def build_planner_prompt(self, task: str, workspace_summary: str) -> str:
         return f"""You are a task planner for an AI automation agent.
         Your job: break the user's task into 2-5 clear atomic steps AND write a concise task summary.
         
@@ -315,7 +308,7 @@ class AgentBrain(ensure):
         }}"""
         
 
-    def build_tool_manager_phase1_prompt(task_summary: str) -> str:
+    def build_tool_manager_phase1_prompt(self, task_summary: str) -> str:
         return f"""You are a Tool Selector for an AI agent with access to 100 tool classes.
  
 Task to accomplish:
@@ -333,7 +326,7 @@ Instructions:
 Return ONLY a JSON array of class names, no explanation:
 ["ClassName1", "ClassName2", ...]"""
 
-    def build_tool_manager_phase2_prompt(task_summary: str, use_docs: str) -> str:
+    def build_tool_manager_phase2_prompt(self, task_summary: str, use_docs: str) -> str:
         return f"""You are a Tool Selector. Review the detailed docs of shortlisted tools.
 Your job: confirm which tools are genuinely needed and reject any that are not.
  
@@ -359,7 +352,7 @@ Return the full documentation of ONLY the selected tools, formatted as:
 If you need to check another tool not in this list, say:
 NEED_MORE: ClassName1, ClassName2"""
 
-    def build_coder_prompt(step: str, task: str, selected_tool_docs: str, workspace_summary: str, prev_globals: str = "", error: str = "") -> str:
+    def build_coder_prompt(self, step: str, task: str, selected_tool_docs: str, workspace_summary: str, prev_globals: str = "", error: str = "") -> str:
         fix = f"\nPrevious error to fix:\n{error}" if error else ""
         reuse = f"\nPreviously available globals from prior steps:\n{prev_globals}" if prev_globals else ""
     
@@ -391,7 +384,7 @@ Rules:
  
 Write complete Python code:"""
 
-    def build_auditor_prompt(code: str) -> str:
+    def build_auditor_prompt(self, code: str) -> str:
         return f"""[SECURITY AUDITOR] You analyze Python code for dangerous operations only.
  
 BLOCK if code contains:
@@ -419,7 +412,7 @@ Answer format: first word must be ALLOW or BLOCK, then one line reason.
 Example: ALLOW safe file read and email send operation
 Example: BLOCK attempts to read /etc/shadow credential store"""
 
-    def build_verifier_prompt(step: str, output: str) -> str:
+    def build_verifier_prompt(self, step: str, output: str) -> str:
         return f"""Did this automation step complete successfully?
  
 Step that was supposed to run:
@@ -441,7 +434,7 @@ Answer NO if:
  
 Reply with ONE word only: YES or NO"""
 
-    def build_use_docs_for_classes(class_names: list, tool_registry: dict) -> str:
+    def build_use_docs_for_classes(self, class_names: list, tool_registry: dict) -> str:
     """
     tool_registry: flat dict of {ClassName: ClassObject} built from all 10 tool files.
     Returns combined use strings for requested class names.
