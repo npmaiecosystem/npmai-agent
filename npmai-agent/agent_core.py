@@ -68,7 +68,7 @@ class ensure:
 from npmai import Ollama, Memory, Rag
 from langchain_core.output_parsers import StrOutputParser
 
-#L LLM Backend
+'''#L LLM Backend
 """ 
 This is just a abstract which is used for a type of validation and attachment.
 """
@@ -352,7 +352,7 @@ class ToolResult(ensure):
         self.success = success
         self.output  = output
         self.data    = data
-    def __str__(self): return self.output
+    def __str__(self): return self.output'''
 
 
 class Executor(ensure):
