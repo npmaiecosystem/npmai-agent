@@ -26,7 +26,7 @@ from datetime import datetime, timedelta
 from typing import Any, Callable, Optional
 
 # ── Import shared primitives from agent_core ────────────────────────────────
-from agent_core import ToolResult, CredStore, _ensure
+from core import ToolResult, CredStore, _ensure
 
 # ── Auto-install dependencies ───────────────────────────────────────────────
 for _pkg, _imp in [
