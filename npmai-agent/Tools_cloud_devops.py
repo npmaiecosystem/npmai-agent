@@ -39,7 +39,7 @@ _ensure("watchdog",    "watchdog")
 _ensure("kubernetes",  "kubernetes")
 
 # ── Imports from agent_core ───────────────────────────────────────────────────
-from agent_core import ToolResult, CredStore
+from core import ToolResult, CredStore
 
 
 # ══════════════════════════════════════════════════════════════════════════════
