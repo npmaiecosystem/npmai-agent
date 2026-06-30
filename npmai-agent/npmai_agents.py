@@ -1,5 +1,6 @@
 from npmai import Ollama, Memory
-from agent_core import LLMBackend, Ollama_Local, OpenAIBackend, AnthropicBackend, GeminiBackend, GroqBackend, MistralBackend, CohereBackend, AzureOpenAIBackend, BedrockBackend, HuggingFaceBackend, LlamaCppBackend, CredStore, Workspace, ToolResult, Executor
+from core import LLMBackend, Ollama_Local, OpenAIBackend, AnthropicBackend, GeminiBackend, GroqBackend, MistralBackend, CohereBackend, AzureOpenAIBackend, BedrockBackend, HuggingFaceBackend, LlamaCppBackend, CredStore, Workspace, ToolResult,
+from agent_core import Executor
 import os, sys, json, re, shutil, subprocess, tempfile, traceback
 import threading, time, smtplib, imaplib, email as email_lib
 from langchain_core.output_parsers import StrOutputParser
