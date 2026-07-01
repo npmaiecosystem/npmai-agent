@@ -41,6 +41,25 @@ except ImportError:
 
 # ─── Auto-installer ───────────────────────────────────────────────────────────
 def _ensure(pkg: str, import_name: str = None):
+    if import_name == "sounddevice":
+        os_name = sys.platform
+        try:
+            if os_name == "linux" or os_name == "linux2":
+                if os.path.exists("/usr/bin/apt-get"):
+                    subprocess.run(["sudo", "apt-get", "update"], check=True)
+                    subprocess.run(["sudo", "apt-get", "install", "-y", "libportaudio2", "portaudio19-dev"], check=True)
+                elif os.path.exists("/usr/bin/dnf"):
+                    subprocess.run(["sudo", "dnf", "install", "-y", "portaudio", "portaudio-devel"], check=True)
+                else:
+                    print("Not ablke to install")
+            elif os_name == "darwin": 
+                subprocess.run(["brew", "install", "portaudio"], check=True)
+            
+            elif os_name == "win32":
+                subprocess.run([sys.executable, "-m", "pip", "install", "--upgrade", "--force-reinstall", "sounddevice"], check=True)
+            
+        except subprocess.CalledProcessError as e:
+            return f"Installation failed: {e}. Please ensure you have administrator/sudo privileges."
     n = import_name or pkg
     try:
         __import__(n)
