@@ -26,7 +26,8 @@
 <br/>
 <br/>
 
-**[`🌐 Website`](https://npmai.netlify.app)** · **[`📦 PyPI`](https://pypi.org/project/npmai_agents)** · **[`🐙 GitHub`](https://github.com/sonuramashishnpm/npmai-agent)** · **[`👤 Founder`](https://github.com/sonuramashishnpm)**
+**[`🌐 Website`](https://npmai.netlify.app)** · **[`📦 PyPI`](https://pypi.org/project/npmai_agents)** · **[`🐙 GitHub`](https://github.com/sonuramashishnpm/npmai-agent)** · **[`👤 Founder`](https://github.com/sonuramashishnpm)** 
+. **[![PyPI Downloads](https://static.pepy.tech/personalized-badge/npmai-agents?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/npmai-agents)**
 
 </div>
 
