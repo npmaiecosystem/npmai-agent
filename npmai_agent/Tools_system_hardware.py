@@ -11,8 +11,11 @@ def _ensure(pkg: str, import_name: str = None):
     n = import_name or pkg
     try:
         __import__(n)
-    except ImportError:
-        subprocess.run([sys.executable, "-m", "pip", "install", pkg, "-q"], check=False)
+    except:
+        try:
+          subprocess.run([sys.executable, "-m", "pip", "install", pkg, "-q"], check=False)
+        except:
+          print(f"Some packages is not installed properly in your environment due to some reasons these are the packages {n}")
 
 for _p, _i in [
     ("psutil",            "psutil"),

@@ -63,12 +63,11 @@ def _ensure(pkg: str, import_name: str = None):
     n = import_name or pkg
     try:
         __import__(n)
-    except ImportError:
-        subprocess.run(
-            [sys.executable, "-m", "pip", "install", pkg, "-q", "--break-system-packages"],
-            check=False, capture_output=True
-        )
-
+    except:
+        try:
+          subprocess.run([sys.executable, "-m", "pip", "install", pkg, "-q", "--break-system-packages"], check=False,capture_output=True)
+        except:
+          print(f"Some packages is not installed properly in your environment due to some reasons these are the packages {n}")
 
 # Install all media dependencies up-front
 _MEDIA_DEPS = [

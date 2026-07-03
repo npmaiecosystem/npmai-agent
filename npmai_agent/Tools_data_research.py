@@ -31,11 +31,11 @@ def _ensure(pkg: str, import_name: str = None):
     name = import_name or pkg
     try:
         __import__(name)
-    except ImportError:
-        subprocess.run(
-            [sys.executable, "-m", "pip", "install", pkg, "-q"],
-            check=False
-        )
+    except:
+        try:
+          subprocess.run([sys.executable, "-m", "pip", "install", pkg, "-q"], check=False)
+        except:
+          print(f"Some packages is not installed properly in your environment due to some reasons these are the packages {n}")
 
 for _pkg, _imp in [
     ("pandas",                  "pandas"),
