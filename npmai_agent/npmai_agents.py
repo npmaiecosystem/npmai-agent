@@ -313,7 +313,7 @@ Tool Index (100 classes, one line each):
  
 Instructions:
 - Read the task carefully
-- Select 2-6 tool classes that are most likely needed
+- Select tool classes that are most likely needed
 - Be precise — only select tools genuinely required, not tangentially related ones
 - If the task clearly needs only 1-2 tools, select only those
  
@@ -336,13 +336,6 @@ Instructions:
 - For kept tools, preserve their FULL documentation exactly as shown
 - Do not summarize or shorten — Coder needs the full method details
  
-Return the full documentation of ONLY the selected tools, formatted as:
-=== ClassName ===
-[full use string here]
- 
-=== ClassName2 ===
-[full use string here]
- 
 If you need to check another tool not in this list, say:
 NEED_MORE: ClassName1, ClassName2"""
 
@@ -358,14 +351,28 @@ Install any missing libraries with subprocess pip install at the top if needed.
  
 User's system:
 {workspace_summary}
- 
+
+Follow what instruction to use tools here given:-
+
 Tool classes available to import and use:
+
+Follow what instruction to use tools here given:-
+
 {selected_tool_docs}
  
-Import syntax:
-from agent_core import [ClassName]   # for any class shown in tool docs above
-from agent_core import CredStore, Workspace  # always available
- 
+Import Syntax:-
+from Tools_Developer_CLI import GitTool, GitHubTool, GitLabTool, DockerTool, PackageManagerTool, VSCodeTool, TerminalTool, MakefileTool, CMakeTool, DebuggerTool
+from Tools_business import StripeTool, RazorpayTool, ShopifyTool, InvoiceTool, AccountingTool, CRMTool, EmailMarketingTool, AnalyticsTool, InventoryTool, ContractTool
+from Tools_cloud_devops import AWSS3Tool, AWSLambdaTool, AWSECSTool, CloudflareTool, VercelTool, NetlifyTool, RailwayTool, KubernetesTool, TerraformTool, MonitoringTool
+from Tools_communication_extended import MicrosoftTeamsTool, ZoomTool, TwilioTool, SendGridTool, PushNotificationTool, RSSFeedTool, WebhookTool, CalendarTool, ChatOpsAutomationTool, SMTPAdvancedTool
+from Tools_creative import FigmaTool, BlenderTool, SVGTool, CanvaTool, FontTool, ColorTool, IconTool, DiagramTool, PrintTool, ThreeDTool
+from Tools_data_research import DataAnalysisTool, VisualizationTool, WebScrapingAdvancedTool, SearchResearchTool, FinancialDataTool, SocialMediaDataTool, WeatherGeoTool, TextAnalyticsTool, DatabaseTool, ReportGeneratorTool
+from Tools_media import FFmpegTool, YouTubeDownloaderTool, AudioTool, ImageAdvancedTool, ScreenRecorderTool, TextToSpeechTool, VideoEditingTool, PodcastTool, StreamingTool, MediaMetadataTool
+from Tools_productivity import GoogleWorkspaceTool, NotionAdvancedTool, LinearTool, AsanaTool, TrelloTool, ClickUpTool, TodoistTool, ObsidianTool, BookmarkManagerTool, TimeTrackingTool
+from Tools_security_ai import SecurityScannerTool, CryptographyTool, PenetrationTestingTool, AIImageGenerationTool, AITextGenerationAdvancedTool, MLModelTool, SpeechAITool, ComputerVisionTool, AutomationWorkflowTool, KnowledgeBaseTool
+from Tools_system_hardware import SystemAdvancedTool, NetworkAdvancedTool, FileSystemAdvancedTool, ProcessAutomationTool, PrinterTool, ClipboardAdvancedTool, HardwareMonitorTool, RaspberryPiTool, MQTTIoTTool, VirtualizationTool
+ as per need Use
+
 Full task context: {task}
 This specific step to implement: {step}
 {reuse}{fix}
@@ -375,6 +382,7 @@ Rules:
 - Use EXACT method signatures shown — do not guess parameters
 - Handle errors gracefully with try/except
 - Print progress so Verifier can confirm success
+- Follow what instruction to use tools here given:
  
 Write complete Python code:"""
 
@@ -485,7 +493,7 @@ Assistant:"""
         p1 = self.build_tool_manager_phase1_prompt(task_summary)
         raw = self.tool_manager.invoke(p1)
         self.mem_tool_manager.save_context("phase1_raw", raw)
- 
+    
         try:
             match = re.search(r'\[.*?\]', raw, re.DOTALL)
             shortlist = _json.loads(match.group()) if match else []
@@ -500,7 +508,7 @@ Assistant:"""
  
         use_docs = self.build_use_docs_for_classes(shortlist, self.tool_registry)
         p2 = self.build_tool_manager_phase2_prompt(task_summary, use_docs)
-        final_docs = self.tool_manager_llm.invoke(p2)
+        final_docs = self.tool_manager.invoke(p2)
         self.mem_tool_manager.save_context("phase2_selected", final_docs)
  
         if "NEED_MORE:" in final_docs:
