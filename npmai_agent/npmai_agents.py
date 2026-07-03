@@ -482,7 +482,7 @@ Assistant:"""
     def select_tools(self, task_summary: str) -> str:
         import re, json as _json
  
-        p1 = build_tool_manager_phase1_prompt(task_summary)
+        p1 = self.build_tool_manager_phase1_prompt(task_summary)
         raw = self.tool_manager_llm.invoke(p1)
         self.mem_tool_manager.save_context("phase1_raw", raw)
  
