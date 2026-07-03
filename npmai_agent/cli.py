@@ -61,7 +61,7 @@ def config_agent(
 @app.command()
 def save_credentials(name:str,data:str):
   data_parsed = json.loads(data)
-  saved = _cred.save(name=name,data=data)
+  saved = _cred.save(name=name,data=data_parsed)
 
 @app.command()
 def load_credentials(name:str):
