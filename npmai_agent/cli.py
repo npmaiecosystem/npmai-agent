@@ -13,26 +13,43 @@ import json
 
 app = typer.Typer()
 
-_agent = AgentBrain()
-_cred = CredStore()
-_workspace = Workspace()
 
 @app.command()
-def config_agent(
-    planner_model: str = "llama3.2:3b",
-    planner_provider: str = "npmai",
-    coder_model: str = "codellama:7b-instruct", 
-    coder_provider: str = "npmai",
-    auditor_model: str = "qwen2.5-coder:7b",
-    auditor_provider: str = "npmai",
-    verifier_model: str = "llama3.2:3b",
-    verifier_provider: str = "npmai",
-    chatter_model: str = "granite3.3:2b",
-    chatter_provider: str = "npmai",
-):
-    global _agent
-    
-    def build_backend(provider: str, model: str):
+def save_credentials(name:str,data:str):
+  data_parsed = json.loads(data)
+  cred = CredStore()
+  saved = cred.save(name=name,data=data_parsed)
+
+@app.command()
+def load_credentials(name:str):
+  cred = CredStore()
+  load = cred.load(name=name)
+  print(load)
+
+@app.command()
+def all_credentials():
+  cred = CredStore()
+  all_keys = cred.all_keys()
+  print(all_keys)
+
+@app.command()
+def workspace_scan():
+  workspace = Workspace()
+  scan = workspace.scan()
+  print(scan)
+
+@app.command()
+def workspace_update(key, value):
+  workspace = Workspace()
+  update = workspace.update_profile(key=key,value=value)
+
+@app.command()
+def workspace_context():
+  workspace = Workspace()
+  ctx_summary = workspace.context_summary()
+  print(ctx_summary)
+
+def build_backend(provider: str, model: str):
         p = provider.lower()
         if p == "npmai":       return Ollama(model=model)
         elif p == "local":     return Ollama_Local(model=model)
@@ -47,54 +64,46 @@ def config_agent(
         elif p == "hf":        return HuggingFaceBackend(model=model, api_key=CredStore.load("hf")["api_key"])
         elif p == "llamacpp":  return LlamaCppBackend(model=model)
         else: raise typer.BadParameter(f"Unknown provider '{provider}'. Use: npmai, local, openai, groq, anthropic, gemini, mistral, cohere, azure, bedrock, hf, llamacpp")
-    
-    _agent = AgentBrain(
+   
+
+@app.command()
+def run(
+    task:str,
+    planner_model: str = "llama3.2:3b",
+    planner_provider: str = "npmai",
+    coder_model: str = "codellama:7b-instruct", 
+    coder_provider: str = "npmai",
+    auditor_model: str = "qwen2.5-coder:7b",
+    auditor_provider: str = "npmai",
+    verifier_model: str = "llama3.2:3b",
+    verifier_provider: str = "npmai",
+    chatter_model: str = "granite3.3:2b",
+    chatter_provider: str = "npmai",
+):
+
+  agent = AgentBrain(
         planner  = build_backend(planner_provider,  planner_model),
         coder    = build_backend(coder_provider,    coder_model),
         auditor  = build_backend(auditor_provider,  auditor_model),
         verifier = build_backend(verifier_provider, verifier_model),
         chatter  = build_backend(chatter_provider,  chatter_model),
     )
-    print("Agent configured.")
-
-
-@app.command()
-def save_credentials(name:str,data:str):
-  data_parsed = json.loads(data)
-  saved = _cred.save(name=name,data=data_parsed)
-
-@app.command()
-def load_credentials(name:str):
-  load = _cred.load(name=name)
-  print(load)
-
-@app.command()
-def all_credentials():
-  all_keys = _cred.all_keys()
-  print(all_keys)
-
-@app.command()
-def workspace_scan():
-  scan = _workspace.scan()
-  print(scan)
-
-@app.command()
-def workspace_update(key, value):
-  update = _workspace.update_profile(key=key,value=value)
-
-@app.command()
-def workspace_context():
-  ctx_summary = _workspace.context_summary()
-  print(ctx_summary)
-
-@app.command()
-def run(task:str):
-  task_result = _agent.run_task(task=task)
+    
+  task_result = agent.run_task(task=task)
   return task_result
 
 @app.command()
-def chat(user_msg:str):
-  chat_resp = _agent.chat(user_msg=user_msg)
+def chat(
+    user_msg:str,
+    chatter_model: str = "granite3.3:2b",
+    chatter_provider: str = "npmai",
+):
+  agent = AgentBrain(
+        chatter  = build_backend(chatter_provider,  chatter_model),
+  )
+    
+  chat_resp = agent.chat(user_msg=user_msg)
+  print(chat_resp)
   return chat_resp
 
 
