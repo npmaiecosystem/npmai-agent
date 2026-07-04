@@ -63,6 +63,15 @@ class ensure:
               ("todoist-api-python","todoist_api_python"),
               ("jira",         "jira"),
               ("trello",       "trello"),
+              ("ollama",       "ollama"),
+              ("openai",       "openai"),
+              ("anthropic",    "anthropic"),
+              ("genai",        "google.generativeai"),
+              ("groq",        "groq"),
+              ("huggingface_hub", "huggingface_hub"),
+              ("cohere", "cohere"),
+              ("mistralai", "mistralaiai"),
+              ("boto3",      "boto3"),
               ("pywin32",      "win32api") if platform.system()=="Windows" else ("",""),
               ]:
               if _p: _ensure(_p, _i)
@@ -160,7 +169,7 @@ class GroqBackend(LLMBackend):
 # 6. Mistral (their own API)
 class MistralBackend(LLMBackend):
     def __init__(self, api_key, model="mistral-large-latest"):
-        from mistralai import Mistral
+        from mistralai.client import Mistral
         self.client = Mistral(api_key=api_key)
         self.model = model
 
