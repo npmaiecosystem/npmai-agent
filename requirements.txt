@@ -37,3 +37,12 @@ pyperclip>=1.8.2
 typer
 rich
 onnxruntime
+ollama
+anthropic
+genai
+openai
+boto3
+huggingface_hub
+cohere
+mistralai
+groq
