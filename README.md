@@ -79,12 +79,28 @@ pip install npmai_agents
 pip install npmai_agents[full]
 ```
 
+### 📦 Import System
+
+All 100 tool classes, every LLM backend, and the agent brain itself are exposed from a single top-level namespace: `npmai_agents`. Internally the code is split across many files by domain (`core.py`, `agent_core.py`, `Tools_business.py`, `Tools_creative.py`, etc.) — that split is for maintainability on our side. As a user you never need to know or care which file anything actually lives in. The package's `__init__.py` re-exports every public class at the top level, so a single import line reaches everything:
+
 ```python
-# Import styles
-from npmai_agents import AgentBrain                                    # agent only
-from npmai_agents import StripeTool, GitHubTool, FFmpegTool           # specific tools
-from npmai_agents import *                                             # everything
+# Agent brain only
+from npmai_agents import AgentBrain
+
+# Specific tools, no matter which internal file they live in
+from npmai_agents import StripeTool, GitHubTool, FFmpegTool
+
+# LLM backends
+from npmai_agents import GroqBackend, OpenAIBackend, AnthropicBackend
+
+# Core infra
+from npmai_agents import CredStore, Workspace, LLMBackend
+
+# Everything at once (not recommended for large projects — namespace gets crowded)
+from npmai_agents import *
 ```
+
+You will **never** need to write `from Tools_business import StripeTool` or `from core import LLMBackend` yourself — those are internal file paths used only inside the package's own source code. Every public class, from every file, is reachable directly via `from npmai_agents import <ClassName>`.
 
 ---
 
@@ -96,89 +112,48 @@ Install gives you the `npmai` terminal command globally.
 npmai --help
 ```
 
+> **Session model:** each `npmai <command>` invocation is its own standalone process — there is no config file, no state file, and nothing written to disk between commands (by design, so the framework never has to manage extra files on top of everything else it already manages). This means `run` and `chat` accept the LLM provider/model for every role directly as flags on the same call, rather than relying on a separate "configure once" step that would silently reset between processes anyway. If you omit the flags, every role defaults to the free NPMAI-hosted models — zero setup, zero cost.
+
 ---
 
 ### `npmai run` — Execute Any Task
 
-Runs a plain-English task through the full 5-role autonomous pipeline.
+Runs a plain-English task through the full 5-role autonomous pipeline. LLM provider/model for each role can be set per-call; anything left unset falls back to the NPMAI free-tier default for that role.
 
 | Parameter | Type | Default | Required | Description |
 |---|---|---|---|---|
 | `task` | `str` | — | ✅ | Plain-English description of what to do |
+| `--planner-model` | `str` | `llama3.2:3b` | ❌ | Model for the Planner role |
+| `--planner-provider` | `str` | `npmai` | ❌ | Provider for the Planner role |
+| `--coder-model` | `str` | `codellama:7b-instruct` | ❌ | Model for the Coder role |
+| `--coder-provider` | `str` | `npmai` | ❌ | Provider for the Coder role |
+| `--auditor-model` | `str` | `qwen2.5-coder:7b` | ❌ | Model for the Auditor role |
+| `--auditor-provider` | `str` | `npmai` | ❌ | Provider for the Auditor role |
+| `--verifier-model` | `str` | `llama3.2:3b` | ❌ | Model for the Verifier role |
+| `--verifier-provider` | `str` | `npmai` | ❌ | Provider for the Verifier role |
+| `--chatter-model` | `str` | `granite3.3:2b` | ❌ | Model for the Chatter role |
+| `--chatter-provider` | `str` | `npmai` | ❌ | Provider for the Chatter role |
 
 ```bash
+# Zero-config — all roles run on free NPMAI models
 npmai run "Scrape the top 10 AI papers from arXiv today, summarise each in 3 sentences, save to Excel, and email it to me"
 
 npmai run "Find all duplicate files in my Downloads folder and delete them"
 
-npmai run "Pull latest from my GitHub repo, run the tests, and post results to Slack #dev"
+# Mixing providers per role — Groq for planning/coding, defaults for the rest
+npmai run "Pull latest from my GitHub repo, run the tests, and post results to Slack #dev" \
+  --planner-provider groq --planner-model llama-3.3-70b-versatile \
+  --coder-provider groq --coder-model llama-3.3-70b-versatile
 
-npmai run "Create a Stripe customer for john@example.com and generate an invoice for 5000 rupees"
+npmai run "Create a Stripe customer for john@example.com and generate an invoice for 5000 rupees" \
+  --auditor-provider anthropic --auditor-model claude-sonnet-4-6
 ```
 
 **Output:** Streamed logs showing each pipeline stage — Planning → Tool Selection → Code Generation → Security Audit → Execution → Verification. Final `✓ All steps completed successfully` on success.
 
----
+**Provider Reference** (same values work for every `--*-provider` flag above):
 
-### `npmai chat` — Conversational Mode
-
-Sends a message to the conversational chatter LLM without triggering the full agent pipeline.
-
-| Parameter | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `user_msg` | `str` | — | ✅ | Your message or question |
-
-```bash
-npmai chat "What is the LARA RAG architecture?"
-
-npmai chat "How do I use StripeTool to create a subscription?"
-
-npmai chat "Explain what Tool Manager does in the pipeline"
-```
-
-**Output:** Direct conversational response from the chatter LLM (default: `granite3.3:2b`).
-
----
-
-### `npmai config-agent` — Configure LLM Backends
-
-Reconfigures the agent with custom LLM providers and models for each pipeline role.
-
-| Parameter | Type | Default | Description |
-|---|---|---|---|
-| `--planner-model` | `str` | `llama3.2:3b` | Model for Planner role |
-| `--planner-provider` | `str` | `npmai` | Provider for Planner role |
-| `--coder-model` | `str` | `codellama:7b-instruct` | Model for Coder role |
-| `--coder-provider` | `str` | `npmai` | Provider for Coder role |
-| `--auditor-model` | `str` | `qwen2.5-coder:7b` | Model for Auditor role |
-| `--auditor-provider` | `str` | `npmai` | Provider for Auditor role |
-| `--verifier-model` | `str` | `llama3.2:3b` | Model for Verifier role |
-| `--verifier-provider` | `str` | `npmai` | Provider for Verifier role |
-| `--chatter-model` | `str` | `granite3.3:2b` | Model for Chatter role |
-| `--chatter-provider` | `str` | `npmai` | Provider for Chatter role |
-
-```bash
-# Default — all NPMAI free LLMs, no config needed
-npmai run "my task"
-
-# All Groq
-npmai config-agent \
-  --planner-provider groq --planner-model llama-3.3-70b-versatile \
-  --coder-provider groq --coder-model llama-3.3-70b-versatile \
-  --auditor-provider groq --auditor-model llama-3.3-70b-versatile \
-  --verifier-provider groq --verifier-model llama-3.3-70b-versatile
-
-# Mixed — best model per role
-npmai config-agent \
-  --planner-provider groq --planner-model llama-3.3-70b-versatile \
-  --coder-provider openai --coder-model gpt-4o \
-  --auditor-provider anthropic --auditor-model claude-sonnet-4-6 \
-  --verifier-provider npmai --verifier-model llama3.2:3b
-```
-
-**Provider Reference:**
-
-| Provider | `--provider` value | Example Model | Save Credentials First |
+| Provider | `--*-provider` value | Example model | Save credentials first |
 |---|---|---|---|
 | NPMAI Free | `npmai` | `llama3.2:3b` | Not required |
 | Local Ollama | `local` | `llama3.2:3b` | Not required |
@@ -195,9 +170,31 @@ npmai config-agent \
 
 ---
 
+### `npmai chat` — Conversational Mode
+
+Sends a message to the conversational chatter LLM without triggering the full 5-role agent pipeline. Only the chatter role's provider/model can be set — the other 4 roles aren't invoked at all in this mode.
+
+| Parameter | Type | Default | Required | Description |
+|---|---|---|---|---|
+| `user_msg` | `str` | — | ✅ | Your message or question |
+| `--chatter-model` | `str` | `granite3.3:2b` | ❌ | Model for the Chatter role |
+| `--chatter-provider` | `str` | `npmai` | ❌ | Provider for the Chatter role |
+
+```bash
+npmai chat "What is the LARA RAG architecture?"
+
+npmai chat "How do I use StripeTool to create a subscription?"
+
+npmai chat "Explain what Tool Manager does in the pipeline" --chatter-provider groq --chatter-model llama-3.3-70b-versatile
+```
+
+**Output:** Direct conversational response, printed to the terminal.
+
+---
+
 ### `npmai save-credentials` — Store API Keys
 
-Saves credentials encrypted with Fernet machine-specific key to `~/.npmai_agent/creds.json`.
+Saves credentials encrypted with a Fernet machine-specific key to `~/.npmai_agent/creds.json`. This is the only thing npmai_agents persists to disk — deliberately, since credentials are the one thing that genuinely needs to survive across separate CLI invocations.
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
@@ -214,6 +211,8 @@ npmai save-credentials anthropic '{"api_key":"sk-ant-xxxxxxxxxxxx"}'
 npmai save-credentials sendgrid '{"api_key":"SG.xxxxxxxxxxxx"}'
 npmai save-credentials notion '{"token":"secret_xxxxxxxxxxxx"}'
 ```
+
+> ⚠️ Rotate any key that's ever been typed into a shared terminal, chat log, or screen-share. `save-credentials` stores it encrypted at rest, but that doesn't protect a key that already leaked before it was saved.
 
 ---
 
@@ -493,6 +492,13 @@ from npmai_agents import GitLabTool
 | `list_members` | List project members | `project_id` |
 | `add_member` | Add member | `project_id, user_id, access_level=30` |
 
+```python
+GitLabTool.create_project("npmai-mirror", description="Mirror of npmai-agent", visibility="private")
+GitLabTool.create_issue("12345678", "Add MCP hosting support", description="Expose search_tools/execute_tool")
+GitLabTool.create_mr("12345678", "feat: mcp hosting", source="feature/mcp", target="main")
+GitLabTool.trigger_pipeline("12345678", ref="main")
+```
+
 ---
 
 ### DockerTool — 26 Tools
@@ -573,6 +579,13 @@ from npmai_agents import PackageManagerTool
 | `go_test` | Run Go tests | `cwd="."` |
 | `go_get` | Get Go package | `package` |
 
+```python
+PackageManagerTool.pip_install("requests", version=">=2.31.0")
+PackageManagerTool.npm_install(cwd="/home/sonu/frontend")
+PackageManagerTool.npm_run("build", cwd="/home/sonu/frontend")
+PackageManagerTool.cargo_build(cwd="/home/sonu/rust-tool", release=True)
+```
+
 ---
 
 ### VSCodeTool — 13 Tools
@@ -597,6 +610,12 @@ from npmai_agents import VSCodeTool
 | `lint_workspace` | Lint workspace | `cwd="."` |
 | `create_workspace` | Create .code-workspace | `name, folders: list` |
 | `open_workspace` | Open workspace file | `workspace_path` |
+
+```python
+VSCodeTool.open_folder("/home/sonu/npmai-agent")
+VSCodeTool.install_extension("ms-python.python")
+VSCodeTool.format_file("/home/sonu/npmai-agent/npmai_agent/cli.py")
+```
 
 ---
 
@@ -625,6 +644,12 @@ from npmai_agents import TerminalTool
 | `kill_process` | Kill process by name/PID | `target` |
 | `get_process_info` | Get process details | `pid` |
 
+```python
+TerminalTool.run("pytest tests/ -v", cwd="/home/sonu/npmai-agent")
+TerminalTool.set_env_var("GROQ_API_KEY", "gsk_xxxx")
+TerminalTool.is_installed("docker")
+```
+
 ---
 
 ### MakefileTool — 4 Tools
@@ -639,6 +664,11 @@ from npmai_agents import MakefileTool
 | `list_targets` | List available targets | `cwd="."` |
 | `create_makefile` | Create new Makefile | `path, targets: dict` |
 | `add_target` | Add target to Makefile | `path, name, commands: list, deps=[]` |
+
+```python
+MakefileTool.create_makefile("/home/sonu/app", targets={"build": ["go build ."], "test": ["go test ./..."]})
+MakefileTool.run_target("test", cwd="/home/sonu/app")
+```
 
 ---
 
@@ -656,6 +686,12 @@ from npmai_agents import CMakeTool
 | `clean` | Clean build dir | `build_dir` |
 | `run_ctest` | Run tests | `build_dir, verbose=False` |
 
+```python
+CMakeTool.configure("/home/sonu/cpp-proj", "/home/sonu/cpp-proj/build")
+CMakeTool.build("/home/sonu/cpp-proj/build", jobs=8)
+CMakeTool.run_ctest("/home/sonu/cpp-proj/build", verbose=True)
+```
+
 ---
 
 ### DebuggerTool — 6 Tools
@@ -672,6 +708,11 @@ from npmai_agents import DebuggerTool
 | `memory_profile` | Profile memory usage | `script_path` |
 | `find_deadlocks` | Detect thread deadlocks | `pid` |
 | `strace_process` | Trace system calls | `pid, output=""` |
+
+```python
+DebuggerTool.analyze_traceback(captured_traceback_text)
+DebuggerTool.profile_script("/home/sonu/npmai-agent/npmai_agent/npmai_agents.py")
+```
 
 ---
 
@@ -757,6 +798,12 @@ from npmai_agents import RazorpayTool
 | `get_settlements` | Get settlements | — |
 | `get_settlement_transactions` | Get settlement TXNs | `settlement_id` |
 
+```python
+order = RazorpayTool.create_order(amount=50000, currency="INR", notes={"purpose": "invoice #221"})
+RazorpayTool.create_qr_code(type="upi_qr", name="Sonu Store")
+RazorpayTool.refund_payment(payment_id="pay_xxxx")
+```
+
 ---
 
 ### ShopifyTool — 25 Tools
@@ -794,6 +841,12 @@ from npmai_agents import ShopifyTool
 | `list_locations` | List store locations | — |
 | `get_analytics` | Get sales analytics | `period="day"` |
 
+```python
+ShopifyTool.create_product(title="NPMAI Hoodie", vendor="NPMAI Merch", product_type="Apparel")
+ShopifyTool.adjust_inventory(inventory_item_id="123", location_id="456", adjustment=-2)
+ShopifyTool.create_discount(code="NPMAI10", value=10, value_type="percentage")
+```
+
 ---
 
 ### InvoiceTool — 8 Tools
@@ -812,6 +865,11 @@ from npmai_agents import InvoiceTool
 | `batch_create_invoices` | Bulk invoice generation | `data: list, output_dir` |
 | `extract_invoice_data` | AI extract from image/PDF | `file_path` |
 | `create_recurring_invoice` | Set recurring invoice | `client, items, interval="monthly"` |
+
+```python
+InvoiceTool.create_invoice(client="Acme Pvt Ltd", items=[{"desc": "Consulting", "qty": 1, "rate": 25000}], output_path="invoice_221.pdf")
+InvoiceTool.send_invoice_email("invoice_221.pdf", to_email="acme@example.com", subject="Invoice #221")
+```
 
 ---
 
@@ -833,6 +891,12 @@ from npmai_agents import AccountingTool
 | `get_exchange_rates` | Get current FX rates | `base="INR"` |
 | `track_expenses` | Log expense | `amount, category, description, date=""` |
 | `calculate_tax_liability` | Tax calculation | `income, deductions: dict, regime="new"` |
+
+```python
+AccountingTool.calculate_gst(amount=10000, rate=18)
+AccountingTool.currency_convert(amount=100, from_currency="USD", to_currency="INR")
+AccountingTool.calculate_tax_liability(income=1200000, deductions={"80C": 150000}, regime="new")
+```
 
 ---
 
@@ -864,6 +928,12 @@ from npmai_agents import CRMTool
 | `generate_sales_report` | Sales summary | `period="month"` |
 | `get_conversion_rate` | Lead conversion rate | `period="month"` |
 
+```python
+cid = CRMTool.add_contact(name="Ravi Sharma", email="ravi@example.com", company="Acme")
+CRMTool.add_deal(title="Enterprise plan", value=200000, contact_id=cid, stage="negotiation")
+CRMTool.generate_sales_report(period="month")
+```
+
 ---
 
 ### EmailMarketingTool — 13 Tools
@@ -888,6 +958,12 @@ from npmai_agents import EmailMarketingTool
 | `unsubscribe` | Unsubscribe email | `email` |
 | `get_unsubscribes` | Get unsubscribe list | `list_id` |
 
+```python
+lid = EmailMarketingTool.create_list("npmai-newsletter")
+EmailMarketingTool.add_subscriber(list_id=lid, email="reader@example.com")
+EmailMarketingTool.create_campaign(name="July Update", subject="What's new in npmai_agents", list_id=lid, template_id="tmpl_1")
+```
+
 ---
 
 ### AnalyticsTool — 9 Tools
@@ -907,6 +983,12 @@ from npmai_agents import AnalyticsTool
 | `create_custom_report` | Custom dimensions report | `dimensions: list, metrics: list, date_range` |
 | `generate_weekly_report` | Auto weekly report | `output_path=""` |
 | `track_event` | Track custom event | `event_name, params={}` |
+
+```python
+AnalyticsTool.connect_google_analytics(property_id="123456789", credentials_path="/home/sonu/ga.json")
+AnalyticsTool.get_top_pages("2026-06-01", "2026-06-30", limit=5)
+AnalyticsTool.generate_weekly_report(output_path="weekly_report.pdf")
+```
 
 ---
 
@@ -931,6 +1013,12 @@ from npmai_agents import InventoryTool
 | `export_inventory` | Export to CSV/Excel | `output_path` |
 | `import_inventory` | Import from CSV | `csv_path` |
 
+```python
+InventoryTool.add_product(name="NPMAI T-Shirt", sku="TSHIRT-001", quantity=100, cost=150, price=499)
+InventoryTool.record_sale(sku="TSHIRT-001", quantity=2, price=499)
+InventoryTool.list_low_stock(threshold=10)
+```
+
 ---
 
 ### ContractTool — 10 Tools
@@ -951,6 +1039,11 @@ from npmai_agents import ContractTool
 | `compare_contracts` | Compare two contracts | `path_1, path_2` |
 | `add_signature_field` | Add signature field | `contract_path, page, x, y` |
 | `verify_signature` | Verify digital signature | `contract_path` |
+
+```python
+ContractTool.create_nda(party_1="NPMAI Ecosystem", party_2="Contractor Name", duration="2 years", output_path="nda.pdf")
+ContractTool.extract_key_terms("nda.pdf")
+```
 
 ---
 
@@ -983,6 +1076,12 @@ from npmai_agents import AWSS3Tool
 | `list_buckets` | List all buckets | — |
 | `get_bucket_size` | Get total bucket size | `bucket` |
 
+```python
+AWSS3Tool.create_bucket("npmai-agent-assets")
+AWSS3Tool.upload_file("npmai-agent-assets", "/home/sonu/build.zip", s3_key="releases/build.zip")
+AWSS3Tool.get_presigned_url("npmai-agent-assets", "releases/build.zip", expires=3600)
+```
+
 ---
 
 ### AWSLambdaTool — 12 Tools
@@ -1006,6 +1105,11 @@ from npmai_agents import AWSLambdaTool
 | `get_logs` | Get CloudWatch logs | `function_name, limit=100` |
 | `list_versions` | List function versions | `function_name` |
 
+```python
+AWSLambdaTool.create_function(name="npmai-webhook", runtime="python3.12", handler="app.handler", zip_path="lambda.zip", role_arn="arn:aws:iam::123:role/lambda-exec")
+AWSLambdaTool.invoke_function(name="npmai-webhook", payload={"event": "test"})
+```
+
 ---
 
 ### AWSECSTool — 11 Tools
@@ -1027,6 +1131,11 @@ from npmai_agents import AWSECSTool
 | `delete_service` | Delete service | `cluster, name` |
 | `describe_tasks` | Describe tasks | `cluster, task_arns: list` |
 | `get_task_logs` | Get task logs | `cluster, task_arn` |
+
+```python
+AWSECSTool.create_cluster("npmai-cluster")
+AWSECSTool.create_service("npmai-cluster", name="agent-api", task_def="agent-task:1", desired_count=2)
+```
 
 ---
 
@@ -1059,6 +1168,12 @@ from npmai_agents import CloudflareTool
 | `get_firewall_rules` | Get firewall rules | `zone_id` |
 | `create_firewall_rule` | Create firewall rule | `zone_id, expression, action="block"` |
 
+```python
+CloudflareTool.create_dns_record(zone_id="abc123", type="A", name="agent.npmai.ai", content="1.2.3.4")
+CloudflareTool.purge_cache(zone_id="abc123")
+CloudflareTool.create_worker(name="edge-router", script=worker_js_code)
+```
+
 ---
 
 ### VercelTool — 13 Tools · NetlifyTool — 13 Tools · RailwayTool — 10 Tools
@@ -1072,6 +1187,12 @@ from npmai_agents import VercelTool, NetlifyTool, RailwayTool
 **NetlifyTool:** `list_sites` · `create_site` · `delete_site` · `deploy_folder` · `list_deploys` · `rollback_deploy` · `lock_deploy` · `set_env_var` · `list_env_vars` · `delete_env_var` · `add_domain` · `list_forms` · `get_form_submissions`
 
 **RailwayTool:** `deploy` · `list_projects` · `create_project` · `list_services` · `deploy_service` · `restart_service` · `set_env_var` · `list_env_vars` · `get_logs` · `get_deployments`
+
+```python
+VercelTool.deploy("/home/sonu/npmai-web")
+NetlifyTool.deploy_folder("/home/sonu/npmai-web/dist", site_id="xyz")
+RailwayTool.deploy_service(project_id="proj_1", service_id="svc_1")
+```
 
 ---
 
@@ -1108,6 +1229,12 @@ from npmai_agents import KubernetesTool
 | `helm_uninstall` | Helm chart uninstall | `release_name` |
 | `helm_list` | List Helm releases | — |
 
+```python
+KubernetesTool.apply("/home/sonu/k8s/deployment.yaml")
+KubernetesTool.scale_deployment("agent-api", replicas=3, namespace="prod")
+KubernetesTool.get_pod_logs("agent-api-6f9d", namespace="prod", tail=200)
+```
+
 ---
 
 ### TerraformTool — 16 Tools · MonitoringTool — 14 Tools
@@ -1119,6 +1246,14 @@ from npmai_agents import TerraformTool, MonitoringTool
 **TerraformTool:** `init` · `plan` · `apply` · `destroy` · `validate` · `fmt` · `show` · `output` · `state_list` · `state_show` · `state_rm` · `import_resource` · `graph` · `workspace_list` · `workspace_new` · `workspace_select`
 
 **MonitoringTool:** `get_cpu_usage` · `get_memory_info` · `get_disk_usage` · `get_network_io` · `get_process_list` · `kill_process` · `get_gpu_info` · `watch_file_changes` · `get_open_ports` · `check_service_health` · `send_alert` · `get_system_info` · `tail_log_file` · `parse_log_file`
+
+```python
+TerraformTool.init("/home/sonu/infra")
+TerraformTool.plan("/home/sonu/infra")
+TerraformTool.apply("/home/sonu/infra")
+MonitoringTool.check_service_health("npmai-agent-api")
+MonitoringTool.send_alert("Disk usage above 90% on prod-1")
+```
 
 ---
 
@@ -1147,6 +1282,12 @@ from npmai_agents import TwilioTool
 | `create_subaccount` | Create subaccount | `friendly_name` |
 | `get_account_balance` | Get balance | — |
 
+```python
+TwilioTool.send_sms(to="+919876543210", body="Your NPMAI order has shipped.")
+TwilioTool.verify_phone(to="+919876543210", channel="sms")
+TwilioTool.check_verification(to="+919876543210", code="123456")
+```
+
 ---
 
 ### SendGridTool — 14 Tools
@@ -1172,6 +1313,11 @@ from npmai_agents import SendGridTool
 | `delete_bounce` | Remove from bounce list | `email` |
 | `get_spam_reports` | List spam reports | — |
 
+```python
+SendGridTool.send_email(to="sonu@npmai.ai", subject="Weekly Revenue Report", body="See attached.")
+SendGridTool.get_stats("2026-06-01", "2026-06-30")
+```
+
 ---
 
 ### CalendarTool — 11 Tools
@@ -1193,6 +1339,11 @@ from npmai_agents import CalendarTool
 | `send_invite` | Send event invite | `event_id, email` |
 | `sync_to_local` | Export to local ICS | `output_path, max_results=100` |
 | `import_ical` | Import ICS file | `ical_path, calendar_id="primary"` |
+
+```python
+CalendarTool.quick_add_event("Team sync tomorrow 5pm")
+CalendarTool.find_free_slots(duration_minutes=30, days_ahead=3)
+```
 
 ---
 
@@ -1216,6 +1367,13 @@ from npmai_agents import RSSFeedTool, WebhookTool, ChatOpsAutomationTool, SMTPAd
 **ChatOpsAutomationTool:** `route_alert` · `create_incident` · `post_deployment_notification` · `send_daily_standup_reminder` · `collect_standup_responses` · `create_approval_workflow` · `check_approval_status` · `broadcast_announcement` · `schedule_message`
 
 **SMTPAdvancedTool:** `send_html_email` · `send_template_email` · `monitor_inbox` · `search_emails` · `download_attachments` · `auto_reply` · `forward_emails` · `mark_as_read` · `delete_emails` · `create_filter_rule`
+
+```python
+ZoomTool.create_meeting(topic="NPMAI Team Sync", start_time="2026-07-10T15:00:00")
+MicrosoftTeamsTool.send_message(channel_id="general", text="Deploy complete ✅")
+WebhookTool.start_webhook_server(port=8000, secret="whsec_xxx")
+SMTPAdvancedTool.monitor_inbox(folder="INBOX", callback=lambda msg: print(msg.subject))
+```
 
 ---
 
@@ -1245,6 +1403,11 @@ from npmai_agents import FigmaTool
 | `get_team_components` | Team component library | `team_id` |
 | `get_versions` | File version history | `file_key` |
 
+```python
+FigmaTool.export_all_assets(file_key="abc123", output_dir="/home/sonu/assets", format="PNG")
+FigmaTool.get_components(file_key="abc123")
+```
+
 ---
 
 ### DiagramTool — 10 Tools
@@ -1265,6 +1428,11 @@ from npmai_agents import DiagramTool
 | `create_org_chart` | Org chart | `structure: dict, output_path` |
 | `render_mermaid` | Render Mermaid syntax | `mermaid_code, output_path` |
 | `render_plantuml` | Render PlantUML | `plantuml_code, output_path` |
+
+```python
+DiagramTool.create_flowchart(steps=["Receive task", "Plan", "Select tools", "Code", "Audit", "Execute", "Verify"], output_path="pipeline.png")
+DiagramTool.render_mermaid(mermaid_code="graph TD; A-->B; B-->C;", output_path="flow.png")
+```
 
 ---
 
@@ -1290,6 +1458,13 @@ from npmai_agents import ColorTool, IconTool, PrintTool, ThreeDTool
 **PrintTool:** `create_business_card` · `create_flyer` · `create_poster` · `create_brochure` · `create_certificate` · `create_label_sheet` · `create_letterhead` · `add_bleed_marks`
 
 **ThreeDTool:** `view_model` · `get_model_info` · `convert_model` · `optimize_mesh` · `center_model` · `scale_model` · `merge_models` · `generate_thumbnail`
+
+```python
+SVGTool.convert_to_png("logo.svg", output_path="logo.png", scale=2)
+BlenderTool.render_image("scene.blend", output_path="render.png")
+ColorTool.generate_palette(base_color="#00f5ff", count=5)
+IconTool.create_app_icon_set("logo.png", output_dir="/home/sonu/icons")
+```
 
 ---
 
@@ -1321,6 +1496,13 @@ from npmai_agents import DataAnalysisTool
 | `natural_language_query` | Query in plain English | `question` |
 | `auto_visualize` | Auto-generate charts | `out_dir=""` |
 
+```python
+DataAnalysisTool.load("sales.csv")
+DataAnalysisTool.clean(remove_nulls=True, remove_duplicates=True)
+DataAnalysisTool.pivot(index="region", columns="month", values="revenue", aggfunc="sum")
+DataAnalysisTool.natural_language_query("what were the top 5 customers by revenue last quarter?")
+```
+
 ---
 
 ### VisualizationTool — 15 Tools
@@ -1346,6 +1528,11 @@ from npmai_agents import VisualizationTool
 | `sunburst` | Sunburst chart | `data, path: list, values, output_path=""` |
 | `waterfall_chart` | Waterfall chart | `categories: list, values: list, output_path=""` |
 | `candlestick_chart` | OHLC candlestick | `data, output_path=""` |
+
+```python
+VisualizationTool.bar_chart(data=df, x="month", y="revenue", title="Monthly Revenue", output_path="revenue.png")
+VisualizationTool.create_dashboard(charts=["revenue.png", "churn.png"], output_path="dashboard.png")
+```
 
 ---
 
@@ -1380,6 +1567,12 @@ from npmai_agents import DatabaseTool
 | `create_sqlite_db` | Create SQLite DB | `db_path` |
 | `query_sqlite` | Query SQLite | `db_path, query` |
 
+```python
+DatabaseTool.connect_postgres(host="localhost", db="npmai", user="postgres", password="xxxx")
+DatabaseTool.execute_query("SELECT * FROM users WHERE active = true")
+DatabaseTool.redis_set("session:123", "active", expire=3600)
+```
+
 ---
 
 ### SearchResearchTool — 11 Tools · FinancialDataTool — 14 Tools · SocialMediaDataTool — 14 Tools · WeatherGeoTool — 12 Tools · TextAnalyticsTool — 14 Tools · WebScrapingAdvancedTool — 12 Tools · ReportGeneratorTool — 8 Tools
@@ -1402,6 +1595,16 @@ from npmai_agents import WeatherGeoTool, TextAnalyticsTool, WebScrapingAdvancedT
 **WebScrapingAdvancedTool:** `scrape_with_js` · `scrape_paginated` · `scrape_login_protected` · `extract_structured_data` · `monitor_page_changes` · `bulk_scrape` · `extract_emails_phones` · `map_website_structure` · `take_full_screenshot` · `extract_all_links` · `download_all_images` · `fill_and_submit_form`
 
 **ReportGeneratorTool:** `create_pdf_report` · `create_word_report` · `create_excel_report` · `create_presentation` · `generate_research_report` · `schedule_report` · `create_dashboard_report` · `generate_from_template`
+
+```python
+SearchResearchTool.search_arxiv("retrieval augmented generation", max_results=10)
+FinancialDataTool.get_stock_price("TCS.NS")
+SocialMediaDataTool.get_reddit_posts(subreddit="MachineLearning", limit=25)
+WeatherGeoTool.get_current_weather(city="Kota, Rajasthan")
+TextAnalyticsTool.sentiment_analysis("This product completely exceeded my expectations.")
+WebScrapingAdvancedTool.scrape_with_js("https://example.com/dashboard")
+ReportGeneratorTool.create_pdf_report(title="Weekly Ops Report", sections=[...], output_path="report.pdf")
+```
 
 ---
 
@@ -1472,6 +1675,12 @@ from npmai_agents import AudioTool, YouTubeDownloaderTool, ImageAdvancedTool
 
 **ImageAdvancedTool:** `batch_resize` · `batch_convert` · `create_collage` · `remove_background` · `replace_background` · `upscale` · `restore_old_photo` · `face_detect` · `blur_faces` · `add_border` · `add_shadow` · `create_gif_from_images` · `optimize_for_web` · `extract_dominant_colors` · `create_palette` · `compare_images` · `create_sprite_sheet` · `watermark_batch` · `convert_to_ico` · `create_favicon`
 
+```python
+AudioTool.transcribe("/home/sonu/interview.mp3")
+YouTubeDownloaderTool.download_video("https://youtube.com/watch?v=xxxx", quality="1080p")
+ImageAdvancedTool.remove_background("/home/sonu/photo.jpg", output_path="photo_nobg.png")
+```
+
 ---
 
 ### ScreenRecorderTool — 7 Tools · TextToSpeechTool — 7 Tools · VideoEditingTool — 10 Tools · PodcastTool — 8 Tools · StreamingTool — 6 Tools · MediaMetadataTool — 9 Tools
@@ -1492,6 +1701,13 @@ from npmai_agents import PodcastTool, StreamingTool, MediaMetadataTool
 **StreamingTool:** `stream_to_youtube` · `stream_to_twitch` · `stream_to_multiple` · `capture_stream` · `get_stream_info` · `download_live_stream`
 
 **MediaMetadataTool:** `read_metadata` · `write_metadata` · `bulk_rename_by_metadata` · `fix_dates` · `add_album_art` · `extract_album_art` · `generate_nfo` · `create_m3u_playlist` · `scan_folder`
+
+```python
+ScreenRecorderTool.record_screen(output_path="demo.mp4", duration=60)
+TextToSpeechTool.generate("Welcome to NPMAI Ecosystem", output_path="intro.mp3")
+VideoEditingTool.auto_cut_silences("/home/sonu/podcast_raw.mp4", output_path="podcast_edited.mp4")
+PodcastTool.generate_show_notes("/home/sonu/episode12.mp3")
+```
 
 ---
 
@@ -1529,6 +1745,12 @@ from npmai_agents import GoogleWorkspaceTool
 | `forms_get_responses` | Get form responses | `form_id` |
 | `forms_list` | List forms | — |
 
+```python
+GoogleWorkspaceTool.sheets_create("Q3 Revenue")
+GoogleWorkspaceTool.sheets_write(sheet_id="abc123", range_="A1:C1", data=[["Month", "Revenue", "Growth"]])
+GoogleWorkspaceTool.drive_share(file_id="abc123", email="team@npmai.ai", role="writer")
+```
+
 ---
 
 ### NotionAdvancedTool — 19 Tools · LinearTool — 19 Tools · AsanaTool — 19 Tools · TrelloTool — 20 Tools
@@ -1544,6 +1766,13 @@ from npmai_agents import NotionAdvancedTool, LinearTool, AsanaTool, TrelloTool
 **AsanaTool:** `list_workspaces` · `list_projects` · `get_project` · `create_project` · `list_tasks` · `get_task` · `create_task` · `update_task` · `complete_task` · `delete_task` · `add_subtask` · `list_subtasks` · `add_comment` · `list_comments` · `list_sections` · `create_section` · `move_task_to_section` · `list_tags` · `add_tag_to_task`
 
 **TrelloTool:** `list_boards` · `get_board` · `create_board` · `list_lists` · `create_list` · `archive_list` · `list_cards` · `get_card` · `create_card` · `update_card` · `move_card` · `archive_card` · `add_checklist` · `check_checklist_item` · `add_comment` · `add_attachment` · `list_members` · `add_member` · `create_label` · `add_label_to_card`
+
+```python
+NotionAdvancedTool.create_page(title="Sprint 12 Notes", content="...")
+LinearTool.create_issue(team_id="team_1", title="Fix select_tools regex", description="Non-greedy match breaks on prefixed text")
+AsanaTool.create_task(project_id="proj_1", name="Deploy MCP hosting", notes="search_tools + execute_tool")
+TrelloTool.create_card(list_id="list_1", name="Write test suite for Tools_business.py")
+```
 
 ---
 
@@ -1562,6 +1791,13 @@ from npmai_agents import ClickUpTool, TodoistTool, ObsidianTool, BookmarkManager
 **BookmarkManagerTool:** `import_bookmarks` · `export_bookmarks` · `add_bookmark` · `remove_bookmark` · `search_bookmarks` · `organize_by_domain` · `check_broken_links` · `archive_page` · `generate_reading_list` · `bulk_screenshot` · `tag_with_ai` · `deduplicate`
 
 **TimeTrackingTool:** `start_timer` · `stop_timer` · `pause_timer` · `get_current_timer` · `list_time_entries` · `add_manual_entry` · `delete_entry` · `generate_timesheet` · `get_project_summary` · `calculate_billing` · `export_to_invoice` · `connect_toggl` · `toggl_list_projects` · `toggl_start_timer` · `connect_clockify` · `clockify_list_projects` · `clockify_time_entry`
+
+```python
+TodoistTool.quick_add("Review PR #42 tomorrow at 5pm p1")
+ObsidianTool.create_daily_note()
+BookmarkManagerTool.check_broken_links()
+TimeTrackingTool.start_timer(project_id="npmai-agent", task="Fix cli.py globals")
+```
 
 ---
 
@@ -1594,6 +1830,12 @@ from npmai_agents import CryptographyTool
 | `pgp_encrypt` | PGP encrypt | `data, recipient_key` |
 | `pgp_decrypt` | PGP decrypt | `encrypted_data, private_key, passphrase` |
 
+```python
+keys = CryptographyTool.generate_rsa_keypair(bits=4096, out_dir="/home/sonu/keys")
+CryptographyTool.hash_password("super-secret-password")
+CryptographyTool.generate_totp_secret(issuer="NPMAI", account="sonu@npmai.ai")
+```
+
 ---
 
 ### KnowledgeBaseTool — 14 Tools
@@ -1618,6 +1860,12 @@ from npmai_agents import KnowledgeBaseTool
 | `import_kb` | Import KB | `kb_path` |
 | `create_qa_pairs` | Generate Q&A pairs | `kb_name, source_doc` |
 | `answer_with_sources` | Answer with citations | `kb_name, question` |
+
+```python
+KnowledgeBaseTool.create_kb("npmai-docs")
+KnowledgeBaseTool.add_documents("npmai-docs", file_paths=["README.md", "architecture.pdf"])
+KnowledgeBaseTool.query_kb("npmai-docs", "How does the Tool Manager select classes?")
+```
 
 ---
 
@@ -1644,6 +1892,14 @@ from npmai_agents import MLModelTool, SpeechAITool, ComputerVisionTool, Automati
 **ComputerVisionTool:** `detect_objects` · `track_objects` · `recognize_faces` · `detect_emotions` · `read_text_ocr` · `read_table_from_image` · `scan_qr_barcode` · `generate_qr_with_style` · `classify_image` · `compare_faces` · `count_objects` · `segment_image` · `measure_object` · `extract_text_from_pdf_image`
 
 **AutomationWorkflowTool:** `create_workflow` · `run_workflow` · `schedule_workflow` · `list_scheduled_workflows` · `cancel_scheduled_workflow` · `get_workflow_history` · `create_trigger_on_file_change` · `create_trigger_on_email` · `create_trigger_on_webhook` · `chain_workflows` · `create_conditional_branch` · `retry_on_failure` · `run_parallel` · `create_loop_workflow`
+
+```python
+SecurityScannerTool.check_haveibeenpwned("sonu@npmai.ai")
+PenetrationTestingTool.check_http_headers("https://npmai.netlify.app")
+AITextGenerationAdvancedTool.explain_code(open("agent_core.py").read())
+ComputerVisionTool.read_text_ocr("/home/sonu/scanned_invoice.png")
+AutomationWorkflowTool.create_trigger_on_file_change("/home/sonu/Downloads", workflow_name="auto-sort")
+```
 
 ---
 
@@ -1682,6 +1938,11 @@ from npmai_agents import SystemAdvancedTool
 | `eject_drive` | Eject drive | `drive_path` |
 | `format_drive` | Format drive | `drive_path, filesystem="ext4"` |
 
+```python
+SystemAdvancedTool.create_cron_job(name="daily-backup", schedule="0 2 * * *", command="npmai run 'backup my documents to S3'")
+SystemAdvancedTool.manage_firewall(action="allow", port=8080, protocol="tcp")
+```
+
 ---
 
 ### ProcessAutomationTool — 20 Tools
@@ -1714,6 +1975,12 @@ from npmai_agents import ProcessAutomationTool
 | `record_macro` | Record macro | `output_path` |
 | `play_macro` | Play recorded macro | `macro_path` |
 
+```python
+ProcessAutomationTool.run_application("/usr/bin/gimp")
+ProcessAutomationTool.wait_for_image("save_button.png", timeout=15)
+ProcessAutomationTool.click_image("save_button.png")
+```
+
 ---
 
 ### NetworkAdvancedTool — 21 Tools · FileSystemAdvancedTool — 17 Tools · PrinterTool — 11 Tools · ClipboardAdvancedTool — 15 Tools · HardwareMonitorTool — 13 Tools · RaspberryPiTool — 17 Tools · MQTTIoTTool — 12 Tools · VirtualizationTool — 17 Tools
@@ -1739,6 +2006,17 @@ from npmai_agents import RaspberryPiTool, MQTTIoTTool, VirtualizationTool
 **MQTTIoTTool:** `connect` · `publish` · `subscribe` · `publish_json` · `listen_once` · `publish_sensor_data` · `send_command` · `get_device_state` · `control_home_assistant_entity` · `create_automation` · `monitor_topics` · `replay_messages`
 
 **VirtualizationTool:** `list_vms` · `start_vm` · `stop_vm` · `restart_vm` · `suspend_vm` · `resume_vm` · `create_snapshot` · `restore_snapshot` · `delete_snapshot` · `list_snapshots` · `get_vm_info` · `set_vm_resources` · `clone_vm` · `export_vm` · `run_in_vm` · `copy_to_vm` · `create_vm`
+
+```python
+NetworkAdvancedTool.ping("8.8.8.8")
+FileSystemAdvancedTool.find_duplicates("/home/sonu/Downloads")
+PrinterTool.print_pdf("invoice_221.pdf")
+ClipboardAdvancedTool.get_text()
+HardwareMonitorTool.get_cpu_temperature()
+RaspberryPiTool.read_temperature_sensor(pin=4)
+MQTTIoTTool.publish(topic="home/livingroom/light", payload="ON")
+VirtualizationTool.start_vm("dev-vm")
+```
 
 ---
 
@@ -1768,23 +2046,20 @@ from npmai_agents import RaspberryPiTool, MQTTIoTTool, VirtualizationTool
 # 1. Install
 pip install npmai_agents
 
-# 2. Save your credentials (once)
+# 2. Save your credentials (once — this is the only thing persisted to disk)
 npmai save-credentials openai '{"api_key":"sk-xxxx"}'
 npmai save-credentials github '{"token":"ghp_xxxx"}'
 npmai save-credentials stripe '{"secret_key":"sk_live_xxxx"}'
 npmai save-credentials slack '{"bot_token":"xoxb-xxxx"}'
 npmai save-credentials sendgrid '{"api_key":"SG.xxxx"}'
 
-# 3. Optional — configure with better models
-npmai config-agent \
-  --planner-provider groq --planner-model llama-3.3-70b-versatile \
-  --coder-provider openai --coder-model gpt-4o
-
-# 4. Run any task in plain English
+# 3. Run any task in plain English — zero-config uses free NPMAI models,
+#    or pass provider/model flags inline for any role you want on a different backend
 npmai run "Analyse the CSV files in my Downloads folder,
            find the top 5 customers by revenue,
            create an Excel report with charts,
-           and email it to sonu@npmai.ai with subject 'Weekly Revenue Report'"
+           and email it to sonu@npmai.ai with subject 'Weekly Revenue Report'" \
+  --planner-provider groq --planner-model llama-3.3-70b-versatile
 ```
 
 ```
