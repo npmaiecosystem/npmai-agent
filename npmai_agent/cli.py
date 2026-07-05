@@ -71,6 +71,8 @@ def run(
     task:str,
     planner_model: str = "llama3.2:3b",
     planner_provider: str = "npmai",
+    tool_manager_provider: str = "npmai",
+    tool_manager_model: str =" granite3.3:2b",
     coder_model: str = "codellama:7b-instruct", 
     coder_provider: str = "npmai",
     auditor_model: str = "qwen2.5-coder:7b",
@@ -83,6 +85,7 @@ def run(
 
   agent = AgentBrain(
         planner  = build_backend(planner_provider,  planner_model),
+        tool_manager = build_backend(tool_manager_provider, tool_manager_model)
         coder    = build_backend(coder_provider,    coder_model),
         auditor  = build_backend(auditor_provider,  auditor_model),
         verifier = build_backend(verifier_provider, verifier_model),
