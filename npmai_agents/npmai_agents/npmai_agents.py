@@ -251,16 +251,16 @@ class AgentBrain(ensure):
         import importlib, inspect
         registry = {}
         modules = [
-            ".Tools_Developer_CLI",
-            ".Tools_business",
-            ".Tools_cloud_devops",
-            ".Tools_communication_extended",
-            ".Tools_creative",
-            ".Tools_data_research",
-            ".Tools_media",
-            ".Tools_productivity",
-            ".Tools_security_ai",
-            ".Tools_system_hardware",
+            "Tools_Developer_CLI",
+            "Tools_business",
+            "Tools_cloud_devops",
+            "Tools_communication_extended",
+            "Tools_creative",
+            "Tools_data_research",
+            "Tools_media",
+            "Tools_productivity",
+            "Tools_security_ai",
+            "Tools_system_hardware",
         ]
         for mod_name in modules:
             try:
