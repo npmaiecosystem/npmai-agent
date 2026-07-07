@@ -10,7 +10,7 @@
 <br/>
 
 <img src="https://img.shields.io/badge/PyPI-npmai__agents-00f5ff?style=for-the-badge&logo=pypi&logoColor=white&labelColor=0a0a1a"/>
-<img src="https://img.shields.io/badge/Version-1.0.1-a78bfa?style=for-the-badge&labelColor=0a0a1a"/>
+<img src="https://img.shields.io/badge/Version-1.0.2-a78bfa?style=for-the-badge&labelColor=0a0a1a"/>
 <img src="https://img.shields.io/badge/Python-3.9%2B-00f5ff?style=for-the-badge&logo=python&logoColor=white&labelColor=0a0a1a"/>
 <img src="https://img.shields.io/badge/License-MIT-2affa0?style=for-the-badge&labelColor=0a0a1a"/>
 <img src="https://img.shields.io/badge/Status-Production%20Stable-2affa0?style=for-the-badge&labelColor=0a0a1a"/>
@@ -58,6 +58,14 @@ The core insight: LLMs waste most of their context reverse-engineering API docum
 | Daily Requests | `80,000+` |
 | Free LLMs | `45+` |
 | Monthly Cost | `₹0` |
+
+</td>
+<td width="45%">
+  
+| Metric | Value |
+|---|---|
+| PyPI Downloads | `190,000+` |
+| Tools | `1,371` |
 
 </td>
 </tr>
@@ -2121,7 +2129,8 @@ npmai run "Analyse the CSV files in my Downloads folder,
 
 | Version | Status | Notes |
 |---|---|---|
-| `1.0.1` | ✅ Bug Fixed | Production Stable | 1,371 tools · 100 classes · CLI · 5-rool pipeline ·Tool Manager · 12 LLM providers |
+| `1.0.2` | ✅ Docker release and Bug Fixed | Production Stable | 1,371 tools · 100 classes · CLI · Docker · 5-role pipeline · Tool Manager Fixed · 12 LLM Providers |
+| `1.0.1` | ✅ Bug Fixed | Production Stable | 1,371 tools · 100 classes · CLI · 5-role pipeline ·Tool Manager · 12 LLM providers |
 | `1.0.0` | ✅ Production Stable | 1,371 tools · 100 classes · 5-role pipeline · Tool Manager · 12 LLM providers · CLI |
 | `0.0.1` | 🗄️ Archived | Initial alpha — 21 tool classes · 4-role pipeline |
 
