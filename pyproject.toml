@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "npmai_agents"
-version = "1.0.1"
+version = "1.0.2"
 description = "Production-grade autonomous AI agent framework with 1,371 tools across 100 classes and a 5-role LLM pipeline — built on the NPMAI ECOSYSTEM."
 readme = "README.md"
 license = { text = "MIT" }
