@@ -54,7 +54,7 @@ The core insight: LLMs waste most of their context reverse-engineering API docum
 
 | Metric | Value |
 |---|---|
-| PyPI Downloads | `2,500,000+` |
+| PyPI Downloads | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/npmai?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/npmai) |
 | Daily Requests | `80,000+` |
 | Free LLMs | `45+` |
 | Monthly Cost | `₹0` |
@@ -64,7 +64,7 @@ The core insight: LLMs waste most of their context reverse-engineering API docum
   
 | Metric | Value |
 |---|---|
-| PyPI Downloads | `190,000+` |
+| PyPI Downloads | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/npmai-agents?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/npmai-agents) |
 | Tools | `1,371` |
 
 </td>
