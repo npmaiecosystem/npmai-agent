@@ -79,6 +79,25 @@ pip install npmai_agents
 pip install npmai_agents[full]
 ```
 
+### Quick Start
+
+```bash
+# Pull the image
+docker pull sonuramashishnpm/npmai-agent:latest
+
+# See available commands
+docker run --rm sonuramashishnpm/npmai-agent --help
+
+# Run any task
+docker run --rm -v "$(pwd):/workspace" -w /workspace \
+  sonuramashishnpm/npmai-agent run "Analyze my sales.csv and create a revenue report"
+```
+### Tags
+
+- `latest` — Latest stable version
+- `v1` — Version 1.0.1
+
+
 ### 📦 Import System
 
 All 100 tool classes, every LLM backend, and the agent brain itself are exposed from a single top-level namespace: `npmai_agents`. Internally the code is split across many files by domain (`core.py`, `agent_core.py`, `Tools_business.py`, `Tools_creative.py`, etc.) — that split is for maintainability on our side. As a user you never need to know or care which file anything actually lives in. The package's `__init__.py` re-exports every public class at the top level, so a single import line reaches everything:
