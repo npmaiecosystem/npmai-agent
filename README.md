@@ -139,6 +139,59 @@ Install gives you the `npmai` terminal command globally.
 npmai --help
 ```
 
+### 🛠️ Troubleshooting: CLI Command Not Found (PATH Issue)
+
+If you get a warning during installation stating that the script is installed in a directory which is **not on PATH**, your terminal will not recognize the command. Follow the solution for your operating system below.
+
+---
+
+#### 🪟 On Windows
+If you see a warning referencing `AppData\Roaming\Python\...`
+
+**Solution:**
+Open **PowerShell as an Administrator** and run:
+```powershell
+[Environment]::SetEnvironmentVariable("Path", \$env:Path + ";C:\Users\digiccsammunnat8\AppData\Roaming\Python\Python312\Scripts", "User")
+```
+*Note: Restart your terminal window after running this command.*
+
+---
+
+#### 🐧 On Linux
+If you see a warning referencing `~/.local/bin`
+
+**Solution:**
+Open your terminal and run:
+```bash
+echo 'export PATH="HOME/.local/bin:PATH"' >> ~/.bashrc && source ~/.bashrc
+```
+*Note: If you use Zsh instead of Bash, replace `~/.bashrc` with `~/.zshrc`.*
+
+---
+
+#### 🍏 On macOS
+If you see a warning referencing `~/Library/Python/...`
+
+**Solution:**
+Open your terminal and run (replace `3.12` with your actual Python version):
+```bash
+echo 'export PATH="HOME/Library/Python/3.12/bin:PATH"' >> ~/.zshrc && source ~/.zshrc
+```
+*Note: If you use Bash instead of Zsh on older macOS versions, replace `~/.zshrc` with `~/.bash_profile`.*
+
+---
+
+#### 💡 Pro Tip: Avoid PATH Issues Entirely
+Use a virtual environment for your project so dependencies and paths are isolated automatically:
+```bash
+# Create and activate the environment
+python -m venv venv
+source venv/bin/activate  # On Windows PowerShell use: .\venv\Scripts\activate
+
+# Install your package cleanly
+pip install npmai-agents
+```
+
 > **Session model:** each `npmai <command>` invocation is its own standalone process — there is no config file, no state file, and nothing written to disk between commands (by design, so the framework never has to manage extra files on top of everything else it already manages). This means `run` and `chat` accept the LLM provider/model for every role directly as flags on the same call, rather than relying on a separate "configure once" step that would silently reset between processes anyway. If you omit the flags, every role defaults to the free NPMAI-hosted models — zero setup, zero cost.
 
 ---
