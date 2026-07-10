@@ -2204,3 +2204,5 @@ MIT — free to use, modify, and distribute.
 *"Promoting AI tools to every nation's village — free and open forever."*
 
 </div>
+
+- [JMT x402 Agent Tools](https://jmt-x402-proxy.jmthomasofficial.workers.dev) — 25 paid x402 endpoints on Base mainnet: web search, AI analysis, crypto/stock data, SEC filings, company intel, news, sentiment, macro dashboard. $0.001-$0.15/call USDC. Integrated into Tools_data_research.py as JMTx402AgentTools class.

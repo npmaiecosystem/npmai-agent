@@ -5117,6 +5117,7 @@ DATA_RESEARCH_TOOLS = {
     TextAnalyticsTool.name:       TextAnalyticsTool,
     DatabaseTool.name:            DatabaseTool,
     ReportGeneratorTool.name:     ReportGeneratorTool,
+    JMTx402AgentTools.name:       JMTx402AgentTools,
 }
 
 DATA_RESEARCH_TOOLS_SUMMARY = "\n".join(
@@ -5134,6 +5135,94 @@ __all__ = [
     "TextAnalyticsTool",
     "DatabaseTool",
     "ReportGeneratorTool",
+    "JMTx402AgentTools",
     "DATA_RESEARCH_TOOLS",
     "DATA_RESEARCH_TOOLS_SUMMARY",
 ]
+# ─────────────────────────────────────────────────────────────────────────────
+# 11. JMTx402AgentTools — Paid x402 API endpoints (web search, AI analysis, financial data)
+# ─────────────────────────────────────────────────────────────────────────────
+
+class JMTx402AgentTools:
+    """
+    JMT x402 Agent Tools — 25 paid API endpoints on Base mainnet using the x402
+    payment protocol. Agents pay per call with USDC. No API key required.
+    """
+    name = "jmt_x402_agent_tools"
+    description = (
+        "Paid x402 API endpoints on Base mainnet: web search, AI analysis, "
+        "financial data, SEC filings, company intelligence, news, sentiment, "
+        "macro dashboards, and utility tools. Pay-per-call with USDC."
+    )
+    use = (
+        """Name of Tool:- JMTx402AgentTools
+
+Purpose: 25 paid API endpoints on Base mainnet via x402 protocol. Pay per call with USDC.
+
+Base URL: https://jmt-x402-proxy.jmthomasofficial.workers.dev
+Endpoints return HTTP 402 with payment details when called without payment.
+
+Key methods:
+- web_search(query): Search the web. $0.02/call
+- ai_answer(query): AI answer with citations. $0.03/call
+- crypto_price(coin_id): Live crypto price. $0.03/call
+- stock_quote(symbol): Stock quote. $0.03/call
+- company_intel(company): Company dossier with SWOT. $0.10/call
+- news_briefing(topic): AI news briefing. $0.05/call
+- social_sentiment(topic): Sentiment analysis. $0.05/call
+- deep_research(topic): Deep research report. $0.15/call
+- summarize_text(text): AI summary. $0.05/call
+
+See https://x402.org for x402 protocol details.
+"""
+    )
+
+    BASE_URL = "https://jmt-x402-proxy.jmthomasofficial.workers.dev"
+
+    @staticmethod
+    def _call(endpoint, **kwargs):
+        import requests
+        url = f"{JMTx402AgentTools.BASE_URL}{endpoint}"
+        resp = requests.get(url, params=kwargs, timeout=30) if endpoint.startswith("/api/search") or endpoint.startswith("/api/answer") or endpoint.startswith("/api/crypto") or endpoint.startswith("/api/stock") or endpoint.startswith("/api/treasury") or endpoint.startswith("/api/whois") or endpoint.startswith("/api/gas") or endpoint.startswith("/api/edgar") else requests.post(url, json=kwargs, timeout=30)
+        if resp.status_code == 402:
+            data = resp.json()
+            accepts = data.get("accepts", [{}])[0]
+            return ToolResult(True, f"Payment required: ${float(accepts.get('maxAmountRequired', 0))/1e6:.3f} USDC (Base mainnet)", data)
+        elif resp.status_code == 200:
+            return ToolResult(True, f"OK", resp.json())
+        return ToolResult(False, f"HTTP {resp.status_code}")
+
+    @staticmethod
+    def web_search(query):
+        return JMTx402AgentTools._call("/api/search", query=query)
+
+    @staticmethod
+    def ai_answer(query):
+        return JMTx402AgentTools._call("/api/answer", query=query)
+
+    @staticmethod
+    def crypto_price(coin_id):
+        return JMTx402AgentTools._call("/api/crypto-price", id=coin_id)
+
+    @staticmethod
+    def stock_quote(symbol):
+        return JMTx402AgentTools._call("/api/stock-quote", symbol=symbol)
+
+    @staticmethod
+    def company_intel(company):
+        return JMTx402AgentTools._call("/api/company-intel", company=company)
+
+    @staticmethod
+    def news_briefing(topic):
+        return JMTx402AgentTools._call("/api/news-briefing", topic=topic)
+
+    @staticmethod
+    def social_sentiment(topic):
+        return JMTx402AgentTools._call("/api/social-sentiment", topic=topic)
+
+    @staticmethod
+    def deep_research(topic):
+        return JMTx402AgentTools._call("/api/research", topic=topic)
+
+
+
