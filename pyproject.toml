@@ -106,7 +106,7 @@ Repository    = "https://github.com/sonuramashishnpm/npmai-agent"
 PyPI          = "https://pypi.org/project/npmai_agents"
 
 [project.scripts]
-npmai = "npmai_agents.cli:app"
+npmai = "npmai_agents.npmai_agents.cli:app"
 
 [tool.black]
 line-length = 100
