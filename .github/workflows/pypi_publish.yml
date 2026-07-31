@@ -1,0 +1,33 @@
+name: PYPI Package Deployment
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  my_job:
+    name: Install requirements.txt
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Satisfy requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip -m install --upgrade pip
+          pip install build
+          
+
+      - name: Build
+        run: python -m build
+
+      - name: Publish Package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
