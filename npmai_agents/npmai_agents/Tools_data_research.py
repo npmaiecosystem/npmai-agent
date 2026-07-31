@@ -5154,26 +5154,85 @@ class JMTx402AgentTools:
         "financial data, SEC filings, company intelligence, news, sentiment, "
         "macro dashboards, and utility tools. Pay-per-call with USDC."
     )
-    use = (
-        """Name of Tool:- JMTx402AgentTools
+    use = ( 
+        """
+Name of Tool:- JMTx402AgentTools
 
-Purpose: 25 paid API endpoints on Base mainnet via x402 protocol. Pay per call with USDC.
+Purpose of Tool:- 
+The JMTx402AgentTools provides an interface for interacting with pay-per-call HTTP endpoints via the x402 payment protocol on the 
+Base mainnet. Instead of relying on static API keys, these static methods route request parameters to a remote Cloudflare Worker proxy 
+that accepts microtransactions in USDC. The underlying proxy checks incoming traffic and either triggers a `402 Payment Required` response 
+specifying the necessary USDC transfer metadata or executes the query upon payment validation. This setup provides automated agents with on-demand access to 
+external web queries, AI-generated synthesis, real-time cryptocurrency data, equity market quotes, company intelligence dossiers, curated 
+news briefings, social sentiment metrics, and deep research reports.
 
-Base URL: https://jmt-x402-proxy.jmthomasofficial.workers.dev
-Endpoints return HTTP 402 with payment details when called without payment.
+Methods:-
+- web_search: Issues real-time web search queries to retrieve relevant live internet result payloads.
+- ai_answer: Submits queries to an AI model to generate concise synthesized answers.
+- crypto_price: Fetches real-time price data and market metrics for a specified cryptocurrency asset ID.
+- stock_quote: Queries financial markets for real-time stock price quotes and trading metrics using a ticker symbol.
+- company_intel: Gathers comprehensive corporate intelligence and profile metrics for a given company name.
+- news_briefing: Pulls and compiles current news coverage and media briefings regarding a specified topic.
+- social_sentiment: Aggregates and measures real-time social media sentiment metrics surrounding a target keyword or topic.
+- deep_research: Conducts an automated, multi-source deep research compilation on a specified subject.
 
-Key methods:
-- web_search(query): Search the web. $0.02/call
-- ai_answer(query): AI answer with citations. $0.03/call
-- crypto_price(coin_id): Live crypto price. $0.03/call
-- stock_quote(symbol): Stock quote. $0.03/call
-- company_intel(company): Company dossier with SWOT. $0.10/call
-- news_briefing(topic): AI news briefing. $0.05/call
-- social_sentiment(topic): Sentiment analysis. $0.05/call
-- deep_research(topic): Deep research report. $0.15/call
-- summarize_text(text): AI summary. $0.05/call
+How to use Tool Methods:-
 
-See https://x402.org for x402 protocol details.
+1. web_search:
+   - Purpose: Performs a live web search query to extract up-to-date web pages and snippets.
+   - Arguments:
+     a) query: str - The search string or question to look up across the web.
+   - Returns: ToolResult containing either payment instructions (HTTP 402) or search results (HTTP 200).
+   - How to call: JMTx402AgentTools.web_search(query="latest developments in quantum computing")
+
+2. ai_answer:
+   - Purpose: Obtains a direct, AI-generated plain-language response for a specific prompt or query.
+   - Arguments:
+     a) query: str - The prompt or question for the AI to synthesize and answer.
+   - Returns: ToolResult containing the generated AI answer or x402 payment instructions.
+   - How to call: JMTx402AgentTools.ai_answer(query="Explain the difference between optimistic and zk rollups")
+
+3. crypto_price:
+   - Purpose: Retrieves current market pricing, volume, and valuation data for a target cryptocurrency.
+   - Arguments:
+     a) coin_id: str - Unique identifier for the cryptocurrency asset (e.g., "bitcoin", "ethereum", "solana").
+   - Returns: ToolResult containing market metrics data or payment requirement details.
+   - How to call: JMTx402AgentTools.crypto_price(coin_id="ethereum")
+
+4. stock_quote:
+   - Purpose: Pulls real-time financial market data and pricing for a specified equity stock symbol.
+   - Arguments:
+     a) symbol: str - Market ticker symbol for the target publicly traded company (e.g., "AAPL", "NVDA").
+   - Returns: ToolResult containing stock market quote data or required payment terms.
+   - How to call: JMTx402AgentTools.stock_quote(symbol="NVDA")
+
+5. company_intel:
+   - Purpose: Compiles background corporate data, executive details, financial overviews, and organizational information.
+   - Arguments:
+     a) company: str - The legal or common name of the target corporation.
+   - Returns: ToolResult containing corporate intelligence records or x402 payment requirements.
+   - How to call: JMTx402AgentTools.company_intel(company="Stripe")
+
+6. news_briefing:
+   - Purpose: Fetches and synthesizes recent headlines and news articles focused on a target subject.
+   - Arguments:
+     a) topic: str - The subject, entity, or event string to query for recent media coverage.
+   - Returns: ToolResult containing news article summaries or payment requirement details.
+   - How to call: JMTx402AgentTools.news_briefing(topic="Federal Reserve interest rate decision")
+
+7. social_sentiment:
+   - Purpose: Analyzes recent social media posts and public discourse to calculate positive, neutral, or negative sentiment scores.
+   - Arguments:
+     a) topic: str - The brand, keyword, ticker, or entity to evaluate across social channels.
+   - Returns: ToolResult containing aggregated sentiment scores and metadata or x402 payment details.
+   - How to call: JMTx402AgentTools.social_sentiment(topic="Base Network")
+
+8. deep_research:
+   - Purpose: Triggers an extensive automated research pipeline to generate a detailed report on a given topic.
+   - Arguments:
+     a) topic: str - The research subject or domain requiring detailed analysis.
+   - Returns: ToolResult containing structured research output or x402 payment specifications.
+   - How to call: JMTx402AgentTools.deep_research(topic="Impact of solid-state batteries on electric vehicle adoption")
 """
     )
 
