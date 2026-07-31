@@ -197,6 +197,12 @@ class AgentBrain(ensure):
 58. TextAnalyticsTool: NLP — sentiment, classification, NER, keywords, summarize, translate, grammar check, embeddings
 59. DatabaseTool: Databases — PostgreSQL, MySQL, MongoDB, Redis, SQLite — query, backup, schema, transactions
 60. ReportGeneratorTool: Report generation — PDF, Word, Excel, PowerPoint reports from data; schedule and dashboard reports
+61. JMTx402AgentTools: The JMTx402AgentTools provides an interface for interacting with pay-per-call HTTP endpoints via the x402 payment protocol on the 
+Base mainnet. Instead of relying on static API keys, these static methods route request parameters to a remote Cloudflare Worker proxy 
+that accepts microtransactions in USDC. The underlying proxy checks incoming traffic and either triggers a `402 Payment Required` response 
+specifying the necessary USDC transfer metadata or executes the query upon payment validation. This setup provides automated agents with on-demand access to 
+external web queries, AI-generated synthesis, real-time cryptocurrency data, equity market quotes, company intelligence dossiers, curated 
+news briefings, social sentiment metrics, and deep research reports.
  
 === MEDIA & AUDIO/VIDEO ===
 61. FFmpegTool: FFmpeg video/audio — trim, merge, compress, convert, subtitles, watermark, speed, GIF, thumbnails, stabilize
