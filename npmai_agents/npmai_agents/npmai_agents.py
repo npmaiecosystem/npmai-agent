@@ -680,7 +680,7 @@ Assistant:"""
             try: history = json.loads(hist_path.read_text())
             except: history = []
         history.insert(0,{
-            "task":   task,
+            "task":   task, 
             "success":success,
             "time":   datetime.now().isoformat(),
         })
