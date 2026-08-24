@@ -205,52 +205,52 @@ external web queries, AI-generated synthesis, real-time cryptocurrency data, equ
 news briefings, social sentiment metrics, and deep research reports.
  
 === MEDIA & AUDIO/VIDEO ===
-61. FFmpegTool: FFmpeg video/audio — trim, merge, compress, convert, subtitles, watermark, speed, GIF, thumbnails, stabilize
-62. YouTubeDownloaderTool: yt-dlp downloads — video, audio, playlist, subtitles, thumbnails, channel videos, format selection
-63. AudioTool: Audio processing — convert, split, merge, normalize, pitch/tempo change, EQ, BPM detect, transcribe
-64. ImageAdvancedTool: Advanced image — batch resize/convert, collage, remove background, upscale, face detect, GIF creation
-65. ScreenRecorderTool: Screen capture — screenshot, multi-monitor, screen recording, window capture, cursor highlight, GIF
-66. TextToSpeechTool: TTS — generate speech, list voices, SSML, voice cloning, batch generate, background music
-67. VideoEditingTool: Smart video editing — auto-cut silences, color correct, denoise, highlight reel, chapter markers, platform export
-68. PodcastTool: Podcast production — record, edit, clean audio, transcribe, show notes, chapters, RSS feed export
-69. StreamingTool: Live streaming — stream to YouTube/Twitch, multi-platform stream, capture live stream, stream info
-70. MediaMetadataTool: Media metadata — read/write ID3/EXIF tags, bulk rename, fix dates, album art, M3U playlists
+62. FFmpegTool: FFmpeg video/audio — trim, merge, compress, convert, subtitles, watermark, speed, GIF, thumbnails, stabilize
+63. YouTubeDownloaderTool: yt-dlp downloads — video, audio, playlist, subtitles, thumbnails, channel videos, format selection
+64. AudioTool: Audio processing — convert, split, merge, normalize, pitch/tempo change, EQ, BPM detect, transcribe
+65. ImageAdvancedTool: Advanced image — batch resize/convert, collage, remove background, upscale, face detect, GIF creation
+66. ScreenRecorderTool: Screen capture — screenshot, multi-monitor, screen recording, window capture, cursor highlight, GIF
+67. TextToSpeechTool: TTS — generate speech, list voices, SSML, voice cloning, batch generate, background music
+68. VideoEditingTool: Smart video editing — auto-cut silences, color correct, denoise, highlight reel, chapter markers, platform export
+69. PodcastTool: Podcast production — record, edit, clean audio, transcribe, show notes, chapters, RSS feed export
+70. StreamingTool: Live streaming — stream to YouTube/Twitch, multi-platform stream, capture live stream, stream info
+71. MediaMetadataTool: Media metadata — read/write ID3/EXIF tags, bulk rename, fix dates, album art, M3U playlists
  
 === PRODUCTIVITY & PROJECT MANAGEMENT ===
-71. GoogleWorkspaceTool: Google Workspace — Docs, Sheets, Drive (create/read/write/share), Forms — full CRUD
-72. NotionAdvancedTool: Notion — search, databases, pages, blocks, kanban views, CSV import/export, templates
-73. LinearTool: Linear issues — create/update/close issues, teams, projects, cycles, labels, comments
-74. AsanaTool: Asana tasks — workspaces, projects, tasks, subtasks, sections, comments, tags
-75. TrelloTool: Trello boards — boards, lists, cards, checklists, attachments, members, labels, move cards
-76. ClickUpTool: ClickUp tasks — spaces, folders, lists, tasks, status, comments, time tracking, views
-77. TodoistTool: Todoist — projects, tasks, subtasks, labels, quick add, comments, productivity stats
-78. ObsidianTool: Obsidian notes — read/create/update notes, search, backlinks, tags, daily notes, graph data
-79. BookmarkManagerTool: Bookmark management — import/export, add/search, check broken links, archive, AI tagging
-80. TimeTrackingTool: Time tracking — start/stop timers, timesheets, billing, Toggl and Clockify integration
+72. GoogleWorkspaceTool: Google Workspace — Docs, Sheets, Drive (create/read/write/share), Forms — full CRUD
+73. NotionAdvancedTool: Notion — search, databases, pages, blocks, kanban views, CSV import/export, templates
+74. LinearTool: Linear issues — create/update/close issues, teams, projects, cycles, labels, comments
+75. AsanaTool: Asana tasks — workspaces, projects, tasks, subtasks, sections, comments, tags
+76. TrelloTool: Trello boards — boards, lists, cards, checklists, attachments, members, labels, move cards
+77. ClickUpTool: ClickUp tasks — spaces, folders, lists, tasks, status, comments, time tracking, views
+78. TodoistTool: Todoist — projects, tasks, subtasks, labels, quick add, comments, productivity stats
+79. ObsidianTool: Obsidian notes — read/create/update notes, search, backlinks, tags, daily notes, graph data
+80. BookmarkManagerTool: Bookmark management — import/export, add/search, check broken links, archive, AI tagging
+81. TimeTrackingTool: Time tracking — start/stop timers, timesheets, billing, Toggl and Clockify integration
  
 === SECURITY & AI ===
-81. SecurityScannerTool: Security scanning — VirusTotal, Shodan, HIBP, nmap, SSL grade, DNS leak, URL reputation, threat intel
-82. CryptographyTool: Cryptography — RSA keypairs, AES encrypt/decrypt, password hashing, TOTP, SSL certs, PGP
-83. PenetrationTestingTool: Pen testing — subdomain enum, directory brute force, HTTP headers, CORS, SQLi, XSS, SSL vulns
-84. AIImageGenerationTool: AI image generation — Stability AI, DALL-E, local Stable Diffusion, inpaint, img2img, upscale
-85. AITextGenerationAdvancedTool: Advanced LLM tasks — chain prompts, few-shot, structured JSON, debate, brainstorm, code gen/explain/refactor
-86. MLModelTool: ML training — train classifiers/regressors, evaluate, cross-validate, hyperparameter tune, deploy as API
-87. SpeechAITool: Speech AI — realtime transcription, file transcription, speaker diarization, voice cloning, keyword detection
-88. ComputerVisionTool: Computer vision — object detection, face recognition, OCR, QR/barcode, image classification, segmentation
-89. AutomationWorkflowTool: Workflow automation — create/run/schedule workflows, file/email/webhook triggers, conditionals, parallel runs
-90. KnowledgeBaseTool: RAG knowledge base — create KB, add docs/URLs, query, search, update, export, Q&A with sources
+82. SecurityScannerTool: Security scanning — VirusTotal, Shodan, HIBP, nmap, SSL grade, DNS leak, URL reputation, threat intel
+83. CryptographyTool: Cryptography — RSA keypairs, AES encrypt/decrypt, password hashing, TOTP, SSL certs, PGP
+84. PenetrationTestingTool: Pen testing — subdomain enum, directory brute force, HTTP headers, CORS, SQLi, XSS, SSL vulns
+85. AIImageGenerationTool: AI image generation — Stability AI, DALL-E, local Stable Diffusion, inpaint, img2img, upscale
+86. AITextGenerationAdvancedTool: Advanced LLM tasks — chain prompts, few-shot, structured JSON, debate, brainstorm, code gen/explain/refactor
+87. MLModelTool: ML training — train classifiers/regressors, evaluate, cross-validate, hyperparameter tune, deploy as API
+88. SpeechAITool: Speech AI — realtime transcription, file transcription, speaker diarization, voice cloning, keyword detection
+89. ComputerVisionTool: Computer vision — object detection, face recognition, OCR, QR/barcode, image classification, segmentation
+90. AutomationWorkflowTool: Workflow automation — create/run/schedule workflows, file/email/webhook triggers, conditionals, parallel runs
+91. KnowledgeBaseTool: RAG knowledge base — create KB, add docs/URLs, query, search, update, export, Q&A with sources
  
 === SYSTEM & HARDWARE ===
-91. SystemAdvancedTool: System administration — services, cron jobs, firewall, startup items, hosts file, volume, battery, USB
-92. NetworkAdvancedTool: Network tools — ping, traceroute, port scan, DNS lookup, SSL check, bandwidth test, SSH tunnel
-93. FileSystemAdvancedTool: File system — folder sync, find/remove duplicates, encrypt/decrypt files, secure delete, split/join, checksums
-94. ProcessAutomationTool: Desktop automation — find/click windows, type text, keyboard shortcuts, drag-drop, image recognition on screen
-95. PrinterTool: Printer management — list printers, print files/PDFs/images, manage queue, cancel jobs, export to PDF
-96. ClipboardAdvancedTool: Clipboard — get/set text/images/files/HTML, monitor changes, clipboard history, transform content
-97. HardwareMonitorTool: Hardware monitoring — CPU/GPU/disk temperatures, fan speeds, voltages, SMART data, benchmarks
-98. RaspberryPiTool: Raspberry Pi GPIO — pins, PWM, I2C, SPI, temperature sensors, servo/stepper motors, LCD, camera
-99. MQTTIoTTool: MQTT/IoT — connect broker, publish/subscribe, send sensor data, device commands, Home Assistant control
-100.VirtualizationTool: VM management — list/start/stop/snapshot VMs, clone, export, run commands in VM, set resources
+92. SystemAdvancedTool: System administration — services, cron jobs, firewall, startup items, hosts file, volume, battery, USB
+93. NetworkAdvancedTool: Network tools — ping, traceroute, port scan, DNS lookup, SSL check, bandwidth test, SSH tunnel
+94. FileSystemAdvancedTool: File system — folder sync, find/remove duplicates, encrypt/decrypt files, secure delete, split/join, checksums
+95. ProcessAutomationTool: Desktop automation — find/click windows, type text, keyboard shortcuts, drag-drop, image recognition on screen
+96. PrinterTool: Printer management — list printers, print files/PDFs/images, manage queue, cancel jobs, export to PDF
+97. ClipboardAdvancedTool: Clipboard — get/set text/images/files/HTML, monitor changes, clipboard history, transform content
+98. HardwareMonitorTool: Hardware monitoring — CPU/GPU/disk temperatures, fan speeds, voltages, SMART data, benchmarks
+99. RaspberryPiTool: Raspberry Pi GPIO — pins, PWM, I2C, SPI, temperature sensors, servo/stepper motors, LCD, camera
+100. MQTTIoTTool: MQTT/IoT — connect broker, publish/subscribe, send sensor data, device commands, Home Assistant control
+101.VirtualizationTool: VM management — list/start/stop/snapshot VMs, clone, export, run commands in VM, set resources
 """.strip()
 
     def build_tool_registry(self):
