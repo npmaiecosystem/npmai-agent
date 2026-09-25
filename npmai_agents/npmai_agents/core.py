@@ -116,6 +116,7 @@ class OpenAIBackend(LLMBackend):
         self.model = model
 
     def invoke(self, prompt: str) -> str:
+        time.sleep(16)
         r = self.client.chat.completions.create(
             model=self.model,
             messages=[{"role": "user", "content": prompt}]
@@ -131,6 +132,7 @@ class AnthropicBackend(LLMBackend):
         self.model = model
 
     def invoke(self, prompt: str) -> str:
+        time.sleep(16)
         r = self.client.messages.create(
             model=self.model,
             max_tokens=1024,
@@ -147,6 +149,7 @@ class GeminiBackend(LLMBackend):
         self.model = genai.GenerativeModel(model)
 
     def invoke(self, prompt: str) -> str:
+        time.sleep(16)
         r = self.model.generate_content(prompt)
         return r.text
 
@@ -159,10 +162,17 @@ class GroqBackend(LLMBackend):
         self.model = model
 
     def invoke(self, prompt: str) -> str:
-        r = self.client.chat.completions.create(
-            model=self.model,
-            messages=[{"role": "user", "content": prompt}]
-        )
+        time.sleep(16)
+        try:
+            r = self.client.chat.completions.create(
+                model=self.model, messages=[{"role": "user", "content": prompt}]
+            )
+        except RateLimitError as error:
+            print(f"This is a RateLimitError here are exact logs:-> {error}")
+            r = self.client.chat.completions.create(
+                model=self.model, messages=[{"role": "user", "content": prompt}]
+            )
+            
         return r.choices[0].message.content
 
 
@@ -174,6 +184,7 @@ class MistralBackend(LLMBackend):
         self.model = model
 
     def invoke(self, prompt: str) -> str:
+        time.sleep(16)
         r = self.client.chat.complete(
             model=self.model,
             messages=[{"role": "user", "content": prompt}]
@@ -189,6 +200,7 @@ class CohereBackend(LLMBackend):
         self.model = model
 
     def invoke(self, prompt: str) -> str:
+        time.sleep(16)
         r = self.client.chat(model=self.model, message=prompt)
         return r.text
 
@@ -202,6 +214,7 @@ class AzureOpenAIBackend(LLMBackend):
         self.deployment = deployment
 
     def invoke(self, prompt: str) -> str:
+        time.sleep(16)
         r = self.client.chat.completions.create(
             model=self.deployment,
             messages=[{"role": "user", "content": prompt}]
@@ -218,6 +231,7 @@ class BedrockBackend(LLMBackend):
         self._json = _json
 
     def invoke(self, prompt: str) -> str:
+        time.sleep(16)
         body = self._json.dumps({
             "anthropic_version": "bedrock-2023-05-31",
             "max_tokens": 1024,
