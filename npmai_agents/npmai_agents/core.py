@@ -90,11 +90,26 @@ class LLMBackend(ABC):
         ...
 
 
-# 1. Ollama — (local models) 
+# 1. Ollama - (npmai) 
 """
 THIS WILL USE LOCAL COMPUTE IF YOU WANT TO USE NPMAI WHICH WILL RUN ON CLOUD NOT YOUR MACHINE THEN DO NOT PASS ANY THING IN 
 LLM PIPELINE NPMAI IS USED HERE BY DEFAULT.
 """
+
+class Ollama(LLMBackend):
+    def __init__(self, model="llama3.2", temperature=0.5):
+        from npmai import Ollama
+        self.client = Ollama(model=model, temperature=temperature, change=True, Models=["gemma2:9b", "qwen3.5:2b", "nemotron-mini"])
+
+    def invoke(self, prompt:str) -> str:
+        time.sleep(16)
+        try:
+            r = self.client.invoke(prompt)
+            return r
+        except:
+            return "Sorry some error is from npmai"
+            
+#2. Ollama - (local)        
 class Ollama_Local(LLMBackend):
     def __init__(self, model="llama3.2:3b", temperature=0.2):
         import ollama
@@ -108,7 +123,7 @@ class Ollama_Local(LLMBackend):
         return r["response"]
 
 
-# 2. OpenAI (GPT-4o, GPT-4, etc.)
+# 3. OpenAI (GPT-4o, GPT-4, etc.)
 class OpenAIBackend(LLMBackend):
     def __init__(self, api_key, model="gpt-4o"):
         from openai import OpenAI
@@ -124,7 +139,7 @@ class OpenAIBackend(LLMBackend):
         return r.choices[0].message.content
 
 
-# 3. Anthropic (Claude)
+# 4. Anthropic (Claude)
 class AnthropicBackend(LLMBackend):
     def __init__(self, api_key, model="claude-sonnet-4-6"):
         import anthropic
@@ -141,7 +156,7 @@ class AnthropicBackend(LLMBackend):
         return "".join(b.text for b in r.content if b.type == "text")
 
 
-# 4. Google Gemini
+# 5. Google Gemini
 class GeminiBackend(LLMBackend):
     def __init__(self, api_key, model="gemini-2.0-flash"):
         import google.generativeai as genai
@@ -154,7 +169,7 @@ class GeminiBackend(LLMBackend):
         return r.text
 
 
-# 5. Groq (fast inference — Llama, Mixtral hosted)
+# 6. Groq (fast inference — Llama, Mixtral hosted)
 class GroqBackend(LLMBackend):
     def __init__(self, api_key, model="llama-3.3-70b-versatile"):
         from groq import Groq
@@ -167,16 +182,16 @@ class GroqBackend(LLMBackend):
             r = self.client.chat.completions.create(
                 model=self.model, messages=[{"role": "user", "content": prompt}]
             )
+            return r.choices[0].message.content
         except RateLimitError as error:
             print(f"This is a RateLimitError here are exact logs:-> {error}")
             r = self.client.chat.completions.create(
                 model=self.model, messages=[{"role": "user", "content": prompt}]
             )
-            
-        return r.choices[0].message.content
+            return r.choices[0].message.content
 
 
-# 6. Mistral (their own API)
+# 7. Mistral (their own API)
 class MistralBackend(LLMBackend):
     def __init__(self, api_key, model="mistral-large-latest"):
         from mistralai.client import Mistral
@@ -192,7 +207,7 @@ class MistralBackend(LLMBackend):
         return r.choices[0].message.content
 
 
-# 7. Cohere
+# 8. Cohere
 class CohereBackend(LLMBackend):
     def __init__(self, api_key, model="command-r-plus"):
         import cohere
@@ -205,7 +220,7 @@ class CohereBackend(LLMBackend):
         return r.text
 
 
-# 8. Azure OpenAI (enterprise OpenAI via Azure)
+# 9. Azure OpenAI (enterprise OpenAI via Azure)
 class AzureOpenAIBackend(LLMBackend):
     def __init__(self, api_key, endpoint, deployment, api_version="2024-08-01-preview"):
         from openai import AzureOpenAI
@@ -222,7 +237,7 @@ class AzureOpenAIBackend(LLMBackend):
         return r.choices[0].message.content
 
 
-# 9. AWS Bedrock (Claude/Llama/Titan hosted on AWS)
+# 10. AWS Bedrock (Claude/Llama/Titan hosted on AWS)
 class BedrockBackend(LLMBackend):
     def __init__(self, model_id="anthropic.claude-3-sonnet-20240229-v1:0", region="us-east-1"):
         import boto3, json as _json
@@ -242,7 +257,7 @@ class BedrockBackend(LLMBackend):
         return result["content"][0]["text"]
 
 
-# 10. HuggingFace Inference API (any open model hosted there)
+# 11. HuggingFace Inference API (any open model hosted there)
 class HuggingFaceBackend(LLMBackend):
     def __init__(self, api_key, model="meta-llama/Llama-3.1-8B-Instruct"):
         from huggingface_hub import InferenceClient
@@ -252,7 +267,7 @@ class HuggingFaceBackend(LLMBackend):
         return self.client.text_generation(prompt, max_new_tokens=512)
 
 
-# 11. Local llama.cpp server (fully offline, no API key)
+# 12. Local llama.cpp server (fully offline, no API key)
 class LlamaCppBackend(LLMBackend):
     def __init__(self, base_url="http://localhost:8080"):
         import requests
