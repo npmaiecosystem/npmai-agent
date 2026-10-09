@@ -151,7 +151,7 @@ If you see a warning referencing `AppData\Roaming\Python\...`
 **Solution:**
 Open **PowerShell as an Administrator** and run:
 ```powershell
-[Environment]::SetEnvironmentVariable("Path", \$env:Path + ";C:\Users\digiccsammunnat8\AppData\Roaming\Python\Python312\Scripts", "User")
+[Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Users\digiccsammunnat8\AppData\Roaming\Python\Python312\Scripts", "User")
 ```
 *Note: Restart your terminal window after running this command.*
 
